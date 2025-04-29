@@ -103,15 +103,20 @@ const ServiceBookingConfirmation = () => {
       <TouchableOpacity style={styles.payButton}>
         <Text style={styles.payButtonText}>Proceed to Pay</Text>
       </TouchableOpacity>
+      <View style={styles.footer}>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
+    backgroundColor: "#F4F9F8",
+    width: "100%",
     paddingHorizontal: wp("5%"),
-    paddingTop: hp("28%"),
+    marginTop:hp("16%"),
+    // paddingTop: hp("28%"),
     paddingBottom: hp("2%"),
     backgroundColor: "#f9f9f9",
   },
@@ -134,12 +139,15 @@ const styles = StyleSheet.create({
     marginBottom: hp("3%"), // Add spacing between card and button
   },
   table: {
+    flexDirection:"column",
+   rowGap:hp("1.7%"),
     marginBottom: hp("1%"),
   },
   tableRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: hp("1.5%"),
+    // rowGap:55,
   },
   tableCell: {
     fontSize: wp("4%"),
@@ -174,6 +182,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingVertical: hp("0.5%"),
   },
+ 
 });
 
 export default ServiceBookingConfirmation;
