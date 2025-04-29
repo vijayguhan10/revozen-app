@@ -8,11 +8,15 @@ import {
 import Footer from "./components/Navbar/Footer";
 import Header from "./components/Navbar/Header";
 import ServiceBookingConfirmation from "./components/Home/ServiceBookingConfirmation/ServiceBookingConfirmation";
+import MyVehiclesListPage from "./components/Vehicle/VehicleList/MyVehiclesListPage";
+import MyVehicleDetailsPage from "./components/Vehicle/VehicleDetails/MyVehicleDetailsPage";
+import VehicleDetailsCard from "./components/Vehicle/VehicleDetails/VehicleDetailsCard";
+
 export default function App() {
   return (
     <View style={styles.container}>
       <Header />
-      <ServiceBookingConfirmation />
+      <MyVehicleDetailsPage />
       <Footer />
     </View>
   );

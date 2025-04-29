@@ -1,19 +1,21 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
-const VehicledetailsCard = ({ vehicle }) => {
+const VehicleDetailsCard = ({ vehicle }) => {
   return (
     <View style={styles.card}>
       <Text style={styles.modelTitle}>{vehicle.model}</Text>
-
+      {vehicle.image && (
+        <Image source={vehicle.image} style={styles.vehicleImage} />
+      )}
       <View style={styles.detailsContainer}>
         <View style={styles.labelsColumn}>
           <Text style={styles.label}>Vehicle Model</Text>
-          <Text style={styles.label}>Valide Manufacturer</Text>
+          <Text style={styles.label}>Valid Manufacturer</Text>
           <Text style={styles.label}>Reg. No</Text>
           <Text style={styles.label}>Type Size</Text>
           <Text style={styles.label}>Body Style</Text>
@@ -41,25 +43,29 @@ const VehicledetailsCard = ({ vehicle }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "#f2f2f2",
     borderRadius: wp("3%"),
     padding: wp("4%"),
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: wp("1%"),
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: "#007bff",
   },
   modelTitle: {
     fontSize: wp("5%"),
     fontWeight: "bold",
     color: "#333",
-    marginBottom: hp("2%"),
     textAlign: "center",
+  },
+  vehicleImage: {
+    width: wp("50%"),
+    height: hp("20%"),
+    resizeMode: "contain",
+    alignSelf: "center",
+    marginBottom: hp("2%"),
   },
   detailsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    // height: wp("100%"),
   },
   labelsColumn: {
     width: "50%",

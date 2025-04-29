@@ -4,7 +4,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import VehicleCard from "./VehicleCard";
+import VehicleCard from "./VehicleDetailsCard";
 
 const vehicleDetails = {
   id: 1,
@@ -17,15 +17,12 @@ const vehicleDetails = {
   engineConfig: "Straight Engine",
   servicesCount: "Nil",
   lastService: "Not Available",
+  image: require("../../../assets/Vehicle/car.png"),
 };
 
 const MyVehicleDetailsPage = () => {
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Header</Text>
-      </View>
-
       <View style={styles.middleSection}>
         <View style={styles.vehicleSectionContainer}>
           <Text style={styles.sectionTitle}>My Vehicles</Text>
@@ -40,10 +37,6 @@ const MyVehicleDetailsPage = () => {
           </ScrollView>
         </View>
       </View>
-
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Footer</Text>
-      </View>
     </View>
   );
 };
@@ -51,7 +44,7 @@ const MyVehicleDetailsPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
+    width: wp("100%"),
   },
   header: {
     height: hp("10%"),
@@ -73,12 +66,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: wp("5%"),
     padding: wp("5%"),
+    height: hp("75%"),
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: wp("1%"),
     elevation: 3,
-    maxHeight: hp("65%"),
+    marginTop: hp("2%"),
   },
   sectionTitle: {
     fontSize: wp("5%"),
@@ -88,7 +82,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   scrollContainer: {
-    maxHeight: hp("50%"),
+    flexGrow: 1,
   },
   vehicleSection: {
     marginBottom: hp("2%"),
