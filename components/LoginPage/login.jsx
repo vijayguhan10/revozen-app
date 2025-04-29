@@ -15,8 +15,11 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
-const loginPageBackground = require("../../assets/LoginPage/loginPageBackground.png");
+const TopTierImage = require("../../assets/LoginPage/TopTire.png");
+const BottomTierImage = require("../../assets/LoginPage/BottomTire.png");
 const loginRevozenLogo = require("../../assets/LoginPage/loginRenozenLogo.png");
+const googleLogo = require("../../assets/LoginPage/google.png");
+const appleLogo = require("../../assets/LoginPage/apple.png");
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -28,12 +31,13 @@ const LoginScreen = () => {
   };
 
   return (
-    <ImageBackground
-      source={loginPageBackground}
-      style={styles.backgroundImage}
-      resizeMode="cover"
-    >
+    <View style={styles.container}>
+      <Image source={TopTierImage} style={styles.topLeftImage} />
+
+      <Image source={BottomTierImage} style={styles.bottomLeftImage} />
+
       <Image source={loginRevozenLogo} style={styles.revozenLogo} />
+
       <View style={styles.overlay}>
         <View style={styles.form}>
           <View style={styles.flexColumn}>
@@ -94,28 +98,52 @@ const LoginScreen = () => {
 
           <View style={styles.flexRow}>
             <TouchableOpacity style={[styles.socialButton, styles.google]}>
-              {/* Google Icon Placeholder */}
+              <Image source={googleLogo} style={styles.googleLogoStyle} />
               <Text style={styles.socialButtonText}>Google</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.socialButton, styles.apple]}>
-              {/* Apple Icon Placeholder */}
-              <Text style={styles.socialButtonText}>Apple</Text>
+              <Image source={appleLogo} style={styles.appleLogoStyle} />
+              <Text style={styles.appleButtonText}>Apple</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    marginTop: hp("12%"),
-    width: wp("100%"),
-    height: hp("100%"),
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    position: "relative",
   },
+  topLeftImage: {
+    position: "absolute",
+    top: hp("7%"),
+    left: 0,
+    width: wp("30%"),
+    height: hp("20%"),
+    resizeMode: "contain",
+  },
+  bottomLeftImage: {
+    position: "absolute",
+    bottom: hp("0%"),
+    left: 0,
+    width: wp("30%"),
+    height: hp("20%"),
+    resizeMode: "contain",
+  },
+  backgroundImage: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "flex-start",
+  },
+
   overlay: {
-    marginTop: hp("2%"),
+    marginTop: hp("6%"),
     justifyContent: "center",
     alignItems: "center",
     borderRadius: wp("4%"),
@@ -219,11 +247,26 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
   },
+  googleLogoStyle: {
+    width: wp("6%"),
+    height: hp("2.5%"),
+    resizeMode: "contain"
+  },
   apple: {
     backgroundColor: "#000",
   },
+  appleLogoStyle: {
+    width: wp("5%"),
+    height: wp("5%"),
+  },
   socialButtonText: {
     color: "#000",
+    fontSize: wp("4%"),
+    fontWeight: "600",
+    marginLeft: wp("2%"),
+  },
+  appleButtonText: {
+    color: "#fff",
     fontSize: wp("4%"),
     fontWeight: "600",
     marginLeft: wp("2%"),

@@ -11,13 +11,14 @@ import ServiceBookingConfirmation from "./components/Home/ServiceBookingConfirma
 import MyVehiclesListPage from "./components/Vehicle/VehicleList/MyVehiclesListPage";
 import MyVehicleDetailsPage from "./components/Vehicle/VehicleDetails/MyVehicleDetailsPage";
 import VehicleDetailsCard from "./components/Vehicle/VehicleDetails/VehicleDetailsCard";
+import AddVehiclePage from "./components/Vehicle/AddVehicle/AddVehiclePage";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Header />
-      <MyVehicleDetailsPage />
-      <Footer />
+      {/* <Header /> */}
+      <LoginScreen />
+      {/* <Footer /> */}
     </View>
   );
 }
