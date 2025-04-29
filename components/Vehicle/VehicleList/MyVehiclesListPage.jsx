@@ -7,19 +7,15 @@ import {
 import VehicleListCard from "./VehicleListCard";
 
 const vehicleData = [
-  { id: 1, model: "Baleno", image: require("../../assets/Vehicle/car.png") },
-  { id: 2, model: "Swift", image: require("../../assets/Vehicle/car.png") },
-  { id: 3, model: "XUV700", image: require("../../assets/Vehicle/car.png") },
-  { id: 4, model: "Creta", image: require("../../assets/Vehicle/car.png") },
+  { id: 1, model: "Baleno", image: require("../../../assets/Vehicle/car.png") },
+  { id: 2, model: "Swift", image: require("../../../assets/Vehicle/car.png") },
+  { id: 3, model: "XUV700", image: require("../../../assets/Vehicle/car.png") },
+  { id: 4, model: "Creta", image: require("../../../assets/Vehicle/car.png") },
 ];
 
 const MyVehiclesListPage = () => {
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Header</Text>
-      </View>
-
       <View style={styles.middleSection}>
         <View style={styles.vehicleSectionContainer}>
           <Text style={styles.sectionTitle}>My Vehicles</Text>
@@ -41,10 +37,6 @@ const MyVehiclesListPage = () => {
           </ScrollView>
         </View>
       </View>
-
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Footer</Text>
-      </View>
     </View>
   );
 };
@@ -53,12 +45,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
-  },
-  header: {
-    height: hp("10%"),
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f2f2f2",
   },
   headerText: {
     fontSize: wp("5%"),
@@ -79,7 +65,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: wp("1%"),
     elevation: 3,
-    maxHeight: hp("65%"),
   },
   sectionTitle: {
     fontSize: wp("5%"),
@@ -89,19 +74,10 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   scrollContainer: {
-    maxHeight: hp("50%"),
+    height: hp("65%"),
   },
   vehicleSection: {
     marginBottom: hp("2%"),
-  },
-  footer: {
-    height: hp("10%"),
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f2f2f2",
-  },
-  footerText: {
-    fontSize: wp("4%"),
   },
 });
 
