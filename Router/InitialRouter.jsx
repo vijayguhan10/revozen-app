@@ -10,25 +10,26 @@ import InitialHome from "../components/Home/InitialHome/InitialHome";
 import { View, StyleSheet } from "react-native";
 import SupportScreen from "../Sos/SosPage";
 import BookingScreen from "../components/Home/Appointment/SlotBooking";
+import ServiceHistoryDetailsPage from "../components/Services/ServiceHistoryDetailsPage";
 const Stack = createStackNavigator();
 
 const InitialRouter = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SOSscreen">
-        <Stack.Screen
+      <Stack.Navigator initialRouteName="ServiceHistoryDetailsPage">
+        {/* <Stack.Screen
           name="SOSscreen"
           component={bookingscreen}
           options={{ headerShown: false }}
-        />
+        /> */}
 
-        <Stack.Screen
+        {/* <Stack.Screen
           name="MyVehicles"
           component={myvehiclerender}
           options={{
             header: () => <Header />,
           }}
-        />
+        /> */}
         {/* <Stack.Screen
           name="SOSscreen"
           component={sosscreenpage}
@@ -43,6 +44,13 @@ const InitialRouter = () => {
             header: () => <Header />,
           }}
         /> */}
+        <Stack.Screen
+          name="ServiceHistoryDetailsPage"
+          component={ServiceHistoryDetails}
+          options={{
+            header: () => <Header />,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -92,6 +100,17 @@ const bookingscreen = () => {
     </View>
   );
 };
+
+const ServiceHistoryDetails = () => {
+  return (
+    <View style={styles.container}>
+      <Header />
+      <ServiceHistoryDetailsPage />
+      <Footer />
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

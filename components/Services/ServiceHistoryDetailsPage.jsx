@@ -16,6 +16,11 @@ const ServiceHistoryDetailsPage = () => {
     image: require("../../assets/Vehicle/car.png"),
   };
 
+  const isComplete = serviceDetails.status.toLowerCase() === "complete";
+  const statusIcon = isComplete
+    ? require("../../assets/ServiceHistory/finished.png")
+    : require("../../assets/ServiceHistory/upcoming.png");
+
   return (
     <View style={styles.container}>
       <View style={styles.card}>
@@ -25,9 +30,12 @@ const ServiceHistoryDetailsPage = () => {
         </View>
 
         <View style={styles.serviceTypeCard}>
-          <Text style={styles.serviceTypeText}>
-            {serviceDetails.serviceType}
-          </Text>
+          <View style={styles.serviceHeaderRow}>
+            <Text style={styles.serviceTypeText}>
+              {serviceDetails.serviceType}
+            </Text>
+            <Image source={statusIcon} style={styles.statusIcon} />
+          </View>
 
           {serviceDetails.image && (
             <Image source={serviceDetails.image} style={styles.vehicleImage} />
@@ -44,7 +52,11 @@ const ServiceHistoryDetailsPage = () => {
 
             <View style={styles.valuesColumn}>
               <Text style={styles.value}>{serviceDetails.vehicle}</Text>
-              <Text style={styles.value}>{serviceDetails.status}</Text>
+              <Text
+                style={[styles.value, { color: isComplete ? "green" : "red" }]}
+              >
+                {serviceDetails.status}
+              </Text>
               <Text style={styles.value}>{serviceDetails.date}</Text>
               <Text style={styles.value}>{serviceDetails.time}</Text>
               <Text style={styles.value}>{serviceDetails.technician}</Text>
@@ -69,22 +81,23 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#F4F9F8",
     width: "100%",
-    paddingHorizontal: wp("4%"), // Reduced horizontal padding
-    marginTop: hp("17%"), // Reduced top margin and added spacing from the top
+    paddingHorizontal: wp("4%"),
+    marginTop: hp("17%"),
   },
   card: {
     backgroundColor: "white",
     borderRadius: wp("2%"),
-    padding: wp("4%"), // Reduced padding inside the card
+    padding: wp("4%"),
+    paddingBottom: wp("7%"),
     shadowColor: "#000",
     shadowOffset: { width: 0, height: hp("0.3%") },
     shadowOpacity: 0.1,
     shadowRadius: wp("1%"),
     elevation: 3,
-    marginBottom: hp("5%"), // Reduced bottom margin
+    marginBottom: hp("5%"),
   },
   headerSection: {
-    marginBottom: hp("1.5%"), // Reduced margin
+    marginBottom: hp("1.5%"),
   },
   pageTitle: {
     fontSize: wp("4.5%"),
@@ -104,12 +117,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#007bff",
   },
+  serviceHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: hp("1.5%"),
+  },
   serviceTypeText: {
     fontSize: wp("4%"),
     fontWeight: "bold",
     color: "#333",
-    textAlign: "center",
-    marginBottom: hp("1.5%"),
+  },
+  statusIcon: {
+    width: wp("8%"),
+    height: wp("8%"),
+    resizeMode: "contain",
   },
   vehicleImage: {
     width: wp("50%"),
@@ -143,36 +165,32 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: "column",
     alignItems: "center",
-    marginTop: hp("1.5%"),
+    marginTop: hp("2%"),
   },
   primaryButton: {
     backgroundColor: "#007bff",
-    paddingVertical: hp("1.2%"),
-    paddingHorizontal: wp("4%"),
+    paddingVertical: hp("1%"),
+    paddingHorizontal: wp("6%"),
     borderRadius: wp("2%"),
-    width: "100%",
-    alignItems: "center",
-    marginBottom: hp("1%"),
+    marginBottom: hp("1.2%"),
   },
   primaryButtonText: {
     color: "white",
     fontWeight: "bold",
-    fontSize: wp("3.6%"),
+    fontSize: wp("4.5%"),
   },
   secondaryButton: {
     backgroundColor: "white",
-    paddingVertical: hp("1.2%"),
-    paddingHorizontal: wp("4%"),
+    paddingVertical: hp("1%"),
+    paddingHorizontal: wp("6%"),
     borderRadius: wp("2%"),
-    width: "100%",
-    alignItems: "center",
     borderWidth: 1,
     borderColor: "#007bff",
   },
   secondaryButtonText: {
     color: "#007bff",
     fontWeight: "bold",
-    fontSize: wp("3.6%"),
+    fontSize: wp("4.5%"),
   },
 });
 
