@@ -10,6 +10,7 @@ import InitialHome from "../components/Home/InitialHome/InitialHome";
 import { View, StyleSheet } from "react-native";
 import SupportScreen from "../Sos/SosPage";
 import BookingScreen from "../components/Home/Appointment/SlotBooking";
+import PaymentScreen from "../components/Transactions/UPI";
 const Stack = createStackNavigator();
 
 const InitialRouter = () => {
@@ -18,7 +19,7 @@ const InitialRouter = () => {
       <Stack.Navigator initialRouteName="SOSscreen">
         <Stack.Screen
           name="SOSscreen"
-          component={bookingscreen}
+          component={paymentscreen}
           options={{ headerShown: false }}
         />
 
@@ -88,6 +89,15 @@ const bookingscreen = () => {
     <View style={styles.container}>
       <Header />
       <BookingScreen />
+      <Footer />
+    </View>
+  );
+};
+const paymentscreen  = () => {
+  return (
+    <View style={styles.container}>
+      <Header />
+      <PaymentScreen />
       <Footer />
     </View>
   );
