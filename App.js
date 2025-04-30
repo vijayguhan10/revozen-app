@@ -12,12 +12,13 @@ import MyVehiclesListPage from "./components/Vehicle/VehicleList/MyVehiclesListP
 import MyVehicleDetailsPage from "./components/Vehicle/VehicleDetails/MyVehicleDetailsPage";
 import AddVehiclePage from "./components/Vehicle/AddVehicle/AddVehiclePage";
 import ServiceHistoryPage from "./components/Services/ServiceHistory/ServiceHistoryPage";
+import ServiceHistoryDetailsPage from "./components/Services/ServiceHistoryDetailsPage";
 
 export default function App() {
   return (
     <View style={styles.container}>
       <Header />
-      <ServiceHistoryPage />
+      <ServiceHistoryDetailsPage />
       <Footer />
     </View>
   );
