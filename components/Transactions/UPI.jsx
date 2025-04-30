@@ -12,7 +12,7 @@ import {
 } from "react-native-responsive-screen";
 import VehicleListCard from "./VehicleListCard";
 import { Ionicons } from "@expo/vector-icons"; // You can also use MaterialCommunityIcons or FontAwesome
-import { useNavigation } from "@react-navigation/native";
+
 const vehicleData = [
   { id: 1, model: "Baleno", image: require("../../../assets/Vehicle/car.png") },
   { id: 2, model: "Swift", image: require("../../../assets/Vehicle/car.png") },
@@ -20,10 +20,9 @@ const vehicleData = [
   { id: 4, model: "Creta", image: require("../../../assets/Vehicle/car.png") },
 ];
 
-const MyVehiclesListPage = () => {
-  const navigation = useNavigation();
+const MyVehiclesListPage = ({ navigation }) => {
   const handleAddVehicle = () => {
-    navigation.navigate("addvehicle"); // Replace with your actual route name
+    navigation.navigate("AddVehiclePage"); // Replace with your actual route name
   };
 
   return (
@@ -32,11 +31,11 @@ const MyVehiclesListPage = () => {
         <View style={styles.vehicleSectionContainer}>
           <View style={styles.headerRow}>
             <Text style={styles.sectionTitle}>My Vehicles</Text>
-            <TouchableOpacity onPress={handleAddVehicle}>
+            <TouchableOpacity  onPress={handleAddVehicle}>
               <Ionicons
                 name="add-circle-outline"
-                size={wp("7%")}
-                color="#007bff"
+                size={wp("99%")}
+                color="#000000"
               />
             </TouchableOpacity>
           </View>
@@ -64,7 +63,6 @@ const MyVehiclesListPage = () => {
 
 const styles = StyleSheet.create({
   container: {
-    zIndex: 1,
     flex: 1,
     width: "100%",
   },

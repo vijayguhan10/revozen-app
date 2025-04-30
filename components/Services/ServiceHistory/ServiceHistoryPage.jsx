@@ -1,12 +1,19 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import ServiceCard from "./ServiceCard";
-
+import { useNavigation } from "@react-navigation/native";
 const ServiceHistoryPage = () => {
+  const Navigation=useNavigation();
   const upcomingServices = [
     {
       id: 1,
@@ -81,9 +88,17 @@ const ServiceHistoryPage = () => {
             style={styles.subScroll}
             contentContainerStyle={styles.scrollContent}
           >
-            {upcomingServices.map((service) => (
-              <ServiceCard key={service.id} data={service} variant="upcoming" />
-            ))}
+          {upcomingServices.map((service) => (
+            <TouchableOpacity
+              onPress={() => Navigation.navigate("servieceprofile")}
+              key={service.id}
+            >
+              <ServiceCard
+                data={service}
+                variant="upcoming"
+              />
+            </TouchableOpacity>
+          ))}
           </ScrollView>
 
           <Text style={[styles.sectionTitle, { marginTop: hp("2%") }]}>
@@ -105,6 +120,7 @@ const ServiceHistoryPage = () => {
 
 const styles = StyleSheet.create({
   container: {
+    zIndex:1,
     backgroundColor: "#f9f9f9",
     paddingHorizontal: wp("5%"),
     paddingTop: hp("16%"),

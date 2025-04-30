@@ -1,12 +1,25 @@
-// App.js
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import InitialRouter from "./Router/InitialRouter";
+import { useFonts } from "@use-expo/font";
+
 export default function App() {
-  return (
-      <View style={styles.container}>
-        <InitialRouter  />
+  const [fontsLoaded, fontError] = useFonts({
+    poppins: require("./fonts/Poppins-Medium.ttf"),
+  });
+
+  if (!fontsLoaded && !fontError) {
+    return (
+      <View>
+        <Text>Loading...</Text>
       </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <InitialRouter />
+    </View>
   );
 }
 

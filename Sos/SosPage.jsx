@@ -58,9 +58,9 @@ const SupportScreen = () => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <ScrollView>
-        <View style={styles.container}>
+        <View>
           {/* SOS Button */}
           <View style={styles.card}>
             <Text style={styles.header}>Support</Text>
@@ -155,7 +155,7 @@ export default SupportScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    zIndex: 1,
+    zIndex: 2,
     marginTop: hp("14%"),
     padding: wp("4%"),
     backgroundColor: "#F4F9F8",

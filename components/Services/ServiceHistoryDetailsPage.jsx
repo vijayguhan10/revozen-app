@@ -80,6 +80,7 @@ const ServiceHistoryDetailsPage = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#F4F9F8",
+    zIndex:1,
     width: "100%",
     paddingHorizontal: wp("4%"),
     marginTop: hp("17%"),
