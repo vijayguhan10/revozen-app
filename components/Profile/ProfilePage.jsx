@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Pressable,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -63,16 +64,20 @@ const ProfilePage = () => {
           <MenuItem icon="help-circle-outline" label="Help & Support" />
         </View>
 
-        <TouchableOpacity>
+        <Pressable
+          style={({ pressed }) => [
+            styles.loginButton,
+            pressed && { transform: [{ scale: 0.98 }], opacity: 0.95 },
+          ]}
+        >
           <LinearGradient
             colors={["#FFF4E6", "#FAC898"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={styles.loginButton}
-          >
-            <Text style={styles.loginText}>Login</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+            style={StyleSheet.absoluteFillObject}
+          />
+          <Text style={styles.loginText}>Log Out</Text>
+        </Pressable>
 
         <View style={{ height: hp("4%") }} />
       </ScrollView>
@@ -169,7 +174,8 @@ const styles = StyleSheet.create({
   loginButton: {
     paddingVertical: hp("1.8%"),
     paddingHorizontal: wp("5%"),
-    borderRadius: wp("3%"),
+    marginHorizontal: wp("4%"),
+    borderRadius: wp("5%"),
     alignItems: "center",
     justifyContent: "center",
     marginBottom: hp("4%"),
@@ -178,7 +184,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     elevation: 10,
-    transform: [{ scale: 1.02 }],
+    overflow: "hidden",
+    position: "relative",
   },
   loginText: {
     fontSize: wp("4%"),
