@@ -1,0 +1,69 @@
+import React from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+
+const upcomingIcon = require("../../../assets/ServiceHistory/upcoming.png");
+const historyIcon = require("../../../assets/ServiceHistory/finished.png");
+
+const ServiceCard = ({ data, variant }) => {
+  const backgroundColor = variant === "upcoming" ? "#e6f0ff" : "#e0f2f1";
+  const icon = variant === "upcoming" ? upcomingIcon : historyIcon;
+
+  return (
+    <View style={[styles.card, { backgroundColor }]}>
+      <Image source={icon} style={styles.image} />
+      <View style={styles.content}>
+        <Text style={styles.serviceType}>{data.type}</Text>
+        <Text style={styles.serviceDetail}>{data.date}</Text>
+        <Text style={styles.vehicleName}>{data.vehicle}</Text>
+      </View>
+      <Text style={styles.time}>{data.time}</Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  card: {
+    flexDirection: "row",
+    borderRadius: wp("3%"),
+    padding: wp("4%"),
+    marginBottom: hp("2%"),
+    alignItems: "center",
+    position: "relative",
+  },
+  image: {
+    width: wp("12%"),
+    height: wp("12%"),
+    resizeMode: "contain",
+    marginRight: wp("4%"),
+  },
+  content: {
+    flex: 1,
+  },
+  serviceType: {
+    fontSize: wp("4%"),
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: hp("0.5%"),
+  },
+  serviceDetail: {
+    fontSize: wp("3.5%"),
+    color: "#666",
+  },
+  vehicleName: {
+    fontSize: wp("3.5%"),
+    color: "#666",
+    fontWeight: "bold",
+  },
+  time: {
+    position: "absolute",
+    right: wp("4%"),
+    fontSize: wp("3.5%"),
+    color: "#333",
+  },
+});
+
+export default ServiceCard;

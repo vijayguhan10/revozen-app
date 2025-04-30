@@ -1,107 +1,137 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { View, StyleSheet } from "react-native";
+
 import LoginScreen from "../components/LoginPage/login";
 import MyVehiclesListPage from "../components/Vehicle/VehicleList/MyVehiclesListPage";
 import ServiceBooking from "../components/Home/ServiceBookingConfirmation/ServiceBookingConfirmation";
 import Header from "../components/Navbar/Header";
 import Footer from "../components/Navbar/Footer";
 import InitialHome from "../components/Home/InitialHome/InitialHome";
-import { View, StyleSheet } from "react-native";
 import SupportScreen from "../Sos/SosPage";
 import BookingScreen from "../components/Home/Appointment/SlotBooking";
-import PaymentScreen from "../components/Transactions/UPI";
+import ProfilePage from "../components/Profile/ProfilePage";
+import ServiceHistoryPage from "../components/Services/ServiceHistory/ServiceHistoryPage";
+// import ServiceHistoryDetails from "../components/ServiceHistory/ServiceHistoryDetails"; // Uncomment if needed
+import ServieceHistoryDetailPage from "../components/Services/ServiceHistoryDetailsPage";
 const Stack = createStackNavigator();
 
 const InitialRouter = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SOSscreen">
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen
-          name="SOSscreen"
-          component={paymentscreen}
+          name="Login"
+          component={LoginScreen}
           options={{ headerShown: false }}
         />
-
         <Stack.Screen
           name="MyVehicles"
-          component={myvehiclerender}
-          options={{
-            header: () => <Header />,
-          }}
+          component={MyVehiclesRender}
+          options={{ header: () => <Header /> }}
         />
-        {/* <Stack.Screen
-          name="SOSscreen"
-          component={sosscreenpage}
-          options={{
-            header: () => <Header />,
-          }}
-        /> */}
-        {/* <Stack.Screen
+        <Stack.Screen
+          name="SOS"
+          component={SosScreenPage}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
           name="InitialHome"
-          component={initialhome}
-          options={{
-            header: () => <Header />,
-          }}
+          component={InitialHomeScreen}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="ServiceBooking"
+          component={ServiceBookingWithFooter}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="serviecehistorypage"
+          component={serviecehistorypage}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="Booking"
+          component={BookingScreenComponent}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={ProfilePageComponent}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="servieceprofile"
+          component={servieceprofile}
+          options={{ header: () => <Header /> }}
+        />
+
+        {/* Uncomment and fix the import if needed
+        <Stack.Screen
+          name="ServiceHistoryDetails"
+          component={ServiceHistoryDetails}
+          options={{ header: () => <Header /> }}
         /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
-const ServiceBookingWithFooter = () => {
-  return (
-    <View style={styles.container}>
-      <ServiceBooking />
-      <Footer />
-    </View>
-  );
-};
+// Wrapper components to include Footer with each screen
+const MyVehiclesRender = () => (
+  <View style={styles.container}>
+    <MyVehiclesListPage />
+    <Footer />
+  </View>
+);
 
-const myvehiclerender = () => {
-  return (
-    <View style={styles.container}>
-      <MyVehiclesListPage />
-      <Footer />
-    </View>
-  );
-};
-const sosscreenpage = () => {
-  return (
-    <View style={styles.container}>
-      <Header />
-      <SupportScreen />
-      <Footer />
-    </View>
-  );
-};
-const initialhome = () => {
-  return (
-    <View style={styles.container}>
-      <Header />
-      <InitialHome />
-      <Footer />
-    </View>
-  );
-};
-const bookingscreen = () => {
-  return (
-    <View style={styles.container}>
-      <Header />
-      <BookingScreen />
-      <Footer />
-    </View>
-  );
-};
-const paymentscreen  = () => {
-  return (
-    <View style={styles.container}>
-      <Header />
-      <PaymentScreen />
-      <Footer />
-    </View>
-  );
-};
+const SosScreenPage = () => (
+  <View style={styles.container}>
+    <SupportScreen />
+    <Footer />
+  </View>
+);
+
+const InitialHomeScreen = () => (
+  <View style={styles.container}>
+    <InitialHome />
+    <Footer />
+  </View>
+);
+
+const ServiceBookingWithFooter = () => (
+  <View style={styles.container}>
+    <ServiceBooking />
+    <Footer />
+  </View>
+);
+
+const BookingScreenComponent = () => (
+  <View style={styles.container}>
+    <BookingScreen />
+    <Footer />
+  </View>
+);
+
+const ProfilePageComponent = () => (
+  <View style={styles.container}>
+    <ProfilePage />
+    <Footer />
+  </View>
+);
+const serviecehistorypage = () => (
+  <View style={styles.container}>
+    <ServiceHistoryPage />
+    <Footer />
+  </View>
+);
+const servieceprofile = () => (
+  <View style={styles.container}>
+    <ServieceHistoryDetailPage />
+    <Footer />
+  </View>
+);
 const styles = StyleSheet.create({
   container: {
     flex: 1,

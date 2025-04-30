@@ -14,7 +14,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { useNavigation } from "@react-navigation/native";
 const InitialHome = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
@@ -41,7 +43,11 @@ const InitialHome = () => {
               end={{ x: 0, y: 1 }}
               style={styles.serviceCard}
             >
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("ServiceBooking");
+                }}
+              >
                 <MaterialCommunityIcons
                   name="car-tire-alert"
                   size={30}
@@ -73,7 +79,10 @@ const InitialHome = () => {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.serviceHistoryBtn}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("serviecehistorypage")}
+          style={styles.serviceHistoryBtn}
+        >
           <Text style={styles.serviceHistoryText}>Service History</Text>
         </TouchableOpacity>
 
@@ -289,8 +298,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   Recentactivities: {
-    borderRadius: hp("2%"),                           
-    borderWidth: hp("0.2%"),   
+    borderRadius: hp("2%"),
+    borderWidth: hp("0.2%"),
     borderColor: "#eee",
     padding: wp("4%"),
     marginBottom: hp("2%"),
