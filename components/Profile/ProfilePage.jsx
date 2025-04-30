@@ -8,27 +8,26 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
 
-const ProfilePage = () => {
-  // Static profile data
-  const profileData = {
-    name: "A B Raja Rahman",
-    phone: "1234567890",
-    email: "abrajarahman@gmail.com",
-    avatar: "https://cdn-icons-png.flaticon.com/512/706/706830.png",
-  };
+const profileData = {
+  name: "A B Raja Rahman",
+  phone: "1234567890",
+  email: "abrajarahman@gmail.com",
+  avatar: "https://cdn-icons-png.flaticon.com/512/706/706830.png",
+};
 
+const ProfilePage = () => {
   return (
     <View style={styles.outerContainer}>
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
-        {/* Profile Card */}
         <View style={styles.profileCard}>
           <View style={styles.headerRow}>
             <Text style={styles.headerText}>My Profile</Text>
@@ -51,7 +50,6 @@ const ProfilePage = () => {
           </View>
         </View>
 
-        {/* First Section */}
         <View style={styles.sectionCard}>
           <MenuItem icon="car" label="My Vehicles" />
           <MenuItem icon="time-outline" label="Service History" />
@@ -59,22 +57,23 @@ const ProfilePage = () => {
           <MenuItem icon="gift-outline" label="Rewards" />
         </View>
 
-        {/* Second Section */}
         <View style={styles.sectionCard}>
           <MenuItem icon="document-text-outline" label="Terms & Conditions" />
           <MenuItem icon="lock-closed-outline" label="Privacy Policy" />
           <MenuItem icon="help-circle-outline" label="Help & Support" />
         </View>
 
-        {/* Logout */}
-        <TouchableOpacity style={styles.logoutButton}>
-          <View style={styles.logoutRow}>
-            <MaterialIcons name="logout" size={wp("6%")} color="#D80027" />
-            <Text style={styles.logoutText}>Log Out</Text>
-          </View>
+        <TouchableOpacity>
+          <LinearGradient
+            colors={["#FFF4E6", "#FAC898"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.loginButton}
+          >
+            <Text style={styles.loginText}>Login</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
-        {/* Bottom Spacer */}
         <View style={{ height: hp("4%") }} />
       </ScrollView>
     </View>
@@ -91,7 +90,7 @@ const MenuItem = ({ icon, label }) => (
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    backgroundColor: "#fff",
+    zIndex: 10,
   },
   scrollContainer: {
     paddingHorizontal: wp("4%"),
@@ -102,6 +101,7 @@ const styles = StyleSheet.create({
     padding: wp("5%"),
     borderRadius: wp("3%"),
     marginBottom: hp("2%"),
+    marginTop: hp("14%"),
     shadowColor: "#000",
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: "row",
     alignItems: "center",
+    padding: hp("0.8%"),
     marginBottom: hp("1%"),
   },
   infoText: {
@@ -165,27 +166,24 @@ const styles = StyleSheet.create({
     marginLeft: wp("3%"),
     color: "#111",
   },
-  logoutButton: {
-    backgroundColor: "#fff1eb",
+  loginButton: {
     paddingVertical: hp("1.8%"),
+    paddingHorizontal: wp("5%"),
     borderRadius: wp("3%"),
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: hp("4%"),
     shadowColor: "#000",
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 1,
+    shadowRadius: 6,
+    elevation: 10,
+    transform: [{ scale: 1.02 }],
   },
-  logoutRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  logoutText: {
+  loginText: {
     fontSize: wp("4%"),
     fontWeight: "bold",
-    color: "#D80027",
-    marginLeft: wp("2%"),
+    color: "#1f1f1f",
   },
 });
 

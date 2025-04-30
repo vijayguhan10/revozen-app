@@ -11,12 +11,14 @@ import { View, StyleSheet } from "react-native";
 import SupportScreen from "../Sos/SosPage";
 import BookingScreen from "../components/Home/Appointment/SlotBooking";
 import ServiceHistoryDetailsPage from "../components/Services/ServiceHistoryDetailsPage";
+import ProfilePage from "../components/Profile/ProfilePage";
+
 const Stack = createStackNavigator();
 
 const InitialRouter = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="ServiceHistoryDetailsPage">
+      <Stack.Navigator initialRouteName="ProfilePage">
         {/* <Stack.Screen
           name="SOSscreen"
           component={bookingscreen}
@@ -44,9 +46,16 @@ const InitialRouter = () => {
             header: () => <Header />,
           }}
         /> */}
-        <Stack.Screen
+        {/* <Stack.Screen
           name="ServiceHistoryDetailsPage"
           component={ServiceHistoryDetails}
+          options={{
+            header: () => <Header />,
+          }}
+        /> */}
+        <Stack.Screen
+          name="ProfilePage"
+          component={ProfilePageComponent}
           options={{
             header: () => <Header />,
           }}
@@ -106,6 +115,16 @@ const ServiceHistoryDetails = () => {
     <View style={styles.container}>
       <Header />
       <ServiceHistoryDetailsPage />
+      <Footer />
+    </View>
+  );
+};
+
+const ProfilePageComponent = () => {
+  return (
+    <View style={styles.container}>
+      <Header />
+      <ProfilePage />
       <Footer />
     </View>
   );
