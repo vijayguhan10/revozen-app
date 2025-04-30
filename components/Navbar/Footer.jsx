@@ -13,28 +13,28 @@ import { useNavigation } from "@react-navigation/native";
 const Footer = ({ activeTab = "Home", onTabChange }) => {
   const navigation = useNavigation();
   const navigateroute = (name) => {
-    navigation.navigate(name);
+    navigation.replace(name);
   };
   const tabs = [
     {
-      navigate: "InitialHome",
+      navigate: "Home",
       name: "Home",
       icon: "home-outline",
       iconLib: Ionicons,
     },
     {
-      navigate: "myvehicles",
+      navigate: "MyVehicles",
       name: "Vehicles",
       icon: "car",
       iconLib: FontAwesome,
     },
     {
-      navigate: "serviecehistorypage",
+      navigate: "ServiceHistory",
       name: "History",
       icon: "history",
       iconLib: MaterialCommunityIcons,
     },
-    { navigate: "SOS", name: "Support", icon: "headset", iconLib: Ionicons },
+    { navigate: "Support", name: "Support", icon: "headset", iconLib: Ionicons },
     {
       navigate: "Profile",
       name: "Profile",

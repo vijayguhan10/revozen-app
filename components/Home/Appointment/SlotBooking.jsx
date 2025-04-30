@@ -3,8 +3,9 @@ import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { PaperProvider, Button, TextInput } from "react-native-paper";
 import { Searchbar } from "react-native-paper";
 import { Calendar } from "react-native-calendars";
-
+import { useNavigation } from "@react-navigation/native";
 export default function BookingScreen() {
+  const navigation= useNavigation();
   const [date, setDate] = useState(undefined);
   const [time, setTime] = useState({ hour: 10, minute: 0, period: "AM" });
   const [searchQuery, setSearchQuery] = useState("");
@@ -126,11 +127,15 @@ export default function BookingScreen() {
 
           <Button
             mode="contained"
-            onPress={() =>
+            onPress={() =>{
+
+            
               console.log(
                 `Selected Date: ${date}, Time: ${time.hour}:${time.minute} ${time.period}`
               )
+              navigation.navigate("ServiceBooking")
             }
+          }
           >
             Confirm
           </Button>

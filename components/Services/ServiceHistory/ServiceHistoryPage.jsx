@@ -13,7 +13,7 @@ import {
 import ServiceCard from "./ServiceCard";
 import { useNavigation } from "@react-navigation/native";
 const ServiceHistoryPage = () => {
-  const Navigation=useNavigation();
+  const navigation = useNavigation();
   const upcomingServices = [
     {
       id: 1,
@@ -88,17 +88,14 @@ const ServiceHistoryPage = () => {
             style={styles.subScroll}
             contentContainerStyle={styles.scrollContent}
           >
-          {upcomingServices.map((service) => (
-            <TouchableOpacity
-              onPress={() => Navigation.navigate("servieceprofile")}
-              key={service.id}
-            >
-              <ServiceCard
-                data={service}
-                variant="upcoming"
-              />
-            </TouchableOpacity>
-          ))}
+            {upcomingServices.map((service) => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate("ServiceHistoryDetails")}
+                key={service.id}
+              >
+                <ServiceCard data={service} variant="upcoming" />
+              </TouchableOpacity>
+            ))}
           </ScrollView>
 
           <Text style={[styles.sectionTitle, { marginTop: hp("2%") }]}>
@@ -120,11 +117,12 @@ const ServiceHistoryPage = () => {
 
 const styles = StyleSheet.create({
   container: {
-    zIndex:1,
+    zIndex: 1,
     backgroundColor: "#f9f9f9",
     paddingHorizontal: wp("5%"),
-    paddingTop: hp("16%"),
+    // paddingTop: hp("16%"),
     paddingBottom: hp("2%"),
+    marginTop: hp("15%"),
   },
   card: {
     backgroundColor: "#ffffff",

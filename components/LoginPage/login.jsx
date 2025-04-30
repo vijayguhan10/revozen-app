@@ -27,7 +27,7 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     console.log("Login attempted with:", email, password);
     return true;
   };
@@ -93,7 +93,7 @@ const LoginScreen = () => {
             onPress={async () => {
               const success = await handleLogin();
               if (success) {
-                navigation.navigate("InitialHome");
+                navigation.navigate("Home");
               }
             }}
           >

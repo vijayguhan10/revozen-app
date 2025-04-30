@@ -23,7 +23,7 @@ const vehicleData = [
 const MyVehiclesListPage = () => {
   const navigation = useNavigation();
   const handleAddVehicle = () => {
-    navigation.navigate("addvehicle"); // Replace with your actual route name
+    navigation.navigate("AddVehicle"); // Replace with your actual route name
   };
 
   return (

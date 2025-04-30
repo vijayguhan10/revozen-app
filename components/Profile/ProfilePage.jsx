@@ -97,11 +97,12 @@ const MenuItem = ({ icon, label }) => (
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    zIndex:1,
+    // flex: 1,
     backgroundColor: "#F4F9F8",
+    marginTop:hp("15%")
   },
   content: {
-    marginTop: hp("14%"),
     paddingHorizontal: wp("4%"),
     paddingBottom: hp("5%"),
   },

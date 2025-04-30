@@ -47,7 +47,7 @@ const InitialHome = () => {
             >
               <TouchableOpacity
                 style={{ alignItems: "center", justifyContent: "center" }}
-                onPress={() => navigation.navigate("ServiceBooking")}
+                onPress={() => navigation.navigate("BookService")}
               >
                 <Image
                   source={tyreexchange}
@@ -87,7 +87,7 @@ const InitialHome = () => {
         </View>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate("serviecehistorypage")}
+          onPress={() => navigation.replace("ServiceHistory")}
           style={styles.serviceHistoryBtn}
         >
           <Text style={styles.serviceHistoryText}>Service History</Text>
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     marginTop: hp("0.8%"),
     width: wp("40%"),
     fontWeight: "600",
-    textAlign:"center",
+    textAlign: "center",
   },
   serviceCardTextBlack: {
     color: "#000",
