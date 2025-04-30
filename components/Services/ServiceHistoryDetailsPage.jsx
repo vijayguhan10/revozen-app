@@ -1,192 +1,198 @@
 import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import {
-  heightPercentageToDP as hp,
   widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
-const ProfilePage = () => {
-  // Static profile data
-  const profileData = {
-    name: "A B Raja Rahman",
-    phone: "1234567890",
-    email: "abrajarahman@gmail.com",
-    avatar: "https://cdn-icons-png.flaticon.com/512/706/706830.png",
+const ServiceHistoryDetailsPage = () => {
+  const serviceDetails = {
+    serviceType: "Full Service",
+    vehicle: "BALENO",
+    status: "Complete",
+    date: "18th Feb 2025",
+    time: "4:00 am",
+    technician: "John Doe",
+    image: require("../../assets/Vehicle/car.png"),
   };
 
+  const isComplete = serviceDetails.status.toLowerCase() === "complete";
+  const statusIcon = isComplete
+    ? require("../../assets/ServiceHistory/finished.png")
+    : require("../../assets/ServiceHistory/upcoming.png");
+
   return (
-    <View style={styles.outerContainer}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Profile Card */}
-        <View style={styles.profileCard}>
-          <View style={styles.headerRow}>
-            <Text style={styles.headerText}>My Profile</Text>
-            <TouchableOpacity>
-              <Ionicons name="create-outline" size={wp("6%")} color="#f58634" />
+    <View style={styles.container}>
+      <View style={styles.card}>
+        <View style={styles.headerSection}>
+          <Text style={styles.pageTitle}>Service History</Text>
+          <Text style={styles.sectionTitle}>History</Text>
+        </View>
+
+        <View style={styles.serviceTypeCard}>
+          <View style={styles.serviceHeaderRow}>
+            <Text style={styles.serviceTypeText}>
+              {serviceDetails.serviceType}
+            </Text>
+            <Image source={statusIcon} style={styles.statusIcon} />
+          </View>
+
+          {serviceDetails.image && (
+            <Image source={serviceDetails.image} style={styles.vehicleImage} />
+          )}
+
+          <View style={styles.detailsContainer}>
+            <View style={styles.labelsColumn}>
+              <Text style={styles.label}>Vehicle</Text>
+              <Text style={styles.label}>Status</Text>
+              <Text style={styles.label}>Date</Text>
+              <Text style={styles.label}>Time</Text>
+              <Text style={styles.label}>Technician</Text>
+            </View>
+
+            <View style={styles.valuesColumn}>
+              <Text style={styles.value}>{serviceDetails.vehicle}</Text>
+              <Text
+                style={[styles.value, { color: isComplete ? "green" : "red" }]}
+              >
+                {serviceDetails.status}
+              </Text>
+              <Text style={styles.value}>{serviceDetails.date}</Text>
+              <Text style={styles.value}>{serviceDetails.time}</Text>
+              <Text style={styles.value}>{serviceDetails.technician}</Text>
+            </View>
+          </View>
+
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity style={styles.primaryButton}>
+              <Text style={styles.primaryButtonText}>Technician Details</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.secondaryButton}>
+              <Text style={styles.secondaryButtonText}>Invoice</Text>
             </TouchableOpacity>
           </View>
-
-          <Image source={{ uri: profileData.avatar }} style={styles.avatar} />
-          <Text style={styles.name}>{profileData.name}</Text>
-
-          <View style={styles.infoRow}>
-            <Ionicons name="call-outline" size={wp("5%")} color="#3366ff" />
-            <Text style={styles.infoText}>{profileData.phone}</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Ionicons name="mail-outline" size={wp("5%")} color="#3366ff" />
-            <Text style={styles.infoText}>{profileData.email}</Text>
-          </View>
         </View>
-
-        {/* First Section */}
-        <View style={styles.sectionCard}>
-          <MenuItem icon="car" label="My Vehicles" />
-          <MenuItem icon="time-outline" label="Service History" />
-          <MenuItem icon="cash-outline" label="Payment Methods" />
-          <MenuItem icon="gift-outline" label="Rewards" />
-        </View>
-
-        {/* Second Section */}
-        <View style={styles.sectionCard}>
-          <MenuItem icon="document-text-outline" label="Terms & Conditions" />
-          <MenuItem icon="lock-closed-outline" label="Privacy Policy" />
-          <MenuItem icon="help-circle-outline" label="Help & Support" />
-        </View>
-
-        {/* Logout */}
-        <TouchableOpacity style={styles.logoutButton}>
-          <View style={styles.logoutRow}>
-            <MaterialIcons name="logout" size={wp("6%")} color="#D80027" />
-            <Text style={styles.logoutText}>Log Out</Text>
-          </View>
-        </TouchableOpacity>
-
-        {/* Bottom Spacer */}
-        <View style={{ height: hp("4%") }} />
-      </ScrollView>
+      </View>
     </View>
   );
 };
 
-const MenuItem = ({ icon, label }) => (
-  <TouchableOpacity style={styles.menuItem}>
-    <Ionicons name={icon} size={wp("5.5%")} color="#3366ff" />
-    <Text style={styles.menuText}>{label}</Text>
-  </TouchableOpacity>
-);
-
 const styles = StyleSheet.create({
-  outerContainer: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  scrollContainer: {
+  container: {
+    backgroundColor: "#F4F9F8",
+    width: "100%",
     paddingHorizontal: wp("4%"),
-    paddingBottom: hp("5%"),
+    marginTop: hp("17%"),
   },
-  profileCard: {
-    backgroundColor: "#fff",
-    padding: wp("5%"),
-    borderRadius: wp("3%"),
-    marginBottom: hp("2%"),
+  card: {
+    backgroundColor: "white",
+    borderRadius: wp("2%"),
+    padding: wp("4%"),
+    paddingBottom: wp("7%"),
     shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOffset: { width: 0, height: hp("0.3%") },
+    shadowOpacity: 0.1,
+    shadowRadius: wp("1%"),
+    elevation: 3,
+    marginBottom: hp("5%"),
   },
-  headerRow: {
+  headerSection: {
+    marginBottom: hp("1.5%"),
+  },
+  pageTitle: {
+    fontSize: wp("4.5%"),
+    fontWeight: "bold",
+    color: "#007bff",
+    marginBottom: hp("0.5%"),
+  },
+  sectionTitle: {
+    fontSize: wp("4%"),
+    fontWeight: "600",
+    color: "#ff8800",
+  },
+  serviceTypeCard: {
+    backgroundColor: "#E6F0FA",
+    borderRadius: wp("3%"),
+    padding: wp("4%"),
+    borderWidth: 1,
+    borderColor: "#007bff",
+  },
+  serviceHeaderRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: hp("1.5%"),
-  },
-  headerText: {
-    fontSize: wp("5.5%"),
-    color: "#3366ff",
-    fontWeight: "bold",
-  },
-  avatar: {
-    width: wp("25%"),
-    height: wp("25%"),
-    borderRadius: wp("12.5%"),
-    alignSelf: "center",
-    borderColor: "#f58634",
-    borderWidth: 3,
-    marginBottom: hp("1%"),
-  },
-  name: {
-    fontSize: wp("4.5%"),
-    fontWeight: "600",
-    textAlign: "center",
-    marginBottom: hp("1.5%"),
-  },
-  infoRow: {
-    flexDirection: "row",
     alignItems: "center",
-    marginBottom: hp("1%"),
+    marginBottom: hp("1.5%"),
   },
-  infoText: {
+  serviceTypeText: {
     fontSize: wp("4%"),
-    marginLeft: wp("3%"),
+    fontWeight: "bold",
     color: "#333",
   },
-  sectionCard: {
-    backgroundColor: "#fff",
+  statusIcon: {
+    width: wp("8%"),
+    height: wp("8%"),
+    resizeMode: "contain",
+  },
+  vehicleImage: {
+    width: wp("50%"),
+    height: hp("20%"),
+    resizeMode: "contain",
+    alignSelf: "center",
+    marginBottom: hp("1.5%"),
+  },
+  detailsContainer: {
+    flexDirection: "row",
+    marginBottom: hp("1.5%"),
+  },
+  labelsColumn: {
+    width: "40%",
+  },
+  valuesColumn: {
+    width: "60%",
+    alignItems: "flex-end",
+  },
+  label: {
+    fontSize: wp("3.8%"),
+    color: "#666",
+    marginBottom: hp("1%"),
+  },
+  value: {
+    fontSize: wp("3.8%"),
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: hp("1%"),
+  },
+  buttonsContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+    marginTop: hp("2%"),
+  },
+  primaryButton: {
+    backgroundColor: "#007bff",
     paddingVertical: hp("1%"),
-    borderRadius: wp("3%"),
-    marginBottom: hp("2%"),
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 1,
+    paddingHorizontal: wp("6%"),
+    borderRadius: wp("2%"),
+    marginBottom: hp("1.2%"),
   },
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: hp("1.8%"),
-    paddingHorizontal: wp("4%"),
-  },
-  menuText: {
-    fontSize: wp("4%"),
-    marginLeft: wp("3%"),
-    color: "#111",
-  },
-  logoutButton: {
-    backgroundColor: "#fff1eb",
-    paddingVertical: hp("1.8%"),
-    borderRadius: wp("3%"),
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 1,
-  },
-  logoutRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  logoutText: {
-    fontSize: wp("4%"),
+  primaryButtonText: {
+    color: "white",
     fontWeight: "bold",
-    color: "#D80027",
-    marginLeft: wp("2%"),
+    fontSize: wp("4.5%"),
+  },
+  secondaryButton: {
+    backgroundColor: "white",
+    paddingVertical: hp("1%"),
+    paddingHorizontal: wp("6%"),
+    borderRadius: wp("2%"),
+
+    borderWidth: 1,
+    borderColor: "#007bff",
+  },
+  secondaryButtonText: {
+    color: "#007bff",
+    fontWeight: "bold",
+    fontSize: wp("4.5%"),
   },
 });
 
-export default ProfilePage;
+export default ServiceHistoryDetailsPage;
