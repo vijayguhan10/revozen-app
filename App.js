@@ -10,15 +10,15 @@ import Header from "./components/Navbar/Header";
 import ServiceBookingConfirmation from "./components/Home/ServiceBookingConfirmation/ServiceBookingConfirmation";
 import MyVehiclesListPage from "./components/Vehicle/VehicleList/MyVehiclesListPage";
 import MyVehicleDetailsPage from "./components/Vehicle/VehicleDetails/MyVehicleDetailsPage";
-import VehicleDetailsCard from "./components/Vehicle/VehicleDetails/VehicleDetailsCard";
 import AddVehiclePage from "./components/Vehicle/AddVehicle/AddVehiclePage";
+import ServiceHistoryPage from "./components/Services/ServiceHistory/ServiceHistoryPage";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      {/* <Header /> */}
-      <LoginScreen />
-      {/* <Footer /> */}
+      <Header />
+      <ServiceHistoryPage />
+      <Footer />
     </View>
   );
 }
