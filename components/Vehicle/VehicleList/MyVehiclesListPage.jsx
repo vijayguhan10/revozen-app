@@ -5,7 +5,6 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import VehicleListCard from "./VehicleListCard";
-
 const vehicleData = [
   { id: 1, model: "Baleno", image: require("../../../assets/Vehicle/car.png") },
   { id: 2, model: "Swift", image: require("../../../assets/Vehicle/car.png") },
