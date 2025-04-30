@@ -120,6 +120,7 @@ const ServiceHistoryPage = () => {
 
 const styles = StyleSheet.create({
   container: {
+    zIndex:1,
     backgroundColor: "#f9f9f9",
     paddingHorizontal: wp("5%"),
     paddingTop: hp("16%"),

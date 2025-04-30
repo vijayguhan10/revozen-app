@@ -22,7 +22,12 @@ const Footer = ({ activeTab = "Home", onTabChange }) => {
       icon: "home-outline",
       iconLib: Ionicons,
     },
-    { navigate: "", name: "Vehicles", icon: "car", iconLib: FontAwesome },
+    {
+      navigate: "myvehicles",
+      name: "Vehicles",
+      icon: "car",
+      iconLib: FontAwesome,
+    },
     {
       navigate: "serviecehistorypage",
       name: "History",
@@ -47,10 +52,9 @@ const Footer = ({ activeTab = "Home", onTabChange }) => {
             const isActive = activeTab === tab.name;
             return (
               <TouchableOpacity
-              
                 key={index}
                 style={styles.tabItem}
-                onPress={()=>navigateroute(tab.navigate)}
+                onPress={() => navigateroute(tab.navigate)}
               >
                 <IconComponent
                   name={tab.icon}

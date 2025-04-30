@@ -1,10 +1,18 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import VehicleListCard from "./VehicleListCard";
+import { Ionicons } from "@expo/vector-icons"; // You can also use MaterialCommunityIcons or FontAwesome
+import { useNavigation } from "@react-navigation/native";
 const vehicleData = [
   { id: 1, model: "Baleno", image: require("../../../assets/Vehicle/car.png") },
   { id: 2, model: "Swift", image: require("../../../assets/Vehicle/car.png") },
@@ -13,11 +21,25 @@ const vehicleData = [
 ];
 
 const MyVehiclesListPage = () => {
+  const navigation = useNavigation();
+  const handleAddVehicle = () => {
+    navigation.navigate("addvehicle"); // Replace with your actual route name
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.middleSection}>
         <View style={styles.vehicleSectionContainer}>
-          <Text style={styles.sectionTitle}>My Vehicles</Text>
+          <View style={styles.headerRow}>
+            <Text style={styles.sectionTitle}>My Vehicles</Text>
+            <TouchableOpacity onPress={handleAddVehicle}>
+              <Ionicons
+                name="add-circle-outline"
+                size={wp("7%")}
+                color="#007bff"
+              />
+            </TouchableOpacity>
+          </View>
 
           <ScrollView
             style={styles.scrollContainer}
@@ -42,12 +64,9 @@ const MyVehiclesListPage = () => {
 
 const styles = StyleSheet.create({
   container: {
+    zIndex: 1,
     flex: 1,
     width: "100%",
-  },
-  headerText: {
-    fontSize: wp("5%"),
-    fontWeight: "bold",
   },
   middleSection: {
     flex: 1,
@@ -65,12 +84,16 @@ const styles = StyleSheet.create({
     shadowRadius: wp("1%"),
     elevation: 3,
   },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: hp("2%"),
+  },
   sectionTitle: {
     fontSize: wp("5%"),
     fontWeight: "600",
     color: "#007bff",
-    marginBottom: hp("2%"),
-    textAlign: "left",
   },
   scrollContainer: {
     height: hp("65%"),

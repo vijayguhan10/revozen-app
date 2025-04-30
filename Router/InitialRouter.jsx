@@ -15,12 +15,18 @@ import ProfilePage from "../components/Profile/ProfilePage";
 import ServiceHistoryPage from "../components/Services/ServiceHistory/ServiceHistoryPage";
 // import ServiceHistoryDetails from "../components/ServiceHistory/ServiceHistoryDetails"; // Uncomment if needed
 import ServieceHistoryDetailPage from "../components/Services/ServiceHistoryDetailsPage";
+import AddVehiclePage from "../components/Vehicle/AddVehicle/AddVehiclePage";
 const Stack = createStackNavigator();
-
 const InitialRouter = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          animationEnabled: false,
+          
+        }}
+      >
         <Stack.Screen
           name="Login"
           component={LoginScreen}
@@ -29,56 +35,58 @@ const InitialRouter = () => {
         <Stack.Screen
           name="MyVehicles"
           component={MyVehiclesRender}
-          options={{ header: () => <Header /> }}
+          options={{ header: () => <Header />,animation:"none"}}
         />
         <Stack.Screen
           name="SOS"
           component={SosScreenPage}
-          options={{ header: () => <Header /> }}
+          options={{ header: () => <Header />,animation:"none" }}
         />
         <Stack.Screen
           name="InitialHome"
           component={InitialHomeScreen}
-          options={{ header: () => <Header /> }}
+          options={{ header: () => <Header />,animation:"none" }}
         />
         <Stack.Screen
           name="ServiceBooking"
           component={ServiceBookingWithFooter}
-          options={{ header: () => <Header /> }}
+          options={{ header: () => <Header />,animation:"none" }}
         />
         <Stack.Screen
           name="serviecehistorypage"
           component={serviecehistorypage}
-          options={{ header: () => <Header /> }}
+          options={{ header: () => <Header />,animation:"none" }}
         />
         <Stack.Screen
           name="Booking"
           component={BookingScreenComponent}
-          options={{ header: () => <Header /> }}
+          options={{ header: () => <Header />,animation:"none" }}
         />
         <Stack.Screen
           name="Profile"
           component={ProfilePageComponent}
-          options={{ header: () => <Header /> }}
+          options={{ header: () => <Header />,animation:"none" }}
         />
         <Stack.Screen
           name="servieceprofile"
           component={servieceprofile}
-          options={{ header: () => <Header /> }}
+          options={{ header: () => <Header />,animation:"none" }}
         />
-
-        {/* Uncomment and fix the import if needed
         <Stack.Screen
-          name="ServiceHistoryDetails"
-          component={ServiceHistoryDetails}
-          options={{ header: () => <Header /> }}
-        /> */}
+          name="myvehicles"
+          component={myvehicles}
+          options={{ header: () => <Header />,animation:"none" }}
+        />
+        <Stack.Screen
+          name="addvehicle"
+          component={addvehicledetails}
+          options={{ header: () => <Header />,animation:"none" }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
-// Wrapper components to include Footer with each screen
 const MyVehiclesRender = () => (
   <View style={styles.container}>
     <MyVehiclesListPage />
@@ -129,6 +137,18 @@ const serviecehistorypage = () => (
 const servieceprofile = () => (
   <View style={styles.container}>
     <ServieceHistoryDetailPage />
+    <Footer />
+  </View>
+);
+const myvehicles = () => (
+  <View style={styles.container}>
+    <MyVehiclesListPage />
+    <Footer />
+  </View>
+);
+const addvehicledetails = () => (
+  <View style={styles.container}>
+    <AddVehiclePage />
     <Footer />
   </View>
 );

@@ -7,8 +7,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Image,
 } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+const tyreexchange = require("../../../assets/tyre-exchange.png");
 import { LinearGradient } from "expo-linear-gradient";
 import {
   widthPercentageToDP as wp,
@@ -44,16 +46,19 @@ const InitialHome = () => {
               style={styles.serviceCard}
             >
               <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("ServiceBooking");
-                }}
+                style={{ alignItems: "center", justifyContent: "center" }}
+                onPress={() => navigation.navigate("ServiceBooking")}
               >
-                <MaterialCommunityIcons
-                  name="car-tire-alert"
-                  size={30}
-                  color="#fff"
+                <Image
+                  source={tyreexchange}
+                  style={{ width: wp("10%"), height: hp("5%") }}
                 />
-                <Text style={styles.serviceCardTextWhite}>
+                <Text
+                  style={[
+                    styles.serviceCardTextWhite,
+                    { alignItems: "center", justifyContent: "center" },
+                  ]}
+                >
                   Tyre Replacement
                 </Text>
               </TouchableOpacity>
@@ -67,7 +72,9 @@ const InitialHome = () => {
               end={{ x: 0, y: 1 }}
               style={styles.serviceCard}
             >
-              <TouchableOpacity>
+              <TouchableOpacity
+                style={{ alignItems: "center", justifyContent: "center" }}
+              >
                 <MaterialCommunityIcons
                   name="car-wash"
                   size={30}
@@ -163,6 +170,8 @@ const InitialHome = () => {
 };
 const styles = StyleSheet.create({
   container: {
+    fontFamily: "poppins",
+    zIndex: 1,
     flex: 1,
     marginTop: wp("30%"),
     padding: wp("4%"),
@@ -194,6 +203,9 @@ const styles = StyleSheet.create({
     margin: wp("1%"),
     width: wp("5%"),
     borderRadius: wp("2.5%"),
+    alignContent: "center",
+    textAlign: "center",
+    alignSelf: "center",
   },
   serviceCard: {
     flex: 1,
@@ -203,9 +215,13 @@ const styles = StyleSheet.create({
     borderRadius: wp("2.5%"),
   },
   serviceCardTextWhite: {
+    flexShrink: 1,
+    fontFamily: "poppins",
     color: "#00000",
     marginTop: hp("0.8%"),
+    width: wp("40%"),
     fontWeight: "600",
+    textAlign:"center",
   },
   serviceCardTextBlack: {
     color: "#000",
