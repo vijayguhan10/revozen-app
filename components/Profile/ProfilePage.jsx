@@ -8,7 +8,7 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   heightPercentageToDP as hp,
@@ -24,62 +24,65 @@ const profileData = {
 
 const ProfilePage = () => {
   return (
-    <View style={styles.outerContainer}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.profileCard}>
-          <View style={styles.headerRow}>
-            <Text style={styles.headerText}>My Profile</Text>
-            <TouchableOpacity>
-              <Ionicons name="create-outline" size={wp("6%")} color="#f58634" />
-            </TouchableOpacity>
+    <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.content}>
+          <View style={styles.profileCard}>
+            <View style={styles.headerRow}>
+              <Text style={styles.headerText}>My Profile</Text>
+              <TouchableOpacity>
+                <Ionicons
+                  name="create-outline"
+                  size={wp("6%")}
+                  color="#f58634"
+                />
+              </TouchableOpacity>
+            </View>
+
+            <Image source={{ uri: profileData.avatar }} style={styles.avatar} />
+            <Text style={styles.name}>{profileData.name}</Text>
+
+            <View style={styles.infoRow}>
+              <Ionicons name="call-outline" size={wp("5%")} color="#3366ff" />
+              <Text style={styles.infoText}>{profileData.phone}</Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Ionicons name="mail-outline" size={wp("5%")} color="#3366ff" />
+              <Text style={styles.infoText}>{profileData.email}</Text>
+            </View>
           </View>
 
-          <Image source={{ uri: profileData.avatar }} style={styles.avatar} />
-          <Text style={styles.name}>{profileData.name}</Text>
-
-          <View style={styles.infoRow}>
-            <Ionicons name="call-outline" size={wp("5%")} color="#3366ff" />
-            <Text style={styles.infoText}>{profileData.phone}</Text>
+          <View style={styles.sectionCard}>
+            <MenuItem icon="car" label="My Vehicles" />
+            <MenuItem icon="time-outline" label="Service History" />
+            <MenuItem icon="cash-outline" label="Payment Methods" />
+            <MenuItem icon="gift-outline" label="Rewards" />
           </View>
 
-          <View style={styles.infoRow}>
-            <Ionicons name="mail-outline" size={wp("5%")} color="#3366ff" />
-            <Text style={styles.infoText}>{profileData.email}</Text>
+          <View style={styles.sectionCard}>
+            <MenuItem icon="document-text-outline" label="Terms & Conditions" />
+            <MenuItem icon="lock-closed-outline" label="Privacy Policy" />
+            <MenuItem icon="help-circle-outline" label="Help & Support" />
           </View>
+
+          <Pressable
+            style={({ pressed }) => [
+              styles.loginButton,
+              pressed && { transform: [{ scale: 0.98 }], opacity: 0.95 },
+            ]}
+          >
+            <LinearGradient
+              colors={["#FFF4E6", "#FAC898"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFillObject}
+            />
+            <Text style={styles.loginText}>Log Out</Text>
+          </Pressable>
+
+          <View style={{ height: hp("5%") }} />
         </View>
-
-        <View style={styles.sectionCard}>
-          <MenuItem icon="car" label="My Vehicles" />
-          <MenuItem icon="time-outline" label="Service History" />
-          <MenuItem icon="cash-outline" label="Payment Methods" />
-          <MenuItem icon="gift-outline" label="Rewards" />
-        </View>
-
-        <View style={styles.sectionCard}>
-          <MenuItem icon="document-text-outline" label="Terms & Conditions" />
-          <MenuItem icon="lock-closed-outline" label="Privacy Policy" />
-          <MenuItem icon="help-circle-outline" label="Help & Support" />
-        </View>
-
-        <Pressable
-          style={({ pressed }) => [
-            styles.loginButton,
-            pressed && { transform: [{ scale: 0.98 }], opacity: 0.95 },
-          ]}
-        >
-          <LinearGradient
-            colors={["#FFF4E6", "#FAC898"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={StyleSheet.absoluteFillObject}
-          />
-          <Text style={styles.loginText}>Log Out</Text>
-        </Pressable>
-
-        <View style={{ height: hp("4%") }} />
       </ScrollView>
     </View>
   );
@@ -93,11 +96,12 @@ const MenuItem = ({ icon, label }) => (
 );
 
 const styles = StyleSheet.create({
-  outerContainer: {
+  container: {
     flex: 1,
-    zIndex: 10,
+    backgroundColor: "#F4F9F8",
   },
-  scrollContainer: {
+  content: {
+    marginTop: hp("14%"),
     paddingHorizontal: wp("4%"),
     paddingBottom: hp("5%"),
   },
@@ -106,7 +110,6 @@ const styles = StyleSheet.create({
     padding: wp("5%"),
     borderRadius: wp("3%"),
     marginBottom: hp("2%"),
-    marginTop: hp("14%"),
     shadowColor: "#000",
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
