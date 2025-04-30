@@ -82,7 +82,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4F9F8",
     width: "100%",
     paddingHorizontal: wp("4%"),
-    marginTop: hp("17%"),
+    marginTop: hp("15%"),
+    zIndex: 10,
   },
   card: {
     backgroundColor: "white",

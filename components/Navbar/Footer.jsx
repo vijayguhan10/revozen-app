@@ -54,6 +54,7 @@ const Footer = ({ activeTab = "Home", onTabChange }) => {
 const styles = StyleSheet.create({
   footerabsolute: {
     position: "absolute",
+    zIndex: 15,
     bottom: hp("2%"),
     width: wp("100%"),
     alignItems: "center", 

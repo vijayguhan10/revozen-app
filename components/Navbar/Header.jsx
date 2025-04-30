@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     position: "absolute",
 
-    // zIndex: 999,
+    zIndex: -1,
     width: "100%",
     height: hp("11%"),
     backgroundColor: "#F4F9F8",
