@@ -109,10 +109,12 @@ const AddVehiclePage = () => {
 
 const styles = StyleSheet.create({
   container: {
+    zIndex:10,
     flex: 1,
     width: wp("100%"),
   },
   middleSection: {
+    zindex:1,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

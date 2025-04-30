@@ -4,8 +4,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-
+import { useNavigation } from "@react-navigation/native";
 const ServiceBookingConfirmation = () => {
+  const navigation= useNavigation();
   const ServiceBookingConfirmationData = {
     service: "Type Replacement",
     vehicle: "Baleno",
@@ -100,11 +101,13 @@ const ServiceBookingConfirmation = () => {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.payButton}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("PaymentScreen")}
+        style={styles.payButton}
+      >
         <Text style={styles.payButtonText}>Proceed to Pay</Text>
       </TouchableOpacity>
-      <View style={styles.footer}>
-      </View>
+      <View style={styles.footer}></View>
     </View>
   );
 };
@@ -112,10 +115,11 @@ const ServiceBookingConfirmation = () => {
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
+    zIndex:1,
     backgroundColor: "#F4F9F8",
     width: "100%",
     paddingHorizontal: wp("5%"),
-    marginTop:hp("16%"),
+    marginTop: hp("16%"),
     // paddingTop: hp("28%"),
     paddingBottom: hp("2%"),
     backgroundColor: "#f9f9f9",
@@ -139,8 +143,8 @@ const styles = StyleSheet.create({
     marginBottom: hp("3%"), // Add spacing between card and button
   },
   table: {
-    flexDirection:"column",
-   rowGap:hp("1.7%"),
+    flexDirection: "column",
+    rowGap: hp("1.7%"),
     marginBottom: hp("1%"),
   },
   tableRow: {
@@ -182,7 +186,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingVertical: hp("0.5%"),
   },
- 
 });
 
 export default ServiceBookingConfirmation;

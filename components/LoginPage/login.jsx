@@ -20,14 +20,16 @@ const BottomTierImage = require("../../assets/LoginPage/BottomTire.png");
 const loginRevozenLogo = require("../../assets/LoginPage/loginRenozenLogo.png");
 const googleLogo = require("../../assets/LoginPage/google.png");
 const appleLogo = require("../../assets/LoginPage/apple.png");
-
+import { useNavigation } from "@react-navigation/native";
 const LoginScreen = () => {
+  const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     console.log("Login attempted with:", email, password);
+    return true;
   };
 
   return (
@@ -86,7 +88,15 @@ const LoginScreen = () => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.buttonSubmit} onPress={handleLogin}>
+          <TouchableOpacity
+            style={styles.buttonSubmit}
+            onPress={async () => {
+              const success = await handleLogin();
+              if (success) {
+                navigation.navigate("Home");
+              }
+            }}
+          >
             <Text style={styles.buttonSubmitText}>Sign In</Text>
           </TouchableOpacity>
 
@@ -250,7 +260,7 @@ const styles = StyleSheet.create({
   googleLogoStyle: {
     width: wp("6%"),
     height: hp("2.5%"),
-    resizeMode: "contain"
+    resizeMode: "contain",
   },
   apple: {
     backgroundColor: "#000",

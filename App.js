@@ -1,33 +1,33 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import LoginScreen from "./components/LoginPage/login";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
-import Footer from "./components/Navbar/Footer";
-import Header from "./components/Navbar/Header";
-import ServiceBookingConfirmation from "./components/Home/ServiceBookingConfirmation/ServiceBookingConfirmation";
-import MyVehiclesListPage from "./components/Vehicle/VehicleList/MyVehiclesListPage";
-import MyVehicleDetailsPage from "./components/Vehicle/VehicleDetails/MyVehicleDetailsPage";
-import AddVehiclePage from "./components/Vehicle/AddVehicle/AddVehiclePage";
-import ServiceHistoryPage from "./components/Services/ServiceHistory/ServiceHistoryPage";
+import React from "react";
+import { StyleSheet, View, Text } from "react-native";
+import InitialRouter from "./Router/InitialRouter";
+import { useFonts } from "@use-expo/font";
+import BookServicePage from "./components/Home/BookService/BookServicePage";
 
 export default function App() {
+  const [fontsLoaded, fontError] = useFonts({
+    poppins: require("./fonts/Poppins-Medium.ttf"),
+  });
+
+  if (!fontsLoaded && !fontError) {
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Header />
-      <ServiceHistoryPage />
-      <Footer />
+      <InitialRouter />
+      {/* <BookServicePage /> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#F4F9F8",
     flex: 1,
-
-    width: wp("100%"),
+    backgroundColor: "#F4F9F8",
   },
 });

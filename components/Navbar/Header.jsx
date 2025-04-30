@@ -45,9 +45,9 @@ const styles = StyleSheet.create({
   headerContainer: {
     position: "absolute",
 
-    zIndex: 999,
+    zIndex: -1,
     width: "100%",
-    height: hp("9%"),
+    height: hp("11%"),
     backgroundColor: "#F4F9F8",
     justifyContent: "center",
     paddingHorizontal: wp("4%"),
@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
   textContainer: {
     paddingTop: hp("3%"),
     flexDirection: "column",
+    rowGap: hp("1%"),
   },
   welcomeText: {
     fontSize: wp("5%"),
@@ -74,43 +75,44 @@ const styles = StyleSheet.create({
   notificationProfileWrapper: {
     flexDirection: "row",
     marginTop: hp("2%"),
-    marginLeft: wp("45%"),
+    marginLeft: wp("64.8%"),
     position: "absolute",
     alignItems: "center",
     gap: wp("3%"),
   },
   notificationIcon: {
-    marginRight: wp("2%"),
+    marginRight: wp("2.3%"),
   },
   profileImage: {
     width: wp("15%"),
     height: wp("15%"),
     borderRadius: wp("10%"),
-    marginLeft: wp("10%"),
+    marginLeft: wp("2%"),
   },
   circlesWrapper: {
-    marginLeft: wp("35%"),
+    marginLeft: wp("47%"),
+    marginTop: hp("1%"),
     alignItems: "center",
     justifyContent: "center",
   },
   circle: {
     position: "absolute",
-    borderColor: "#DCE5E3",
+    borderColor: "#D3D3D3",
     borderWidth: 1,
     backgroundColor: "transparent",
     borderRadius: 999,
   },
   circleLarge: {
-    width: wp("55%"),
-    height: wp("55%"),
+    width: wp("64%"),
+    height: wp("64%"),
   },
   circleMedium: {
-    width: wp("46%"),
-    height: wp("46%"),
+    width: wp("43%"),
+    height: wp("43%"),
   },
   circleSmall: {
-    width: wp("37%"),
-    height: wp("37%"),
+    width: wp("27%"),
+    height: wp("27%"),
   },
 });
 

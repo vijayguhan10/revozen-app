@@ -9,14 +9,38 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-
+import { useNavigation } from "@react-navigation/native";
 const Footer = ({ activeTab = "Home", onTabChange }) => {
+  const navigation = useNavigation();
+  const navigateroute = (name) => {
+    navigation.replace(name);
+  };
   const tabs = [
-    { name: "Home", icon: "home-outline", iconLib: Ionicons },
-    { name: "Vehicles", icon: "car", iconLib: FontAwesome },
-    { name: "History", icon: "history", iconLib: MaterialCommunityIcons },
-    { name: "Support", icon: "headset", iconLib: Ionicons },
-    { name: "Profile", icon: "person-outline", iconLib: Ionicons },
+    {
+      navigate: "Home",
+      name: "Home",
+      icon: "home-outline",
+      iconLib: Ionicons,
+    },
+    {
+      navigate: "MyVehicles",
+      name: "Vehicles",
+      icon: "car",
+      iconLib: FontAwesome,
+    },
+    {
+      navigate: "ServiceHistory",
+      name: "History",
+      icon: "history",
+      iconLib: MaterialCommunityIcons,
+    },
+    { navigate: "Support", name: "Support", icon: "headset", iconLib: Ionicons },
+    {
+      navigate: "Profile",
+      name: "Profile",
+      icon: "person-outline",
+      iconLib: Ionicons,
+    },
   ];
 
   return (
@@ -30,7 +54,7 @@ const Footer = ({ activeTab = "Home", onTabChange }) => {
               <TouchableOpacity
                 key={index}
                 style={styles.tabItem}
-                onPress={() => onTabChange && onTabChange(tab.name)}
+                onPress={() => navigateroute(tab.navigate)}
               >
                 <IconComponent
                   name={tab.icon}
@@ -54,9 +78,10 @@ const Footer = ({ activeTab = "Home", onTabChange }) => {
 const styles = StyleSheet.create({
   footerabsolute: {
     position: "absolute",
+    zIndex: 15,
     bottom: hp("2%"),
     width: wp("100%"),
-    alignItems: "center", 
+    alignItems: "center",
   },
   footerContainer: {
     flexDirection: "row",
