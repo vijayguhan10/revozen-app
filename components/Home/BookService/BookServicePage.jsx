@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -12,61 +12,92 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import BookingAddress from "./BookingAddress";
 import { Ionicons } from "@expo/vector-icons";
 import VehicleCard from "../../Vehicle/VehicleList/VehicleListCard";
 import { useNavigation } from "@react-navigation/native";
-const vehicleList = [
-  {
-    id: 1,
-    model: "Baleno",
-    manufacturer: "Suzuki",
-    regNo: "AZ 00 BY 0000",
-    typeSize: "185/65",
-    bodyStyle: "Hatchback",
-    cargoVolume: "318 L",
-    engineConfig: "Straight Engine",
-    servicesCount: "Nil",
-    lastService: "Not Available",
-    image: require("../../../assets/Vehicle/car.png"),
-  },
-  {
-    id: 2,
-    model: "Creta",
-    manufacturer: "Hyundai",
-    regNo: "TN 10 AB 1234",
-    typeSize: "205/65",
-    bodyStyle: "SUV",
-    cargoVolume: "433 L",
-    engineConfig: "V-Type Engine",
-    servicesCount: "2",
-    lastService: "2024-12-20",
-    image: require("../../../assets/Vehicle/car.png"),
-  },
-  {
-    id: 3,
-    model: "Swift",
-    manufacturer: "Suzuki",
-    regNo: "MH 12 CD 5678",
-    typeSize: "165/70",
-    bodyStyle: "Hatchback",
-    cargoVolume: "268 L",
-    engineConfig: "Inline Engine",
-    servicesCount: "1",
-    lastService: "2025-01-10",
-    image: require("../../../assets/Vehicle/car.png"),
-  },
-];
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import api from "../../../env.json";
 
 const BookServicePage = () => {
+  const API_URL = api.API_URL;
   const navigation = useNavigation();
   const [tyresCount, setTyresCount] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("home");
   const [searchQuery, setSearchQuery] = useState("");
+  const [vehicles, setVehicles] = useState([]);
+  const [selectedVehicles, setSelectedVehicles] = useState([]);
+  const [isBulkOrder, setIsBulkOrder] = useState(false);
+  const [filteredVehicles, setFilteredVehicles] = useState([]);
+  const scrollViewRef = useRef();
+  const addressRef = useRef();
 
-  const onChangeSearch = (query) => setSearchQuery(query);
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      const token = await AsyncStorage.getItem("token");
+      try {
+        const response = await axios.get(
+          `${API_URL}/client/vehicle/getallvehicles`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setVehicles(response.data); // Save data to state
+        setFilteredVehicles(response.data); // Set initial filtered list
+      } catch (error) {
+        console.log(
+          "Error fetching vehicles:",
+          error.response?.data || error.message
+        );
+      }
+    };
+
+    fetchVehicles();
+  }, []);
+
+  const onChangeSearch = (query) => {
+    setSearchQuery(query);
+    setFilteredVehicles(
+      vehicles.filter((vehicle) =>
+        vehicle.vehicleModel.toLowerCase().includes(query.toLowerCase())
+      )
+    );
+  };
+
+  const toggleVehicleSelection = (vehicleId) => {
+    if (selectedVehicles.includes(vehicleId)) {
+      setSelectedVehicles(selectedVehicles.filter((id) => id !== vehicleId));
+    } else {
+      setSelectedVehicles([...selectedVehicles, vehicleId]);
+    }
+  };
+
+  const handleBulkOrderToggle = () => {
+    setIsBulkOrder(!isBulkOrder);
+    if (!isBulkOrder) {
+      setTimeout(() => {
+        scrollToAddressSection();
+      }, 300);
+    }
+  };
+
+  const scrollToAddressSection = () => {
+    if (addressRef.current) {
+      addressRef.current.measureLayout(
+        scrollViewRef.current.getInnerViewNode(),
+        (x, y) => {
+          scrollViewRef.current.scrollTo({ y: y, animated: true });
+        },
+        () => {}
+      );
+    }
+  };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <Searchbar
         placeholder="Search for a car service"
         onChangeText={onChangeSearch}
@@ -77,82 +108,49 @@ const BookServicePage = () => {
         <Text style={styles.pageTitle}>Book A Service</Text>
 
         <Text style={styles.sectionTitle}>Select Vehicle</Text>
-        {vehicleList.map((vehicle, index) => (
-          <View key={vehicle.id} style={{ marginBottom: hp("2%") }}>
-            <VehicleCard
-              key={vehicle.id}
-              model={vehicle.model}
-              image={vehicle.image}
-              index={index}
-            />
-          </View>
-        ))}
-
-        <Text style={styles.subSectionTitle}>Additional Data</Text>
-        <TextInput
-          style={styles.underlineInput}
-          keyboardType="numeric"
-          value={tyresCount}
-          onChangeText={setTyresCount}
-          placeholder="Enter number of Tyres"
-          placeholderTextColor="#999"
-        />
-
-        <Text style={styles.subSectionTitle}>Choose Service Location</Text>
-
-        <View style={styles.locationRow}>
-          <TouchableOpacity
-            style={[styles.locationOption, { flex: 1 }]}
-            onPress={() => setSelectedLocation("home")}
+        {filteredVehicles.length > 0 ? (
+          <ScrollView
+            showsVerticalScrollIndicator={true}
+            nestedScrollEnabled={true}
+            style={{ height: hp("38%") }}
           >
-            <View style={styles.radioButton}>
-              {selectedLocation === "home" && (
-                <View style={styles.radioSelected} />
-              )}
-            </View>
-            <Ionicons
-              name="home-outline"
-              size={20}
-              color="#666"
-              style={styles.locationIcon}
-            />
-            <View style={styles.locationDetails}>
-              <Text style={styles.locationName}>Home Address</Text>
-              <Text style={styles.locationAddress}>Address123</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.changeButton}>
-            <Text style={styles.changeButtonText}>CHANGE</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity
-          style={styles.locationOption}
-          onPress={() => setSelectedLocation("manual")}
-        >
-          <View style={styles.radioButton}>
-            {selectedLocation === "manual" && (
-              <View style={styles.radioSelected} />
-            )}
-          </View>
-          <Ionicons
-            name="location-outline"
-            size={20}
-            color="#666"
-            style={styles.locationIcon}
-          />
-          <Text style={styles.locationName}>Enter Manually</Text>
-        </TouchableOpacity>
+            {filteredVehicles.map((vehicle) => (
+              <View key={vehicle._id} style={{ marginBottom: hp("2%") }}>
+                <TouchableOpacity
+                  disabled={isBulkOrder}
+                  onPress={() => toggleVehicleSelection(vehicle._id)}
+                  style={[
+                    styles.vehicleCard,
+                    selectedVehicles.includes(vehicle._id) &&
+                      styles.selectedVehicle,
+                  ]}
+                >
+                  <VehicleCard
+                    model={vehicle.vehicleModel}
+                    registrationNumber={vehicle.registrationNumber}
+                    vehicleType={vehicle.vehicleType}
+                    image={
+                      vehicle.image ||
+                      require("../../../assets/Vehicle/car.png")
+                    }
+                  />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </ScrollView>
+        ) : null}
 
         <TouchableOpacity
-          onPress={() => navigation.navigate("Appointment")}
-          style={styles.confirmButton}
+          onPress={handleBulkOrderToggle}
+          style={styles.bulkButton}
         >
-          <Text style={styles.confirmButtonText}>Confirm</Text>
+          <Text style={styles.bulkButtonText}>
+            {isBulkOrder ? "Cancel Bulk Tire Order" : "Bulk Tire Order"}
+          </Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+     
+    </View>
   );
 };
 
@@ -161,14 +159,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4F9F8",
     paddingHorizontal: wp("4%"),
     paddingTop: hp("5%"),
-    paddingBottom: hp("10%"),
-    marginTop: hp("5%"),
+    marginTop: hp("14%"),
+    marginBottom: hp("0.2%"),
+    zIndex: 1,
   },
   searchbar: {
+    zIndex: 1,
     borderRadius: 30,
     marginBottom: 16,
   },
   card: {
+    zIndex: 1,
     backgroundColor: "white",
     borderRadius: wp("2%"),
     padding: wp("4%"),
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: hp("0.3%") },
     shadowOpacity: 0.1,
     shadowRadius: wp("1%"),
-    marginBottom: hp("11%"),
+    // marginBottom: hp("11%"),
     elevation: 3,
   },
   pageTitle: {
@@ -205,66 +206,48 @@ const styles = StyleSheet.create({
     paddingVertical: hp("1%"),
     marginBottom: hp("2%"),
   },
-  locationRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: hp("2%"),
-  },
-  locationOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: hp("1.5%"),
-  },
-  radioButton: {
-    width: wp("5%"),
-    height: wp("5%"),
-    borderRadius: wp("2.5%"),
-    borderWidth: 1,
-    borderColor: "#007bff",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: wp("2%"),
-  },
-  radioSelected: {
-    width: wp("3%"),
-    height: wp("3%"),
-    borderRadius: wp("1.5%"),
-    backgroundColor: "#007bff",
-  },
-  locationIcon: {
-    marginRight: wp("2%"),
-  },
-  locationDetails: {
-    flex: 1,
-  },
-  locationName: {
-    fontSize: wp("4%"),
-    color: "#333",
-  },
-  locationAddress: {
-    fontSize: wp("3.8%"),
-    color: "#666",
-  },
-  changeButton: {
-    marginLeft: wp("2%"),
-  },
-  changeButtonText: {
-    fontSize: wp("3.8%"),
-    color: "#007bff",
-    fontWeight: "bold",
-  },
   confirmButton: {
     backgroundColor: "#007bff",
     paddingVertical: hp("1.5%"),
     borderRadius: wp("2%"),
     alignItems: "center",
-    marginTop: hp("3%"),
+    marginTop: hp("1%"),
   },
   confirmButtonText: {
     color: "white",
     fontWeight: "bold",
     fontSize: wp("4.5%"),
+  },
+  vehicleCard: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 12,
+    borderWidth: 1,
+    // height:hp("5%"),
+    borderColor: "#ccc",
+  },
+  selectedVehicle: {
+    borderColor: "#007bff",
+    borderWidth: 2,
+  },
+  bulkButton: {
+    backgroundColor: "#007bff",
+    paddingVertical: hp("1.5%"),
+    borderRadius: wp("2%"),
+    alignItems: "center",
+    marginTop: hp("4%"),
+    marginBottom: hp("2%"),
+  },
+  bulkButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: wp("4.5%"),
+  },
+  noVehiclesText: {
+    fontSize: wp("4%"),
+    color: "#666",
+    textAlign: "center",
+    marginVertical: hp("2%"),
   },
 });
 

@@ -1,0 +1,393 @@
+// BookingAddress.js
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+  StyleSheet,
+  ScrollView,
+  Animated,
+  Easing,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "../../../env.json";
+
+const BookingAddress = ({ productDetails }) => {
+  const API_URL = api.API_URL;
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [addresses, setAddresses] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [token, SetToken] = useState("");
+  const [modalAnim] = useState(new Animated.Value(0));
+  const [newAddress, setNewAddress] = useState({
+    street: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "",
+  });
+  const [isEdit, setIsEdit] = useState(false);
+  const [editAddressId, setEditAddressId] = useState(null);
+
+  useEffect(() => {
+    const initialize = async () => {
+      const storedToken = await AsyncStorage.getItem("token");
+      SetToken(storedToken);
+    };
+    initialize();
+  }, []);
+
+  useEffect(() => {
+    if (token) fetchAddresses();
+  }, [token]);
+
+  const fetchAddresses = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/address/getall`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAddresses(res.data || []);
+    } catch (err) {
+      console.error("Error fetching addresses", err);
+    }
+  };
+
+  const handleAddOrUpdateAddress = async () => {
+    try {
+      const payload = { ...newAddress };
+      if (isEdit && editAddressId) {
+        await axios.put(`${API_URL}/address/update/${editAddressId}`, payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      } else {
+        await axios.post(`${API_URL}/address/create`, payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+      closeModal();
+      resetForm();
+      fetchAddresses();
+    } catch (err) {
+      console.error("Error adding/updating address", err);
+    }
+  };
+
+  const handleEdit = (address) => {
+    setNewAddress({ ...address });
+    setEditAddressId(address._id);
+    setIsEdit(true);
+    openModal();
+  };
+
+  const resetForm = () => {
+    setNewAddress({
+      street: "",
+      city: "",
+      state: "",
+      postalCode: "",
+      country: "",
+    });
+    setIsEdit(false);
+    setEditAddressId(null);
+  };
+
+  const handleConfirm = async () => {
+    try {
+      const selected = addresses.find((addr) => addr._id === selectedLocation);
+      await axios.post(`${API_URL}/user/confirm`, {
+        address: selected,
+        products: productDetails,
+      });
+    } catch (err) {
+      console.error("Error confirming", err);
+    }
+  };
+
+  const openModal = () => {
+    setShowModal(true);
+    Animated.timing(modalAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.out(Easing.ease),
+    }).start();
+  };
+
+  const closeModal = () => {
+    Animated.timing(modalAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => setShowModal(false));
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.sectionTitle}>
+        <Ionicons name="location" /> Choose Your Delivery Address
+      </Text>
+
+      <ScrollView
+        nestedScrollEnabled={true}
+        style={{ maxHeight: hp("30%") }}
+        showsVerticalScrollIndicator
+      >
+        <View
+          style={{
+            borderColor: "#rgba(0, 0, 0, 0.48)",
+            borderRadius: hp("2%"),
+            borderWidth: 1,
+          }}
+        >
+          {addresses.map((addr) => (
+            <View key={addr._id} style={styles.cardWrapper}>
+              <TouchableOpacity
+                style={[
+                  styles.addressCard,
+                  selectedLocation === addr._id && styles.selectedCard,
+                ]}
+                onPress={() => setSelectedLocation(addr._id)}
+              >
+                <View style={styles.radioButton}>
+                  {selectedLocation === addr._id && (
+                    <View style={styles.radioDot} />
+                  )}
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.cardTitle}>
+                    <Ionicons name="location-outline" size={18} color="#333" />{" "}
+                    {addr.street}
+                  </Text>
+                  <Text style={styles.cardText}>
+                    {addr.city}, {addr.state} - {addr.postalCode}
+                  </Text>
+                  <Text style={styles.cardText}>{addr.country}</Text>
+                </View>
+                <TouchableOpacity onPress={() => handleEdit(addr)}>
+                  <Ionicons name="create-outline" size={22} color="#007bff" />
+                </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+
+      <TouchableOpacity style={styles.addButton} onPress={openModal}>
+        <Ionicons name="add-circle-outline" size={20} color="#007bff" />
+        <Text style={styles.addButtonText}>Add New Address</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.confirmBtn} onPress={handleConfirm}>
+        <Text style={styles.confirmText}>CONFIRM LOCATION</Text>
+      </TouchableOpacity>
+
+      {/* Modal */}
+      <Modal visible={showModal} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <Animated.View
+            style={[
+              styles.modalContainer,
+              { transform: [{ scale: modalAnim }] },
+            ]}
+          >
+            <ScrollView>
+              <Text style={styles.modalTitle}>
+                {isEdit ? "Edit Address" : "New Address"}
+              </Text>
+
+              {[
+                { key: "street", icon: "home-outline", label: "Street" },
+                { key: "city", icon: "business-outline", label: "City" },
+                { key: "state", icon: "flag-outline", label: "State" },
+                {
+                  key: "postalCode",
+                  icon: "mail-outline",
+                  label: "Postal Code",
+                },
+                { key: "country", icon: "globe-outline", label: "Country" },
+              ].map(({ key, icon, label }) => (
+                <View style={styles.inputGroup} key={key}>
+                  <Ionicons name={icon} size={18} color="#777" />
+                  <TextInput
+                    style={styles.input}
+                    placeholder={label}
+                    value={newAddress[key]}
+                    onChangeText={(text) =>
+                      setNewAddress((prev) => ({ ...prev, [key]: text }))
+                    }
+                  />
+                </View>
+              ))}
+
+              <TouchableOpacity
+                style={[styles.modalBtn, { backgroundColor: "#28a745" }]}
+                onPress={handleAddOrUpdateAddress}
+              >
+                <Text style={styles.modalBtnText}>
+                  {isEdit ? "Update Address" : "Save Address"}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.modalBtn, { backgroundColor: "#dc3545" }]}
+                onPress={closeModal}
+              >
+                <Text style={styles.modalBtnText}>Cancel</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </Animated.View>
+        </View>
+      </Modal>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  sectionTitle: {
+    fontSize: wp("4.7%"),
+    fontWeight: "bold",
+    marginBottom: hp("3%"),
+  },
+  container: {
+    padding: wp("4%"),
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    margin: wp("2%"),
+    // Shadow for iOS
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.45,
+    shadowRadius: 3.84,
+    // Elevation for Android
+    elevation: 9,
+  },
+  cardWrapper: {
+    padding:wp("1%"),
+    marginBottom: hp("1.5%"),
+  },
+  addressCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f9f9f9",
+    padding: wp("4%"),
+    borderRadius: 12,
+    // Shadow for iOS
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    // Elevation for Android
+    elevation: 2,
+  },
+  selectedCard: {
+    borderWidth: 2,
+    borderColor: "#007bff",
+    backgroundColor: "#e6f0ff",
+  },
+  selectedCard: {
+    borderWidth: 2,
+    borderColor: "#007bff",
+    backgroundColor: "#e6f0ff",
+  },
+  radioButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#007bff",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: wp("3%"),
+  },
+  radioDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#007bff",
+  },
+  cardTitle: {
+    fontSize: wp("4.2%"),
+    fontWeight: "bold",
+  },
+  cardText: {
+    fontSize: wp("3.6%"),
+    color: "#555",
+  },
+  addButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: hp("2%"),
+  },
+  addButtonText: {
+    fontSize: wp("4.2%"),
+    color: "#007bff",
+    marginLeft: wp("1%"),
+  },
+  confirmBtn: {
+    backgroundColor: "#007bff",
+    padding: wp("4%"),
+    borderRadius: 12,
+    marginTop: hp("3%"),
+    alignItems: "center",
+  },
+  confirmText: {
+    color: "#fff",
+    fontSize: wp("4.2%"),
+    fontWeight: "bold",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.3)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    backgroundColor: "#fff",
+    padding: wp("5%"),
+    borderRadius: 15,
+    width: "90%",
+    maxHeight: "85%",
+  },
+  modalTitle: {
+    fontSize: wp("5%"),
+    fontWeight: "bold",
+    marginBottom: hp("2%"),
+    textAlign: "center",
+  },
+  inputGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f1f1f1",
+    paddingHorizontal: wp("3%"),
+    paddingVertical: hp("1.2%"),
+    borderRadius: 8,
+    marginBottom: hp("1.5%"),
+  },
+  input: {
+    flex: 1,
+    marginLeft: wp("2%"),
+    fontSize: wp("3.8%"),
+  },
+  modalBtn: {
+    backgroundColor: "#007bff",
+    padding: hp("1.4%"),
+    borderRadius: 10,
+    marginTop: hp("1.5%"),
+    alignItems: "center",
+  },
+  modalBtnText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: wp("4%"),
+  },
+});
+
+export default BookingAddress;

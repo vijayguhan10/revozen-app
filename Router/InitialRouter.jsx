@@ -15,9 +15,8 @@ import ProfilePage from "../components/Profile/ProfilePage";
 import ServiceHistoryPage from "../components/Services/ServiceHistory/ServiceHistoryPage";
 import ServiceHistoryDetailPage from "../components/Services/ServiceHistoryDetailsPage";
 import AddVehiclePage from "../components/Vehicle/AddVehicle/AddVehiclePage";
-import BookServicePage from "../components/Home/BookService/BookServicePage";
 import PaymentScreen from "../components/Transactions/UPI";
-
+import Index from "../components/Home/BookService/Index"
 const Stack = createStackNavigator();
 
 const InitialRouter = () => {
@@ -118,7 +117,7 @@ const AppointmentWithFooter = () => (
 
 const BookServiceWithFooter = () => (
   <View style={styles.container}>
-    <BookServicePage />
+    <Index />
     <Footer />
   </View>
 );
