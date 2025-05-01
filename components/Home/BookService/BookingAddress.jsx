@@ -255,6 +255,7 @@ const styles = StyleSheet.create({
     fontSize: wp("4.7%"),
     fontWeight: "bold",
     marginBottom: hp("3%"),
+    fontFamily: "poppins",
   },
   container: {
     padding: wp("4%"),
@@ -270,10 +271,11 @@ const styles = StyleSheet.create({
     elevation: 9,
   },
   cardWrapper: {
-    padding:wp("1%"),
+    padding: wp("1%"),
     marginBottom: hp("1.5%"),
   },
   addressCard: {
+    fontFamily: "poppins",
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#f9f9f9",
@@ -318,6 +320,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   cardText: {
+    fontFamily: "poppins",
     fontSize: wp("3.6%"),
     color: "#555",
   },
@@ -361,6 +364,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: hp("2%"),
     textAlign: "center",
+    fontFamily: "poppins",
   },
   inputGroup: {
     flexDirection: "row",
@@ -377,6 +381,7 @@ const styles = StyleSheet.create({
     fontSize: wp("3.8%"),
   },
   modalBtn: {
+    fontFamily: "poppins",
     backgroundColor: "#007bff",
     padding: hp("1.4%"),
     borderRadius: 10,

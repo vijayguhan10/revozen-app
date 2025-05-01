@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     backgroundColor: "#f9f9f9",
     paddingHorizontal: wp("5%"),
-    // paddingTop: hp("16%"),
     paddingBottom: hp("2%"),
     marginTop: hp("15%"),
   },
@@ -140,12 +139,14 @@ const styles = StyleSheet.create({
     color: "#007bff",
     marginBottom: hp("3%"),
     textAlign: "left",
+    fontFamily: "poppins",
   },
   sectionTitle: {
     fontSize: wp("4.5%"),
     fontWeight: "bold",
     color: "#ff8c00",
     marginBottom: hp("1%"),
+    fontFamily: "poppins",
   },
   scrollWrapper: {
     maxHeight: hp("64%"),

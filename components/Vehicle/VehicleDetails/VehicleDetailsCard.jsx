@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
     textAlign: "center",
+    fontFamily: "poppins",
   },
   vehicleImage: {
     width: wp("50%"),
@@ -78,12 +79,14 @@ const styles = StyleSheet.create({
     fontSize: wp("3.5%"),
     color: "#666",
     marginBottom: hp("1.5%"),
+    fontFamily: "poppins",
   },
   value: {
     fontSize: wp("3.5%"),
     fontWeight: "600",
     color: "#333",
     marginBottom: hp("1.5%"),
+    fontFamily: "poppins",
   },
 });
 

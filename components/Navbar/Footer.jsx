@@ -34,7 +34,12 @@ const Footer = ({ activeTab = "Home", onTabChange }) => {
       icon: "history",
       iconLib: MaterialCommunityIcons,
     },
-    { navigate: "Support", name: "Support", icon: "headset", iconLib: Ionicons },
+    {
+      navigate: "Support",
+      name: "Support",
+      icon: "headset",
+      iconLib: Ionicons,
+    },
     {
       navigate: "Profile",
       name: "Profile",
@@ -87,7 +92,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     backgroundColor: "#fff",
-    paddingVertical: hp("1.5%"),
+    paddingVertical: hp("1%"),
     width: wp("90%"),
     borderRadius: wp("9%"),
     shadowColor: "#000",
@@ -103,10 +108,12 @@ const styles = StyleSheet.create({
     fontSize: wp("2.7%"),
     color: "#6B7280",
     marginTop: hp("0.5%"),
+    fontFamily: "poppins",
   },
   activeTabText: {
     color: "#3B82F6",
     fontWeight: "600",
+    fontFamily: "poppins",
   },
 });
 

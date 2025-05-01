@@ -155,18 +155,21 @@ const styles = StyleSheet.create({
     color: "#007bff",
     marginBottom: hp("2%"),
     textAlign: "center",
+    fontFamily: "poppins",
   },
   label: {
     fontSize: wp("4%"),
     color: "#666",
     marginTop: hp("2%"),
     marginBottom: hp("0.5%"),
+    fontFamily: "poppins",
   },
   blueLabel: {
     fontSize: wp("4%"),
     color: "#007bff",
     marginTop: hp("2%"),
     marginBottom: hp("0.5%"),
+    fontFamily: "poppins",
   },
   underlineInput: {
     borderBottomWidth: 1,
@@ -174,6 +177,7 @@ const styles = StyleSheet.create({
     fontSize: wp("4%"),
     paddingVertical: hp("1%"),
     marginBottom: hp("1%"),
+    fontFamily: "poppins",
   },
   checkboxContainer: {
     flexDirection: "row",
@@ -183,6 +187,7 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     fontSize: wp("3.8%"),
     color: "#666",
+    fontFamily: "poppins",
   },
   radioGroup: {
     flexDirection: "row",
@@ -205,9 +210,11 @@ const styles = StyleSheet.create({
   radioLabel: {
     fontSize: wp("4%"),
     color: "#333",
+    fontFamily: "poppins",
   },
   radioLabelSelected: {
     color: "#fff",
+    fontFamily: "poppins",
   },
   saveButton: {
     backgroundColor: "#007bff",
@@ -215,13 +222,14 @@ const styles = StyleSheet.create({
     padding: hp("1%"),
     borderRadius: wp("5%"),
     alignItems: "center",
-    marginTop: hp("4.5%"),
+    marginTop: hp("2%"),
     alignSelf: "center",
   },
   saveButtonText: {
     color: "#fff",
-    fontSize: wp("6"),
+    fontSize: wp("6%"),
     fontWeight: "bold",
+    fontFamily: "poppins",
   },
   scrollContainer: {
     flexGrow: 1,
