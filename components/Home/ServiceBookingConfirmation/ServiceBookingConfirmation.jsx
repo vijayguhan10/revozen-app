@@ -1,12 +1,18 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { useNavigation } from "@react-navigation/native";
 const ServiceBookingConfirmation = () => {
-  const navigation= useNavigation();
+  const navigation = useNavigation();
   const ServiceBookingConfirmationData = {
     service: "Type Replacement",
     vehicle: "Baleno",
@@ -22,106 +28,107 @@ const ServiceBookingConfirmation = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.confirmationCard}>
-        <Text style={styles.header}>Service Booking Confirmation</Text>
+      <ScrollView contentContainerStyle={{ paddingBottom: hp("10%") }}>
+        <View style={styles.confirmationCard}>
+          <Text style={styles.header}>Service Booking Confirmation</Text>
 
-        <View style={styles.table}>
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.label]}>Service</Text>
-            <Text style={styles.value}>
-              {ServiceBookingConfirmationData.service}
-            </Text>
-          </View>
-
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.label]}>Vehicle</Text>
-            <Text style={styles.value}>
-              {ServiceBookingConfirmationData.vehicle}
-            </Text>
-          </View>
-
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.label]}>Location</Text>
-            <View style={{ flex: 1, alignItems: "flex-end" }}>
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.label]}>Service</Text>
               <Text style={styles.value}>
-                {ServiceBookingConfirmationData.location}
+                {ServiceBookingConfirmationData.service}
               </Text>
-              <Text style={styles.label}>
-                <Text style={styles.red}>*</Text>
-                {ServiceBookingConfirmationData.locationNote.replace("*", "")}
+            </View>
+
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.label]}>Vehicle</Text>
+              <Text style={styles.value}>
+                {ServiceBookingConfirmationData.vehicle}
+              </Text>
+            </View>
+
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.label]}>Location</Text>
+              <View style={{ flex: 1, alignItems: "flex-end" }}>
+                <Text style={styles.value}>
+                  {ServiceBookingConfirmationData.location}
+                </Text>
+                <Text style={styles.label}>
+                  <Text style={styles.red}>*</Text>
+                  {ServiceBookingConfirmationData.locationNote.replace("*", "")}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.label]}>Date</Text>
+              <View style={{ flex: 1, alignItems: "flex-end" }}>
+                <Text style={styles.value}>
+                  {ServiceBookingConfirmationData.date}
+                </Text>
+                <Text
+                  style={styles.label}
+                >{`(${ServiceBookingConfirmationData.day})`}</Text>
+              </View>
+            </View>
+
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.label]}>Time</Text>
+              <Text style={styles.value}>
+                {ServiceBookingConfirmationData.time}
               </Text>
             </View>
           </View>
 
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.label]}>Date</Text>
-            <View style={{ flex: 1, alignItems: "flex-end" }}>
-              <Text style={styles.value}>
-                {ServiceBookingConfirmationData.date}
+          <View style={{ height: 30 }} />
+
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.label]}>
+                Service Total
               </Text>
-              <Text
-                style={styles.label}
-              >{`(${ServiceBookingConfirmationData.day})`}</Text>
+              <Text style={styles.value}>
+                {ServiceBookingConfirmationData.serviceTotal}
+              </Text>
+            </View>
+
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.label]}>
+                Convenience Fee
+              </Text>
+              <Text style={styles.value}>
+                {ServiceBookingConfirmationData.convenienceFee}
+              </Text>
+            </View>
+
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.label]}>Total Price</Text>
+              <Text style={styles.value}>
+                {ServiceBookingConfirmationData.totalPrice}
+              </Text>
             </View>
           </View>
-
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.label]}>Time</Text>
-            <Text style={styles.value}>
-              {ServiceBookingConfirmationData.time}
-            </Text>
-          </View>
         </View>
 
-        <View style={{ height: 30 }} />
-
-        <View style={styles.table}>
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.label]}>Service Total</Text>
-            <Text style={styles.value}>
-              {ServiceBookingConfirmationData.serviceTotal}
-            </Text>
-          </View>
-
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.label]}>
-              Convenience Fee
-            </Text>
-            <Text style={styles.value}>
-              {ServiceBookingConfirmationData.convenienceFee}
-            </Text>
-          </View>
-
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.label]}>Total Price</Text>
-            <Text style={styles.value}>
-              {ServiceBookingConfirmationData.totalPrice}
-            </Text>
-          </View>
-        </View>
-      </View>
-
-      <TouchableOpacity
-        onPress={() => navigation.navigate("PaymentScreen")}
-        style={styles.payButton}
-      >
-        <Text style={styles.payButtonText}>Proceed to Pay</Text>
-      </TouchableOpacity>
-      <View style={styles.footer}></View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("PaymentScreen")}
+          style={styles.payButton}
+        >
+          <Text style={styles.payButtonText}>Proceed to Pay</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    zIndex:1,
+    flex: 1,
+    zIndex: 1,
     backgroundColor: "#F4F9F8",
     width: "100%",
     paddingHorizontal: wp("5%"),
     marginTop: hp("16%"),
-    // paddingTop: hp("28%"),
-    paddingBottom: hp("2%"),
     backgroundColor: "#f9f9f9",
   },
   header: {
@@ -130,6 +137,7 @@ const styles = StyleSheet.create({
     color: "#007bff",
     marginBottom: hp("3%"),
     textAlign: "center",
+    fontFamily: "poppins",
   },
   confirmationCard: {
     backgroundColor: "white",
@@ -155,20 +163,24 @@ const styles = StyleSheet.create({
   },
   tableCell: {
     fontSize: wp("4%"),
+    fontFamily: "poppins",
   },
   label: {
     color: "#888",
     fontWeight: "400",
     fontSize: wp("4%"),
+    fontFamily: "poppins",
   },
   value: {
     fontWeight: "600",
     fontSize: wp("4%"),
     color: "#000",
     textAlign: "right",
+    fontFamily: "poppins",
   },
   red: {
     color: "red",
+    fontFamily: "poppins",
   },
   payButton: {
     backgroundColor: "#007bff",
@@ -185,6 +197,7 @@ const styles = StyleSheet.create({
     fontSize: wp("4%"),
     textAlign: "center",
     paddingVertical: hp("0.5%"),
+    fontFamily: "poppins",
   },
 });
 

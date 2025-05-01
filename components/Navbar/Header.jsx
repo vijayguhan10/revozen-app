@@ -67,10 +67,12 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: wp("5%"),
     fontWeight: "600",
+    fontFamily: "poppins",
   },
   locationText: {
     fontSize: wp("3.5%"),
     color: "#555",
+    fontFamily: "poppins",
   },
   notificationProfileWrapper: {
     flexDirection: "row",

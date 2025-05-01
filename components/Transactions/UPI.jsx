@@ -15,6 +15,11 @@ import {
   FontAwesome,
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+
 export default function PaymentScreen() {
   const navigation = useNavigation();
   const [selectedMethod, setSelectedMethod] = useState(null);
@@ -25,12 +30,12 @@ export default function PaymentScreen() {
       <View style={styles.card}>
         <Text style={styles.heading}>Payment Details</Text>
         <View style={styles.row}>
-          <Text>Service Total</Text>
-          <Text>Rs. 3200</Text>
+          <Text style={styles.regularText}>Service Total</Text>
+          <Text style={styles.regularText}>Rs. 3200</Text>
         </View>
         <View style={styles.row}>
-          <Text>Convenience Fee</Text>
-          <Text>Rs. 300</Text>
+          <Text style={styles.regularText}>Convenience Fee</Text>
+          <Text style={styles.regularText}>Rs. 300</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.bold}>Total Price</Text>
@@ -157,106 +162,110 @@ export default function PaymentScreen() {
 const styles = StyleSheet.create({
   container: {
     zIndex: 1,
-    padding: 16,
-    marginTop: "35%",
-    // backgroundColor: "#f9f9f9",
+    padding: wp("4%"),
+    marginTop: hp("11.5%"),
   },
   card: {
     backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
+    borderRadius: wp("3%"),
+    padding: wp("4%"),
+    marginBottom: hp("2%"),
   },
   heading: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: wp("4%"),
     color: "#0046ff",
-    marginBottom: 10,
+    marginBottom: hp("1.2%"),
+    fontFamily: "poppins",
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 4,
+    marginVertical: hp("0.5%"),
   },
   bold: {
     fontWeight: "bold",
+    fontFamily: "poppins",
   },
   couponRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: wp("2%"),
   },
   cardBackground: {
-    borderRadius: 10,
-    marginVertical: 10,
-    padding: 2, // if needed
+    borderRadius: wp("2.5%"),
+    marginVertical: hp("1.2%"),
+    padding: wp("0.5%"),
   },
-
   input: {
     flex: 1,
     borderWidth: 1,
     borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 8,
+    padding: wp("2.5%"),
+    borderRadius: wp("2%"),
     backgroundColor: "#fff",
+    fontFamily: "poppins",
   },
   applyButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    paddingVertical: hp("1.2%"),
+    paddingHorizontal: wp("4%"),
     borderWidth: 1,
     borderColor: "#0046ff",
-    borderRadius: 8,
+    borderRadius: wp("2%"),
   },
   applyText: {
     color: "#0046ff",
     fontWeight: "bold",
+    fontFamily: "poppins",
   },
   paymentMethod: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 12,
-    borderRadius: 12,
-    gap: 12,
+    padding: wp("3%"),
+    borderRadius: wp("3%"),
+    gap: wp("3%"),
   },
   methodTitle: {
     fontWeight: "bold",
-    fontSize: 15,
+    fontSize: wp("3.8%"),
+    fontFamily: "poppins",
   },
   methodDesc: {
-    fontSize: 12,
+    fontSize: wp("3%"),
     color: "#555",
+    fontFamily: "poppins",
   },
   iconWrapper: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
+    width: wp("9%"),
+    height: wp("9%"),
+    borderRadius: wp("2%"),
     justifyContent: "center",
     alignItems: "center",
   },
   radio: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: wp("5%"),
+    height: wp("5%"),
+    borderRadius: wp("2.5%"),
     borderWidth: 2,
     borderColor: "#555",
     justifyContent: "center",
     alignItems: "center",
   },
   radioDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: wp("2.5%"),
+    height: wp("2.5%"),
+    borderRadius: wp("1.25%"),
     backgroundColor: "#555",
   },
   checkboxRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
-    gap: 10,
+    marginTop: hp("1.2%"),
+    gap: wp("2.5%"),
   },
   checkbox: {
-    width: 18,
-    height: 18,
+    width: wp("4.5%"),
+    height: wp("4.5%"),
     borderWidth: 1,
     borderColor: "#555",
     justifyContent: "center",
@@ -268,23 +277,31 @@ const styles = StyleSheet.create({
   },
   checkmark: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: wp("3%"),
+    fontFamily: "poppins",
   },
   payLater: {
-    fontSize: 14,
+    fontSize: wp("3.5%"),
     color: "#333",
+    fontFamily: "poppins",
   },
   confirmButton: {
     backgroundColor: "#0046ff",
-    padding: 14,
-    borderRadius: 12,
+    padding: wp("3.5%"),
+    borderRadius: wp("3%"),
     alignItems: "center",
-    marginTop: 10,
-    marginBottom: 130,
+    marginTop: hp("1.2%"),
+    marginBottom: hp("16%"),
   },
   confirmText: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: wp("4%"),
+    fontFamily: "poppins",
+  },
+  regularText: {
+    fontFamily: "poppins",
+    fontSize: wp("3.5%"),
+    color: "#333",
   },
 });

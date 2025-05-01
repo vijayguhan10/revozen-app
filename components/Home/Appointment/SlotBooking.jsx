@@ -1,18 +1,26 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, ScrollView } from "react-native";
-import { PaperProvider, Button, TextInput } from "react-native-paper";
-import { Searchbar } from "react-native-paper";
+import { View, StyleSheet, Text, ScrollView, Dimensions } from "react-native";
+import {
+  PaperProvider,
+  Button,
+  TextInput,
+  Searchbar,
+} from "react-native-paper";
 import { Calendar } from "react-native-calendars";
 import { useNavigation } from "@react-navigation/native";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+
 export default function BookingScreen() {
-  const navigation= useNavigation();
+  const navigation = useNavigation();
   const [date, setDate] = useState(undefined);
   const [time, setTime] = useState({ hour: 10, minute: 0, period: "AM" });
   const [searchQuery, setSearchQuery] = useState("");
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
-  // Blocked Dates
   const unavailableDates = [
     new Date(2025, 4, 10),
     new Date(2025, 4, 11),
@@ -53,24 +61,23 @@ export default function BookingScreen() {
     }, {}),
   };
 
-  // Time input change handler
   const handleTimeChange = (value, type) => {
     setTime((prevTime) => ({ ...prevTime, [type]: value }));
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.ScrollView}>
       <View style={styles.container}>
         <Searchbar
           placeholder="Search for a car service"
           onChangeText={onChangeSearch}
           value={searchQuery}
+          inputStyle={styles.inputText}
           style={styles.searchbar}
         />
 
         <View style={styles.card}>
           <Text style={styles.header}>Book A Service</Text>
-         
 
           <Calendar
             onDayPress={handleDayPress}
@@ -80,15 +87,17 @@ export default function BookingScreen() {
               todayTextColor: "#0B3EFF",
               arrowColor: "#0B3EFF",
               monthTextColor: "#0B3EFF",
-              textDayFontSize: 16,
+              textDayFontSize: 13,
               textMonthFontSize: 16,
-              textDayHeaderFontSize: 16,
+              textDayHeaderFontSize: 13,
+              textDayFontFamily: "poppins",
+              textMonthFontFamily: "poppins",
+              textDayHeaderFontFamily: "poppins",
             }}
           />
 
           <Text style={styles.selectTime}>Select Time</Text>
 
-          {/* Custom Time Input */}
           <View style={styles.timePickerContainer}>
             <View style={styles.timeInput}>
               <TextInput
@@ -127,17 +136,14 @@ export default function BookingScreen() {
 
           <Button
             mode="contained"
-            onPress={() =>{
-
-            
+            onPress={() => {
               console.log(
                 `Selected Date: ${date}, Time: ${time.hour}:${time.minute} ${time.period}`
-              )
-              navigation.navigate("ServiceBooking")
-            }
-          }
+              );
+              navigation.navigate("ServiceBooking");
+            }}
           >
-            Confirm
+            <Text style={styles.textStyle}>Confirm</Text>
           </Button>
 
           <View style={styles.legend}>
@@ -151,74 +157,84 @@ export default function BookingScreen() {
 }
 
 const styles = StyleSheet.create({
+  ScrollView: {
+    marginBottom: hp("2%"),
+    marginTop: hp("4%"),
+    zIndex: 1,
+  },
+  inputText: {
+    fontFamily: "poppins",
+  },
   container: {
     flex: 1,
-    padding: 16,
+    padding: wp("4%"),
     backgroundColor: "#F9F9F9",
-    marginTop: "30%",
+    marginTop: hp("8%"),
   },
   searchbar: {
-    borderRadius: 30,
-    marginBottom: 16,
+    borderRadius: wp("8%"),
+    marginBottom: hp("2%"),
+    backgroundColor: "#FFFFFF",
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
   },
   card: {
     backgroundColor: "white",
-    borderRadius: 20,
-    padding: 16,
-    shadowColor: "#000",
+    borderRadius: wp("5%"),
+    padding: wp("4%"),
     elevation: 5,
   },
   header: {
-    fontSize: 18,
+    fontSize: wp("4.5%"),
     fontWeight: "bold",
+    fontFamily: "poppins",
     color: "#0B3EFF",
-    marginBottom: 8,
-  },
-  subheader: {
-    fontWeight: "bold",
-    fontSize: 15,
-    marginBottom: 4,
-  },
-  selectDate: {
-    fontSize: 13,
-    marginBottom: 12,
-    color: "#333",
+    marginBottom: hp("1%"),
   },
   selectTime: {
-    fontSize: 13,
-    marginBottom: 12,
+    fontSize: wp("3.5%"),
+    marginBottom: hp("1.5%"),
     color: "#333",
+    fontFamily: "poppins",
   },
   timePickerContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 16,
+    marginBottom: hp("2%"),
   },
   timeInput: {
-    width: 60,
+    width: wp("20%"),
   },
+
   inputField: {
     backgroundColor: "white",
+    fontFamily: "poppins",
+  },
+  textStyle: {
+    fontFamily: "poppins",
   },
   colon: {
-    fontSize: 20,
-    marginHorizontal: 8,
+    fontSize: wp("5%"),
+    marginHorizontal: wp("1%"),
+    fontFamily: "poppins",
   },
   legend: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 12,
+    marginTop: hp("2%"),
   },
   unavailableDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    width: wp("3%"),
+    height: wp("3%"),
+    borderRadius: wp("1.5%"),
     backgroundColor: "#FFB1B1",
-    marginRight: 6,
+    marginRight: wp("1.5%"),
   },
   legendText: {
-    fontSize: 13,
+    fontSize: wp("3.5%"),
     color: "#555",
+    fontFamily: "poppins",
   },
 });

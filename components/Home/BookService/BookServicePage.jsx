@@ -103,7 +103,9 @@ const BookServicePage = () => {
         onChangeText={onChangeSearch}
         value={searchQuery}
         style={styles.searchbar}
+        inputStyle={styles.inputText}
       />
+
       <View style={styles.card}>
         <Text style={styles.pageTitle}>Book A Service</Text>
 
@@ -155,6 +157,11 @@ const BookServicePage = () => {
 };
 
 const styles = StyleSheet.create({
+  ScrollView: {
+    marginBottom: hp("2%"),
+    marginTop: hp("4%"),
+    zIndex: 1,
+  },
   container: {
     backgroundColor: "#F4F9F8",
     paddingHorizontal: wp("4%"),
@@ -167,6 +174,19 @@ const styles = StyleSheet.create({
     zIndex: 1,
     borderRadius: 30,
     marginBottom: 16,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#DADADA",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  inputText: {
+    fontFamily: "poppins",
+    fontSize: wp("4%"),
+    color: "#000",
   },
   card: {
     zIndex: 1,
@@ -185,12 +205,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#007bff",
     marginBottom: hp("2%"),
+    fontFamily: "poppins",
   },
   sectionTitle: {
     fontSize: wp("4%"),
     fontWeight: "600",
     color: "#333",
     marginBottom: hp("1.5%"),
+    fontFamily: "poppins",
   },
   subSectionTitle: {
     fontSize: wp("4%"),
@@ -198,6 +220,7 @@ const styles = StyleSheet.create({
     color: "#007bff",
     marginTop: hp("1.5%"),
     marginBottom: hp("1.5%"),
+    fontFamily: "poppins",
   },
   underlineInput: {
     borderBottomWidth: 1,
@@ -205,6 +228,8 @@ const styles = StyleSheet.create({
     fontSize: wp("4%"),
     paddingVertical: hp("1%"),
     marginBottom: hp("2%"),
+    fontFamily: "poppins",
+    color: "#000",
   },
   confirmButton: {
     backgroundColor: "#007bff",

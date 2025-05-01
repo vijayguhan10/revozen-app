@@ -80,10 +80,10 @@ const ServiceHistoryDetailsPage = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#F4F9F8",
-    zIndex:1,
+    zIndex: 1,
     width: "100%",
     paddingHorizontal: wp("4%"),
-    marginTop: hp("17%"),
+    marginTop: hp("13%"),
   },
   card: {
     backgroundColor: "white",
@@ -105,11 +105,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#007bff",
     marginBottom: hp("0.5%"),
+    fontFamily: "poppins",
   },
   sectionTitle: {
     fontSize: wp("4%"),
     fontWeight: "600",
     color: "#ff8800",
+    fontFamily: "poppins",
   },
   serviceTypeCard: {
     backgroundColor: "#E6F0FA",
@@ -128,6 +130,7 @@ const styles = StyleSheet.create({
     fontSize: wp("4%"),
     fontWeight: "bold",
     color: "#333",
+    fontFamily: "poppins",
   },
   statusIcon: {
     width: wp("8%"),
@@ -156,12 +159,14 @@ const styles = StyleSheet.create({
     fontSize: wp("3.8%"),
     color: "#666",
     marginBottom: hp("1%"),
+    fontFamily: "poppins",
   },
   value: {
     fontSize: wp("3.8%"),
     fontWeight: "600",
     color: "#333",
     marginBottom: hp("1%"),
+    fontFamily: "poppins",
   },
   buttonsContainer: {
     flexDirection: "column",
@@ -179,13 +184,13 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: wp("4.5%"),
+    fontFamily: "poppins",
   },
   secondaryButton: {
     backgroundColor: "white",
     paddingVertical: hp("1%"),
     paddingHorizontal: wp("6%"),
     borderRadius: wp("2%"),
-
     borderWidth: 1,
     borderColor: "#007bff",
   },
@@ -193,6 +198,7 @@ const styles = StyleSheet.create({
     color: "#007bff",
     fontWeight: "bold",
     fontSize: wp("4.5%"),
+    fontFamily: "poppins",
   },
 });
 

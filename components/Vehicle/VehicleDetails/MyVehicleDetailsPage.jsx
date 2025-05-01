@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: wp("5%"),
     fontWeight: "bold",
+    fontFamily: "poppins",
   },
   middleSection: {
     flex: 1,
@@ -80,6 +81,7 @@ const styles = StyleSheet.create({
     color: "#007bff",
     marginBottom: hp("2%"),
     textAlign: "left",
+    fontFamily: "poppins",
   },
   scrollContainer: {
     flexGrow: 1,
@@ -95,6 +97,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: wp("4%"),
+    fontFamily: "poppins",
   },
 });
 

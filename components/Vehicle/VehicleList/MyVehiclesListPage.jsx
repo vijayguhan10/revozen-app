@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
     fontSize: wp("5%"),
     fontWeight: "600",
     color: "#007bff",
+    fontFamily: "poppins",
   },
   scrollContainer: {
     height: hp("65%"),

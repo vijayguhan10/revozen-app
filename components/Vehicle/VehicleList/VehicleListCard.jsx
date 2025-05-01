@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     color: "#333",
     paddingTop: hp("1%"),
     paddingLeft: wp("1%"),
+    fontFamily: "poppins",
   },
   image: {
     width: wp("40%"),
