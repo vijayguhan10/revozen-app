@@ -66,13 +66,18 @@ const BookServicePage = () => {
   const onChangeSearch = (query) => setSearchQuery(query);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      style={styles.ScrollView}
+    >
       <Searchbar
         placeholder="Search for a car service"
         onChangeText={onChangeSearch}
         value={searchQuery}
         style={styles.searchbar}
+        inputStyle={styles.inputText}
       />
+
       <View style={styles.card}>
         <Text style={styles.pageTitle}>Book A Service</Text>
 
@@ -157,16 +162,34 @@ const BookServicePage = () => {
 };
 
 const styles = StyleSheet.create({
+  ScrollView: {
+    marginBottom: hp("2%"),
+    marginTop: hp("4%"),
+    zIndex: 1,
+  },
   container: {
     backgroundColor: "#F4F9F8",
     paddingHorizontal: wp("4%"),
-    paddingTop: hp("5%"),
+    paddingTop: hp("2%"),
+    marginTop: hp("9%"),
     paddingBottom: hp("10%"),
-    marginTop: hp("5%"),
   },
   searchbar: {
     borderRadius: 30,
     marginBottom: 16,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#DADADA",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  inputText: {
+    fontFamily: "poppins",
+    fontSize: wp("4%"),
+    color: "#000",
   },
   card: {
     backgroundColor: "white",
@@ -184,12 +207,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#007bff",
     marginBottom: hp("2%"),
+    fontFamily: "poppins",
   },
   sectionTitle: {
     fontSize: wp("4%"),
     fontWeight: "600",
     color: "#333",
     marginBottom: hp("1.5%"),
+    fontFamily: "poppins",
   },
   subSectionTitle: {
     fontSize: wp("4%"),
@@ -197,6 +222,7 @@ const styles = StyleSheet.create({
     color: "#007bff",
     marginTop: hp("1.5%"),
     marginBottom: hp("1.5%"),
+    fontFamily: "poppins",
   },
   underlineInput: {
     borderBottomWidth: 1,
@@ -204,6 +230,8 @@ const styles = StyleSheet.create({
     fontSize: wp("4%"),
     paddingVertical: hp("1%"),
     marginBottom: hp("2%"),
+    fontFamily: "poppins",
+    color: "#000",
   },
   locationRow: {
     flexDirection: "row",
@@ -237,14 +265,17 @@ const styles = StyleSheet.create({
   },
   locationDetails: {
     flex: 1,
+    fontFamily: "poppins",
   },
   locationName: {
     fontSize: wp("4%"),
     color: "#333",
+    fontFamily: "poppins",
   },
   locationAddress: {
     fontSize: wp("3.8%"),
     color: "#666",
+    fontFamily: "poppins",
   },
   changeButton: {
     marginLeft: wp("2%"),
@@ -253,6 +284,7 @@ const styles = StyleSheet.create({
     fontSize: wp("3.8%"),
     color: "#007bff",
     fontWeight: "bold",
+    fontFamily: "poppins",
   },
   confirmButton: {
     backgroundColor: "#007bff",
@@ -260,11 +292,13 @@ const styles = StyleSheet.create({
     borderRadius: wp("2%"),
     alignItems: "center",
     marginTop: hp("3%"),
+    marginBottom: hp("2%"),
   },
   confirmButtonText: {
     color: "white",
     fontWeight: "bold",
     fontSize: wp("4.5%"),
+    fontFamily: "poppins",
   },
 });
 
