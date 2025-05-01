@@ -97,10 +97,10 @@ const MenuItem = ({ icon, label }) => (
 
 const styles = StyleSheet.create({
   container: {
-    zIndex:1,
+    zIndex: 1,
     // flex: 1,
     backgroundColor: "#F4F9F8",
-    marginTop:hp("15%")
+    marginTop: hp("15%"),
   },
   content: {
     paddingHorizontal: wp("4%"),
@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
     fontSize: wp("5.5%"),
     color: "#3366ff",
     fontWeight: "bold",
+    fontFamily: "poppins",
   },
   avatar: {
     width: wp("25%"),
@@ -141,6 +142,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     marginBottom: hp("1.5%"),
+    fontFamily: "poppins",
   },
   infoRow: {
     flexDirection: "row",
@@ -152,6 +154,7 @@ const styles = StyleSheet.create({
     fontSize: wp("4%"),
     marginLeft: wp("3%"),
     color: "#333",
+    fontFamily: "poppins",
   },
   sectionCard: {
     backgroundColor: "#fff",
@@ -174,6 +177,7 @@ const styles = StyleSheet.create({
     fontSize: wp("4%"),
     marginLeft: wp("3%"),
     color: "#111",
+    fontFamily: "poppins",
   },
   loginButton: {
     paddingVertical: hp("1.8%"),
@@ -195,6 +199,7 @@ const styles = StyleSheet.create({
     fontSize: wp("4%"),
     fontWeight: "bold",
     color: "#1f1f1f",
+    fontFamily: "poppins",
   },
 });
 
