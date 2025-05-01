@@ -24,11 +24,17 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    // "extra": {
-    //   "eas": {
-    //     "projectId": "927a97a9-9fdc-419c-aecd-2ab2d9f2ace3"
-    //   }
-    // },
-    "owner": "vijayguhan"
+    "extra": {
+      "eas": {
+        "projectId": "927a97a9-9fdc-419c-aecd-2ab2d9f2ace3"
+      }
+    },
+    "owner": "vijayguhan",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/927a97a9-9fdc-419c-aecd-2ab2d9f2ace3"
+    }
   }
 }

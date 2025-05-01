@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -11,20 +11,24 @@ const VehicleListCard = ({ model, image, index }) => {
   const isOrangeBackground = index % 2 !== 0;
 
   return (
-    <View
-      style={[
-        styles.card,
-        isOrangeBackground
-          ? { backgroundColor: orangeColor, borderColor: orangeColor }
-          : { borderColor: orangeColor, backgroundColor: "#fff" },
-      ]}
-    >
-      <View style={styles.cardContent}>
-        <Text style={[styles.model, isOrangeBackground && { color: "#fff" }]}>
-          {model}
-        </Text>
-      </View>
-      <Image source={image} style={styles.image} />
+    <View>
+        <View
+          style={[
+            styles.card,
+            isOrangeBackground
+              ? { backgroundColor: orangeColor, borderColor: orangeColor }
+              : { borderColor: orangeColor, backgroundColor: "#fff" },
+          ]}
+        >
+          <View style={styles.cardContent}>
+            <Text
+              style={[styles.model, isOrangeBackground && { color: "#fff" }]}
+            >
+              {model}
+            </Text>
+          </View>
+          <Image source={image} style={styles.image} />
+        </View>
     </View>
   );
 };
@@ -40,7 +44,7 @@ const styles = StyleSheet.create({
   cardContent: {
     flex: 1,
     justifyContent: "flex-start",
-    height: hp("12%"), 
+    height: hp("12%"),
   },
   model: {
     fontSize: wp("5%"),

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,24 +6,47 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import VehicleListCard from "./VehicleListCard";
-import { Ionicons } from "@expo/vector-icons"; // You can also use MaterialCommunityIcons or FontAwesome
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-const vehicleData = [
-  { id: 1, model: "Baleno", image: require("../../../assets/Vehicle/car.png") },
-  { id: 2, model: "Swift", image: require("../../../assets/Vehicle/car.png") },
-  { id: 3, model: "XUV700", image: require("../../../assets/Vehicle/car.png") },
-  { id: 4, model: "Creta", image: require("../../../assets/Vehicle/car.png") },
-];
+import { API_URL } from "../../../env.json"
 
 const MyVehiclesListPage = () => {
+  const [vehicles, setVehicles] = useState([]);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      const token = await AsyncStorage.getItem("token");
+      try {
+        const response = await axios.get(
+          `${API_URL}/client/vehicle/getallvehicles`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setVehicles(response.data); // Save data to state
+      } catch (error) {
+        console.log(
+          "Error fetching vehicles:",
+          error.response?.data || error.message
+        );
+      }
+    };
+
+    fetchVehicles();
+  }, []);
+
   const handleAddVehicle = () => {
-    navigation.navigate("addvehicle"); // Replace with your actual route name
+    navigation.navigate("AddVehicle");
   };
 
   return (
@@ -46,11 +69,11 @@ const MyVehiclesListPage = () => {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.vehicleSection}>
-              {vehicleData.map((vehicle, index) => (
+              {vehicles.map((vehicle, index) => (
                 <VehicleListCard
-                  key={vehicle.id}
-                  model={vehicle.model}
-                  image={vehicle.image}
+                  key={vehicle._id}
+                  model={vehicle.vehicleModel}
+                  image={require("../../../assets/Vehicle/car.png")} // Static image
                   index={index}
                 />
               ))}

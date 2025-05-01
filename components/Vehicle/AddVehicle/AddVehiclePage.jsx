@@ -11,22 +11,39 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-
+import api from "../../../env.json";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const AddVehiclePage = () => {
+  const API_URL = api.API_URL;
   const [regNo, setRegNo] = useState("");
   const [autofill, setAutofill] = useState(false);
   const [vehicleType, setVehicleType] = useState("");
   const [model, setModel] = useState("");
   const [servicesDone, setServicesDone] = useState("");
-
-  const handleSave = () => {
-    console.log({
-      regNo,
-      autofill,
+  const handleSave = async () => {
+    const token = await AsyncStorage.getItem("token");
+    console.log("token : ", token);
+    const data = {
+      registrationNumber: regNo,
       vehicleType,
-      model,
-      servicesDone,
-    });
+      vehicleModel: model,
+    };
+
+    try {
+      console.log("token : ", token);
+      const response = await axios.post(`${API_URL}/client/vehicle/addvehicle`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Vehicle added:", response.data);
+    } catch (error) {
+      console.log(
+        "Error adding vehicle:",
+        error.response?.data || error.message
+      );
+    }
   };
 
   return (
@@ -109,12 +126,12 @@ const AddVehiclePage = () => {
 
 const styles = StyleSheet.create({
   container: {
-    zIndex:10,
+    zIndex: 10,
     flex: 1,
     width: wp("100%"),
   },
   middleSection: {
-    zindex:1,
+    zindex: 1,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

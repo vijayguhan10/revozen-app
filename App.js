@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import InitialRouter from "./Router/InitialRouter";
 import { useFonts } from "@use-expo/font";
+import BookServicePage from "./components/Home/BookService/BookServicePage";
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
@@ -19,6 +20,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <InitialRouter />
+      {/* <BookServicePage /> */}
     </View>
   );
 }
