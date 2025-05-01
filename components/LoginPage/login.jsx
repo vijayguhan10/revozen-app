@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
 
   overlay: {
-    marginTop: hp("6%"),
+    marginTop: hp("3%"),
     justifyContent: "center",
     alignItems: "center",
     borderRadius: wp("4%"),
@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
     color: "#151717",
     fontWeight: "600",
     fontSize: wp("4%"),
+    fontFamily: "poppins",
   },
   inputForm: {
     flexDirection: "row",
@@ -201,6 +202,7 @@ const styles = StyleSheet.create({
     marginLeft: wp("2%"),
     fontSize: wp("4%"),
     color: "#000",
+    fontFamily: "poppins",
   },
   flexRow: {
     flexDirection: "row",
@@ -215,11 +217,13 @@ const styles = StyleSheet.create({
   rememberMeText: {
     fontSize: wp("3.5%"),
     color: "#000",
+    fontFamily: "poppins",
   },
   forgotText: {
     fontSize: wp("3.5%"),
     color: "#2d79f3",
     fontWeight: "500",
+    fontFamily: "poppins",
   },
   buttonSubmit: {
     backgroundColor: "#151717",
@@ -232,16 +236,19 @@ const styles = StyleSheet.create({
     fontSize: wp("4%"),
     textAlign: "center",
     fontWeight: "600",
+    fontFamily: "poppins",
   },
   pText: {
     textAlign: "center",
     fontSize: wp("3.5%"),
     color: "#000",
     marginTop: hp("2%"),
+    fontFamily: "poppins",
   },
   spanText: {
     color: "#2d79f3",
     fontWeight: "500",
+    fontFamily: "poppins",
   },
   socialButton: {
     flex: 1,
@@ -274,12 +281,14 @@ const styles = StyleSheet.create({
     fontSize: wp("4%"),
     fontWeight: "600",
     marginLeft: wp("2%"),
+    fontFamily: "poppins",
   },
   appleButtonText: {
     color: "#fff",
     fontSize: wp("4%"),
     fontWeight: "600",
     marginLeft: wp("2%"),
+    fontFamily: "poppins",
   },
   icon: {
     width: wp("5%"),

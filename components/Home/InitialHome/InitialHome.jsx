@@ -34,7 +34,10 @@ const InitialHome = () => {
         />
       </View>
 
-      <ScrollView scrollEnabled={true}>
+      <ScrollView
+        scrollEnabled={true}
+        contentContainerStyle={{ paddingBottom: hp("10%") }}
+      >
         <Text style={styles.sectionTitle}>Choose service type</Text>
 
         <View style={styles.serviceTypeContainer}>
@@ -187,11 +190,15 @@ const styles = StyleSheet.create({
     borderRadius: wp("2.5%"),
     marginBottom: hp("2.5%"),
   },
-  searchInput: { flex: 1 },
+  searchInput: {
+    flex: 1,
+    fontFamily: "poppins",
+  },
   sectionTitle: {
     fontSize: wp("4%"),
     fontWeight: "600",
     marginBottom: hp("1.2%"),
+    fontFamily: "poppins",
   },
   serviceTypeContainer: {
     flexDirection: "row",
@@ -227,6 +234,7 @@ const styles = StyleSheet.create({
     color: "#000",
     marginTop: hp("0.8%"),
     fontWeight: "600",
+    fontFamily: "poppins",
   },
   serviceHistoryBtn: {
     borderColor: "#a6c4f5",
@@ -239,6 +247,7 @@ const styles = StyleSheet.create({
   serviceHistoryText: {
     color: "#FF6B00",
     fontWeight: "600",
+    fontFamily: "poppins",
   },
   bookingCard: {
     backgroundColor: "#4472FF",
@@ -250,6 +259,7 @@ const styles = StyleSheet.create({
     fontSize: wp("4%"),
     fontWeight: "600",
     marginBottom: hp("1.2%"),
+    fontFamily: "poppins",
   },
   rowgapcontainer: {
     flexDirection: "column",
@@ -264,12 +274,14 @@ const styles = StyleSheet.create({
   bookingText: {
     color: "#fff",
     marginLeft: wp("1%"),
+    fontFamily: "poppins",
   },
   bookingService: {
     color: "#fff",
     fontSize: wp("3.8%"),
     fontWeight: "600",
     marginBottom: hp("2%"),
+    fontFamily: "poppins",
   },
   buttonGroup: {
     flexDirection: "row",
@@ -289,12 +301,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     fontSize: wp("3%"),
+    fontFamily: "poppins",
   },
   title: {
     color: "#4f80ff",
     fontWeight: "600",
     fontSize: 16,
     marginBottom: 12,
+    fontFamily: "poppins",
   },
   item: {
     flexDirection: "row",
@@ -304,14 +318,17 @@ const styles = StyleSheet.create({
     width: 60,
     fontWeight: "700",
     color: "#000",
+    fontFamily: "poppins",
   },
   activity: {
     color: "#000",
+    fontFamily: "poppins",
   },
   subText: {
     color: "#999",
     marginLeft: 60,
     fontSize: 12,
+    fontFamily: "poppins",
   },
   Recentactivities: {
     borderRadius: hp("2%"),
