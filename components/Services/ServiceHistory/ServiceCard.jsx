@@ -48,21 +48,25 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
     marginBottom: hp("0.5%"),
+    fontFamily: "poppins",
   },
   serviceDetail: {
     fontSize: wp("3.5%"),
     color: "#666",
+    fontFamily: "poppins",
   },
   vehicleName: {
     fontSize: wp("3.5%"),
     color: "#666",
     fontWeight: "bold",
+    fontFamily: "poppins",
   },
   time: {
     position: "absolute",
     right: wp("4%"),
     fontSize: wp("3.5%"),
     color: "#333",
+    fontFamily: "poppins",
   },
 });
 

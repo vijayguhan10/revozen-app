@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   cardContent: {
     flex: 1,
     justifyContent: "flex-start",
-    height: hp("12%"), 
+    height: hp("12%"),
   },
   model: {
     fontSize: wp("5%"),

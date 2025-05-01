@@ -84,7 +84,7 @@ const SupportScreen = () => {
               Tap once to request instant roadside help!
             </Text>
             <Text style={styles.footerText}>
-              We’ll locate you and send help right away
+              We'll locate you and send help right away
             </Text>
           </View>
 
@@ -165,11 +165,13 @@ const styles = StyleSheet.create({
     color: "#4169e1",
     fontWeight: "bold",
     marginBottom: hp("1.5%"),
+    fontFamily: "poppins",
   },
   subheader: {
     fontSize: wp("4%"),
     marginBottom: hp("2%"),
     textAlign: "center",
+    fontFamily: "poppins",
   },
   card: {
     backgroundColor: "#ffffff",
@@ -210,12 +212,14 @@ const styles = StyleSheet.create({
     marginTop: hp("2%"),
     fontSize: wp("4%"),
     textAlign: "center",
+    fontFamily: "poppins",
   },
   footerText: {
     marginTop: hp("1.2%"),
     fontSize: wp("3.5%"),
     textAlign: "center",
     color: "#666",
+    fontFamily: "poppins",
   },
   row: {
     flexDirection: "row",
@@ -232,22 +236,26 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: wp("4.5%"),
     color: "#4169e1",
+    fontFamily: "poppins",
   },
   subtitle: {
     fontSize: wp("3.3%"),
     color: "#555",
     marginTop: hp("0.8%"),
+    fontFamily: "poppins",
   },
   label: {
     marginTop: hp("1.5%"),
     fontSize: wp("3.5%"),
     color: "#333",
+    fontFamily: "poppins",
   },
   input: {
     backgroundColor: "#ececec",
     borderRadius: wp("2%"),
     padding: wp("2.5%"),
     marginTop: hp("0.8%"),
+    fontFamily: "poppins",
   },
   textArea: {
     height: hp("13%"),
@@ -265,5 +273,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
     fontSize: wp("4%"),
+    fontFamily: "poppins",
   },
 });
