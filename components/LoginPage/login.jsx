@@ -50,6 +50,8 @@ const LoginScreen = () => {
     }
   };
 
+  
+
   const handleSignup = async () => {
     try {
       console.log(name, email, password);

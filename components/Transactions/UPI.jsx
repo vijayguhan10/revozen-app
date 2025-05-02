@@ -14,16 +14,49 @@ import {
   Ionicons,
   FontAwesome,
 } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-
+import RazorpayCheckout from "react-native-razorpay";
 export default function PaymentScreen() {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [payLater, setPayLater] = useState(true);
+
+  const handlePayment = () => {
+    const options = {
+      description: "Payment for Service",
+      image: "https://your_logo_url.png", 
+      currency: "INR",
+      key: "rzp_live_UlRZDlkCIm89E8",
+      amount: "350000", 
+      name: "Tyre Management",
+      prefill: {
+        email: "vijayguhan10@gmail.com", 
+        contact: "++918438434868", 
+        name: "Vijay Guhan", 
+      },
+      theme: { color: "#0046ff" },
+    };
+
+    RazorpayCheckout.open(options)
+      .then((data) => {
+        // Handle success
+        console.log("Payment successful: ", data);
+        // navigation.dispatch(
+        //   CommonActions.reset({
+        //     index: 1,
+        //     routes: [{ name: "Login" }, { name: "Home" }],
+        //   })
+        // );
+      })
+      .catch((error) => {
+        // Handle failure
+        console.error("Payment failed: ", error);
+      });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -143,14 +176,7 @@ export default function PaymentScreen() {
       </View>
 
       <TouchableOpacity
-        onPress={() => {
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 1,
-              routes: [{ name: "Login" }, { name: "Home" }],
-            })
-          );
-        }}
+        onPress={handlePayment} 
         style={styles.confirmButton}
       >
         <Text style={styles.confirmText}>Confirm Payment</Text>
@@ -158,7 +184,7 @@ export default function PaymentScreen() {
     </ScrollView>
   );
 }
-
+console
 const styles = StyleSheet.create({
   container: {
     zIndex: 1,

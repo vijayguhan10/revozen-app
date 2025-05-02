@@ -33,7 +33,7 @@ const MyVehiclesListPage = () => {
             },
           }
         );
-        setVehicles(response.data); // Save data to state
+        setVehicles(response.data); 
       } catch (error) {
         console.log(
           "Error fetching vehicles:",
