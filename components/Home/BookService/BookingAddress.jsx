@@ -19,8 +19,9 @@ import {
 } from "react-native-responsive-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../../env.json";
-
+import { useNavigation } from "@react-navigation/native";
 const BookingAddress = ({ productDetails }) => {
+  const navigation = useNavigation();
   const API_URL = api.API_URL;
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [addresses, setAddresses] = useState([]);
@@ -61,23 +62,24 @@ const BookingAddress = ({ productDetails }) => {
   };
 
   const handleAddOrUpdateAddress = async () => {
-    try {
-      const payload = { ...newAddress };
-      if (isEdit && editAddressId) {
-        await axios.put(`${API_URL}/address/update/${editAddressId}`, payload, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      } else {
-        await axios.post(`${API_URL}/address/create`, payload, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
-      closeModal();
-      resetForm();
-      fetchAddresses();
-    } catch (err) {
-      console.error("Error adding/updating address", err);
-    }
+    navigation.navigate("clientordertyre")
+    // try {
+    //   const payload = { ...newAddress };
+    //   if (isEdit && editAddressId) {
+    //     await axios.put(`${API_URL}/address/update/${editAddressId}`, payload, {
+    //       headers: { Authorization: `Bearer ${token}` },
+    //     });
+    //   } else {
+    //     await axios.post(`${API_URL}/address/create`, payload, {
+    //       headers: { Authorization: `Bearer ${token}` },
+    //     });
+    //   }
+    //   closeModal();
+    //   resetForm();
+    //   fetchAddresses();
+    // } catch (err) {
+    //   console.error("Error adding/updating address", err);
+    // }
   };
 
   const handleEdit = (address) => {
@@ -100,15 +102,17 @@ const BookingAddress = ({ productDetails }) => {
   };
 
   const handleConfirm = async () => {
-    try {
-      const selected = addresses.find((addr) => addr._id === selectedLocation);
-      await axios.post(`${API_URL}/user/confirm`, {
-        address: selected,
-        products: productDetails,
-      });
-    } catch (err) {
-      console.error("Error confirming", err);
-    }
+    // try {
+    //   const selected = addresses.find((addr) => addr._id === selectedLocation);
+    //   await axios.post(`${API_URL}/user/confirm`, {
+    //     address: selected,
+    //     products: productDetails,
+    //   });
+    // } catch (err) {
+    //   console.error("Error confirming", err);
+    // }
+    navigation.navigate("clientordertyre")
+
   };
 
   const openModal = () => {
