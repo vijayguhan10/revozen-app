@@ -13,9 +13,7 @@ const Index = () => {
       contentContainerStyle={styles.container}
     >
       <BookServicePage />
-      <View style={{ padding: wp("0.8%"), marginTop: hp("1.5%") }}>
-        <BookingAddress />
-      </View>
+
     </ScrollView>
   );
 };

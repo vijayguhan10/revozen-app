@@ -20,7 +20,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../../env.json";
 import { useNavigation } from "@react-navigation/native";
-const BookingAddress = ({ productDetails }) => {
+const BookingAddress = ({ selectedVehicles, isBulkOrder }) => {
   const navigation = useNavigation();
   const API_URL = api.API_URL;
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -62,7 +62,7 @@ const BookingAddress = ({ productDetails }) => {
   };
 
   const handleAddOrUpdateAddress = async () => {
-    navigation.navigate("clientordertyre")
+    navigation.navigate("clientordertyre");
     // try {
     //   const payload = { ...newAddress };
     //   if (isEdit && editAddressId) {
@@ -111,8 +111,7 @@ const BookingAddress = ({ productDetails }) => {
     // } catch (err) {
     //   console.error("Error confirming", err);
     // }
-    navigation.navigate("clientordertyre")
-
+    navigation.navigate("clientordertyre");
   };
 
   const openModal = () => {
