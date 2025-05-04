@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
   ScrollView,
 } from "react-native";
 import { Searchbar } from "react-native-paper";
@@ -13,7 +12,6 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import BookingAddress from "./BookingAddress";
-import { Ionicons } from "@expo/vector-icons";
 import VehicleCard from "../../Vehicle/VehicleList/VehicleListCard";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -23,30 +21,30 @@ import api from "../../../env.json";
 const BookServicePage = () => {
   const API_URL = api.API_URL;
   const navigation = useNavigation();
-  const [tyresCount, setTyresCount] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("home");
+
   const [searchQuery, setSearchQuery] = useState("");
   const [vehicles, setVehicles] = useState([]);
+  const [filteredVehicles, setFilteredVehicles] = useState([]);
   const [selectedVehicles, setSelectedVehicles] = useState([]);
   const [isBulkOrder, setIsBulkOrder] = useState(false);
-  const [filteredVehicles, setFilteredVehicles] = useState([]);
+
   const scrollViewRef = useRef();
   const addressRef = useRef();
 
   useEffect(() => {
     const fetchVehicles = async () => {
       const token = await AsyncStorage.getItem("token");
+      // console.log("token: ",token);
       try {
+        console.log("token: ",token);
         const response = await axios.get(
           `${API_URL}/client/vehicle/getallvehicles`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
-        setVehicles(response.data); // Save data to state
-        setFilteredVehicles(response.data); // Set initial filtered list
+        setVehicles(response.data);
+        setFilteredVehicles(response.data);
       } catch (error) {
         console.log(
           "Error fetching vehicles:",
@@ -54,7 +52,6 @@ const BookServicePage = () => {
         );
       }
     };
-
     fetchVehicles();
   }, []);
 
@@ -68,32 +65,20 @@ const BookServicePage = () => {
   };
 
   const toggleVehicleSelection = (vehicleId) => {
-    if (selectedVehicles.includes(vehicleId)) {
-      setSelectedVehicles(selectedVehicles.filter((id) => id !== vehicleId));
-    } else {
-      setSelectedVehicles([...selectedVehicles, vehicleId]);
-    }
+    setSelectedVehicles((prev) => {
+      if (prev.find((v) => v._id === vehicleId)) {
+        return prev.filter((v) => v._id !== vehicleId);
+      } else {
+        const vehicleToAdd = vehicles.find((v) => v._id === vehicleId);
+        return [...prev, vehicleToAdd];
+      }
+    });
   };
 
   const handleBulkOrderToggle = () => {
-    setIsBulkOrder(!isBulkOrder);
-    if (!isBulkOrder) {
-      setTimeout(() => {
-        scrollToAddressSection();
-      }, 300);
-    }
-  };
-
-  const scrollToAddressSection = () => {
-    if (addressRef.current) {
-      addressRef.current.measureLayout(
-        scrollViewRef.current.getInnerViewNode(),
-        (x, y) => {
-          scrollViewRef.current.scrollTo({ y: y, animated: true });
-        },
-        () => {}
-      );
-    }
+    setSelectedVehicles([]);
+    setIsBulkOrder((prev) => !prev);
+    console.log("Bulk order  : ", isBulkOrder);
   };
 
   return (
@@ -108,9 +93,9 @@ const BookServicePage = () => {
 
       <View style={styles.card}>
         <Text style={styles.pageTitle}>Book A Service</Text>
-
         <Text style={styles.sectionTitle}>Select Vehicle</Text>
-        {filteredVehicles.length > 0 ? (
+
+        {filteredVehicles.length > 0 && (
           <ScrollView
             showsVerticalScrollIndicator={true}
             nestedScrollEnabled={true}
@@ -123,7 +108,7 @@ const BookServicePage = () => {
                   onPress={() => toggleVehicleSelection(vehicle._id)}
                   style={[
                     styles.vehicleCard,
-                    selectedVehicles.includes(vehicle._id) &&
+                    selectedVehicles.find((v) => v._id === vehicle._id) &&
                       styles.selectedVehicle,
                   ]}
                 >
@@ -140,7 +125,7 @@ const BookServicePage = () => {
               </View>
             ))}
           </ScrollView>
-        ) : null}
+        )}
 
         <TouchableOpacity
           onPress={handleBulkOrderToggle}
@@ -151,7 +136,13 @@ const BookServicePage = () => {
           </Text>
         </TouchableOpacity>
       </View>
-     
+
+      <View ref={addressRef} style={{ marginTop: hp("1.5%") }}>
+        <BookingAddress
+          selectedVehicles={isBulkOrder ? [] : selectedVehicles.map(vehicle => vehicle.registrationNumber)}
+          isBulkOrder={isBulkOrder}
+        />
+      </View>
     </View>
   );
 };

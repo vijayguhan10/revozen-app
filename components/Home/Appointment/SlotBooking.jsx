@@ -12,11 +12,26 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { useRoute } from "@react-navigation/native";
 
 export default function BookingScreen() {
+  const route = useRoute();
+  // Update to include selectedAddress
+  const { selectedVehicles, isBulkOrder, tyreOrders, selectedAddress } =
+    route.params;
+
+  console.log(
+    "------------------------------- Appointment Page --------------------------------------------"
+  );
+  console.log("Selected Vehicles:", selectedVehicles);
+  console.log("Is Bulk Order:", isBulkOrder);
+  console.log("Tyre Details:", tyreOrders);
+  console.log("Selected Address:", selectedAddress); // Add this log
+
   const navigation = useNavigation();
   const [date, setDate] = useState(undefined);
-  const [time, setTime] = useState({ hour: 10, minute: 0, period: "AM" });
+  // Change this line to initialize with "00" instead of 0
+  const [time, setTime] = useState({ hour: 10, minute: "00", period: "AM" });
   const [searchQuery, setSearchQuery] = useState("");
 
   const onChangeSearch = (query) => setSearchQuery(query);
@@ -62,9 +77,19 @@ export default function BookingScreen() {
   };
 
   const handleTimeChange = (value, type) => {
-    setTime((prevTime) => ({ ...prevTime, [type]: value }));
+    if (type === "minute" || type === "hour") {
+      // Allow empty string or convert to number
+      const numValue = value === '' ? '' : parseInt(value, 10);
+      // Only update if it's empty, a valid number, and within range
+      if (value === '' || (!isNaN(numValue) && numValue >= 0 && 
+          (type === "minute" ? numValue < 60 : numValue < 24))) {
+        setTime((prevTime) => ({ ...prevTime, [type]: numValue }));
+      }
+    } else {
+      // Handle period (AM/PM) normally
+      setTime((prevTime) => ({ ...prevTime, [type]: value }));
+    }
   };
-
   return (
     <ScrollView style={styles.ScrollView}>
       <View style={styles.container}>
@@ -114,7 +139,7 @@ export default function BookingScreen() {
             <View style={styles.timeInput}>
               <TextInput
                 label="Minute"
-                value={String(time.minute).padStart(2, "0")}
+                value={String(time.minute)}
                 keyboardType="numeric"
                 onChangeText={(value) => handleTimeChange(value, "minute")}
                 style={styles.inputField}
@@ -140,7 +165,37 @@ export default function BookingScreen() {
               console.log(
                 `Selected Date: ${date}, Time: ${time.hour}:${time.minute} ${time.period}`
               );
-              navigation.navigate("ServiceBooking");
+              // Create a structured date object
+              const appointmentDateTime = {
+                date: date ? {
+                  full: date.toISOString(),
+                  year: date.getFullYear(),
+                  month: date.getMonth() + 1, // JavaScript months are 0-indexed
+                  day: date.getDate(),
+                  weekday: date ? new Date(date).toLocaleDateString("en-US", {
+                    weekday: "long",
+                  }) : ""
+                } : null,
+                time: {
+                  hour: time.hour || 0,
+                  minute: typeof time.minute === 'string' ? 
+                    (time.minute || '00') : 
+                    (time.minute || 0).toString().padStart(2, '0'),
+                  period: time.period,
+                  formatted: `${time.hour || 0}:${typeof time.minute === 'string' ? 
+                    (time.minute || '00').padStart(2, '0') : 
+                    (time.minute || 0).toString().padStart(2, '0')} ${time.period}`
+                }
+              };
+              
+              // Pass all the data to ServiceBookingConfirmation
+              navigation.navigate("ServiceBooking", {
+                selectedVehicles,
+                isBulkOrder,
+                tyreOrders,
+                appointmentDateTime, // Pass the structured object
+                selectedAddress,
+              });
             }}
           >
             <Text style={styles.textStyle}>Confirm</Text>

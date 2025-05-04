@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,151 +12,126 @@ import {
 } from "react-native-responsive-screen";
 import ServiceCard from "./ServiceCard";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "../../../env.json";
+import axios from "axios";
+import { FlatList } from "react-native-gesture-handler";
 const ServiceHistoryPage = () => {
+  const API_URL = api.API_URL;
   const navigation = useNavigation();
-  const upcomingServices = [
-    {
-      id: 1,
-      type: "Tyre Replacement",
-      date: "Due on 8th May",
-      time: "10:30 am",
-      vehicle: "Baleno",
-    },
-    {
-      id: 2,
-      type: "Engine Oil Change",
-      date: "Due on 12th May",
-      time: "9:00 am",
-      vehicle: "Swift",
-    },
-    {
-      id: 3,
-      type: "AC Service",
-      date: "Due on 15th May",
-      time: "1:00 pm",
-      vehicle: "i20",
-    },
-  ];
 
-  const pastServices = [
-    {
-      id: 1,
-      type: "Wheel Alignment",
-      date: "Done on 1st Apr",
-      time: "8:30 am",
-      vehicle: "Car_1",
-    },
-    {
-      id: 2,
-      type: "Brake Check",
-      date: "Done on 24th Mar",
-      time: "5:30 pm",
-      vehicle: "Car_1",
-    },
-    {
-      id: 3,
-      type: "Full Service",
-      date: "Done on 18th Feb",
-      time: "4:00 pm",
-      vehicle: "Baleno",
-    },
-    {
-      id: 4,
-      type: "Battery Replacement",
-      date: "Done on 10th Feb",
-      time: "3:15 pm",
-      vehicle: "Swift",
-    },
-    {
-      id: 5,
-      type: "Coolant Top-up",
-      date: "Done on 28th Jan",
-      time: "11:00 am",
-      vehicle: "i20",
-    },
-  ];
+  const [upcomingServices, setUpcoming] = useState([]);
+  const [pastServices, setPast] = useState([]);
+  const [issues, setIssues] = useState([]);
+  const [paymentPending, setPending] = useState([]);
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+  const fetchAddresses = async () => {
+    const token = await AsyncStorage.getItem("token");
+    try {
+      const res = await axios.get(`${API_URL}/client/appointment/summary`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.data.success) {
+        setUpcoming(res.data.upcoming || []);
+        setPast(res.data.completed || []);
+        setIssues(res.data.issues || []);
+        setPending(res.data.paymentpending || []);
+      }
+    } catch (err) {
+      console.error("Error fetching service history", err);
+    }
+  };
+
+  const renderSection = (title, data, variant, isTouchable = false) => {
+    if (!data || data.length === 0) return null;
+
+    return (
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) =>
+            isTouchable ? (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("ServiceHistoryDetails", {
+                    service: item,
+                  })
+                }
+                activeOpacity={0.7}
+              >
+                <ServiceCard data={item} variant={variant} />
+              </TouchableOpacity>
+            ) : (
+              <ServiceCard data={item} variant={variant} />
+            )
+          }
+          style={{ maxHeight: hp("30%") }} // Limit height to show only ~3 cards
+          contentContainerStyle={{ gap: hp("1%") }}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.header}>Service History</Text>
-
-        {/* Outer container with fixed height */}
-        <View style={styles.scrollWrapper}>
-          <Text style={styles.sectionTitle}>Upcoming</Text>
-          <ScrollView
-            style={styles.subScroll}
-            contentContainerStyle={styles.scrollContent}
-          >
-            {upcomingServices.map((service) => (
-              <TouchableOpacity
-                onPress={() => navigation.navigate("ServiceHistoryDetails")}
-                key={service.id}
-              >
-                <ServiceCard data={service} variant="upcoming" />
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-
-          <Text style={[styles.sectionTitle, { marginTop: hp("2%") }]}>
-            History
-          </Text>
-          <ScrollView
-            style={styles.subScroll}
-            contentContainerStyle={styles.scrollContent}
-          >
-            {pastServices.map((service) => (
-              <ServiceCard key={service.id} data={service} variant="finished" />
-            ))}
-          </ScrollView>
-        </View>
-      </View>
+      <Text style={styles.header}>Your Service History</Text>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {renderSection("🧾 Payment Pending", paymentPending, "paymentpending")}
+        {renderSection(
+          "🕑 Upcoming Services",
+          upcomingServices,
+          "upcoming",
+          true
+        )}
+        {renderSection("✅ Completed Services", pastServices, "completed")}
+        {renderSection("⚠️ Issues Found", issues, "issues")}
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    zIndex: 1,
-    backgroundColor: "#f9f9f9",
-    paddingHorizontal: wp("5%"),
-    paddingBottom: hp("2%"),
-    marginTop: hp("15%"),
-  },
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: wp("3%"),
-    padding: wp("5%"),
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: hp("0.3%") },
-    shadowOpacity: 0.1,
-    shadowRadius: wp("1%"),
-    elevation: 3,
+    flex: 1,
+    paddingTop: hp("10%"),
+    backgroundColor: "#f4f7fb",
+    paddingHorizontal: wp("4%"),
+    marginTop: hp("5%"),
   },
   header: {
-    fontSize: wp("5.5%"),
+    fontSize: wp("6%"),
     fontWeight: "bold",
-    color: "#007bff",
+    color: "#003366",
     marginBottom: hp("3%"),
-    textAlign: "left",
-    fontFamily: "poppins",
+    fontFamily: "Poppins",
+  },
+  scrollContent: {
+    paddingBottom: hp("8%"),
+  },
+  sectionContainer: {
+    backgroundColor: "#fff",
+    borderRadius: wp("3%"),
+    padding: wp("4%"),
+    marginBottom: hp("2.5%"),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   sectionTitle: {
     fontSize: wp("4.5%"),
-    fontWeight: "bold",
-    color: "#ff8c00",
-    marginBottom: hp("1%"),
-    fontFamily: "poppins",
-  },
-  scrollWrapper: {
-    maxHeight: hp("64%"),
-  },
-  subScroll: {
-    maxHeight: hp("28%"),
+    fontWeight: "600",
+    color: "#1e90ff",
     marginBottom: hp("1.5%"),
-  },
-  scrollContent: {
-    paddingBottom: hp("2%"),
+    fontFamily: "Poppins",
   },
 });
 

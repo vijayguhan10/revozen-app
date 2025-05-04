@@ -1,4 +1,3 @@
-// BookingAddress.js
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -19,8 +18,9 @@ import {
 } from "react-native-responsive-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../../env.json";
-
-const BookingAddress = ({ productDetails }) => {
+import { useNavigation } from "@react-navigation/native";
+const BookingAddress = ({ selectedVehicles, isBulkOrder }) => {
+  const navigation = useNavigation();
   const API_URL = api.API_URL;
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [addresses, setAddresses] = useState([]);
@@ -60,26 +60,6 @@ const BookingAddress = ({ productDetails }) => {
     }
   };
 
-  const handleAddOrUpdateAddress = async () => {
-    try {
-      const payload = { ...newAddress };
-      if (isEdit && editAddressId) {
-        await axios.put(`${API_URL}/address/update/${editAddressId}`, payload, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      } else {
-        await axios.post(`${API_URL}/address/create`, payload, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
-      closeModal();
-      resetForm();
-      fetchAddresses();
-    } catch (err) {
-      console.error("Error adding/updating address", err);
-    }
-  };
-
   const handleEdit = (address) => {
     setNewAddress({ ...address });
     setEditAddressId(address._id);
@@ -87,28 +67,24 @@ const BookingAddress = ({ productDetails }) => {
     openModal();
   };
 
-  const resetForm = () => {
-    setNewAddress({
-      street: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "",
-    });
-    setIsEdit(false);
-    setEditAddressId(null);
-  };
 
   const handleConfirm = async () => {
-    try {
-      const selected = addresses.find((addr) => addr._id === selectedLocation);
-      await axios.post(`${API_URL}/user/confirm`, {
-        address: selected,
-        products: productDetails,
-      });
-    } catch (err) {
-      console.error("Error confirming", err);
-    }
+    const selectedAddress = addresses.find((addr) => addr._id === selectedLocation);
+    
+    const filteredAddress = selectedAddress ? {
+      _id: selectedAddress._id, 
+      street: selectedAddress.street,
+      city: selectedAddress.city,
+      state: selectedAddress.state,
+      postalCode: selectedAddress.postalCode,
+      country: selectedAddress.country
+    } : null;
+    
+    navigation.navigate("clientordertyre", { 
+      selectedVehicles, 
+      isBulkOrder,
+      selectedAddress: filteredAddress 
+    });
   };
 
   const openModal = () => {
@@ -198,11 +174,16 @@ const BookingAddress = ({ productDetails }) => {
               { transform: [{ scale: modalAnim }] },
             ]}
           >
-            <ScrollView>
+            <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>
                 {isEdit ? "Edit Address" : "New Address"}
               </Text>
+              <TouchableOpacity onPress={closeModal}>
+                <Ionicons name="close" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
 
+            <ScrollView contentContainerStyle={styles.scrollContent}>
               {[
                 { key: "street", icon: "home-outline", label: "Street" },
                 { key: "city", icon: "business-outline", label: "City" },
@@ -215,10 +196,12 @@ const BookingAddress = ({ productDetails }) => {
                 { key: "country", icon: "globe-outline", label: "Country" },
               ].map(({ key, icon, label }) => (
                 <View style={styles.inputGroup} key={key}>
-                  <Ionicons name={icon} size={18} color="#777" />
+                  <Ionicons name={icon} size={20} color="#444" />
                   <TextInput
                     style={styles.input}
                     placeholder={label}
+                    keyboardType={key === "postalCode" ? "numeric" : "default"}
+                    placeholderTextColor="#999"
                     value={newAddress[key]}
                     onChangeText={(text) =>
                       setNewAddress((prev) => ({ ...prev, [key]: text }))
@@ -228,8 +211,8 @@ const BookingAddress = ({ productDetails }) => {
               ))}
 
               <TouchableOpacity
-                style={[styles.modalBtn, { backgroundColor: "#28a745" }]}
-                onPress={handleAddOrUpdateAddress}
+                style={[styles.modalBtn, { backgroundColor: "#4CAF50" }]}
+                // onPress={handleAddOrUpdateAddress}
               >
                 <Text style={styles.modalBtnText}>
                   {isEdit ? "Update Address" : "Save Address"}
@@ -237,7 +220,7 @@ const BookingAddress = ({ productDetails }) => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.modalBtn, { backgroundColor: "#dc3545" }]}
+                style={[styles.modalBtn, { backgroundColor: "#E53935" }]}
                 onPress={closeModal}
               >
                 <Text style={styles.modalBtnText}>Cancel</Text>
@@ -348,50 +331,62 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.3)",
+    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
     alignItems: "center",
+    padding: 16,
   },
   modalContainer: {
+    width: "100%",
+    maxWidth: 400,
     backgroundColor: "#fff",
-    padding: wp("5%"),
-    borderRadius: 15,
-    width: "90%",
-    maxHeight: "85%",
+    borderRadius: 20,
+    padding: 20,
+    elevation: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 10,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
   },
   modalTitle: {
-    fontSize: wp("5%"),
-    fontWeight: "bold",
-    marginBottom: hp("2%"),
-    textAlign: "center",
-    fontFamily: "poppins",
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#333",
+  },
+  scrollContent: {
+    paddingBottom: 20,
   },
   inputGroup: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f1f1f1",
-    paddingHorizontal: wp("3%"),
-    paddingVertical: hp("1.2%"),
-    borderRadius: 8,
-    marginBottom: hp("1.5%"),
+    backgroundColor: "#f5f5f5",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    marginBottom: 12,
   },
   input: {
     flex: 1,
-    marginLeft: wp("2%"),
-    fontSize: wp("3.8%"),
+    marginLeft: 10,
+    fontSize: 16,
+    color: "#333",
   },
   modalBtn: {
-    fontFamily: "poppins",
-    backgroundColor: "#007bff",
-    padding: hp("1.4%"),
+    paddingVertical: 14,
     borderRadius: 10,
-    marginTop: hp("1.5%"),
     alignItems: "center",
+    marginTop: 12,
   },
   modalBtnText: {
     color: "#fff",
+    fontSize: 16,
     fontWeight: "600",
-    fontSize: wp("4%"),
   },
 });
 
