@@ -12,39 +12,41 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 import api from "../../../env.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRoute } from "@react-navigation/native";
 
 const ClientOrderTyre = () => {
   const API_URL = api.API_URL;
-  const [tyreDetails, setTyreDetails] = useState({
+
+  const route = useRoute();
+  const navigation = useNavigation();
+
+  const { selectedVehicles, isBulkOrder, selectedAddress } = route.params || {};
+
+  console.log("\nClient Order Tyre Selected vehicles:", selectedVehicles);
+  console.log("\nClient Order Tyre Is Bulk Order:", isBulkOrder);
+  console.log("\nClient Order Tyre Selected Address:", selectedAddress);
+  const initialTyreDetails = {
     numberOfTyres: "",
     tyreBrand: "",
     tyreModel: "",
     tyreSize: "",
-  });
+    tyrePrice: "",
+    tyreId: "",
+  };
+
+  const [tyreOrders, setTyreOrders] = useState([initialTyreDetails]);
   const [tyreData, setTyreData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [token, setToken] = useState("");
 
   const brands = [...new Set(tyreData.map((tyre) => tyre.brand))];
-
-  const models = tyreData
-    .filter((tyre) => tyre.brand === tyreDetails.tyreBrand)
-    .map((tyre) => tyre.model);
-
-  const sizes = tyreData.reduce((acc, tyre) => {
-    tyre.stock.forEach((item) => {
-      if (!acc.includes(item.size)) {
-        acc.push(item.size);
-      }
-    });
-    return acc;
-  }, []);
 
   useEffect(() => {
     const initialize = async () => {
@@ -73,32 +75,79 @@ const ClientOrderTyre = () => {
     }
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (index, field, value) => {
+    const updatedOrders = [...tyreOrders];
+
     if (field === "tyreBrand") {
-      setTyreDetails({
-        ...tyreDetails,
+      updatedOrders[index] = {
+        ...updatedOrders[index],
         [field]: value,
         tyreModel: "",
         tyreSize: "",
-      });
-    } 
-    else if (field === "tyreModel") {
-      setTyreDetails({
-        ...tyreDetails,
+        tyreId: "",
+      };
+    } else if (field === "tyreModel") {
+      updatedOrders[index] = {
+        ...updatedOrders[index],
         [field]: value,
         tyreSize: "",
-      });
-    } 
-    else {
-      setTyreDetails({
-        ...tyreDetails,
+        tyreId: "",
+      };
+    } else if (field === "tyreSize") {
+      const selectedTyre = tyreData.find(
+        (tyre) =>
+          tyre.brand === updatedOrders[index].tyreBrand &&
+          tyre.model === updatedOrders[index].tyreModel &&
+          !tyre.deleted
+      );
+
+      if (selectedTyre) {
+        const sizeData = selectedTyre.stock.find((item) => item.size === value);
+        updatedOrders[index] = {
+          ...updatedOrders[index],
+          [field]: value,
+          tyrePrice: sizeData ? sizeData.price : "",
+          tyreId: selectedTyre._id || "",
+        };
+      } else {
+        updatedOrders[index] = {
+          ...updatedOrders[index],
+          [field]: value,
+        };
+      }
+    } else {
+      updatedOrders[index] = {
+        ...updatedOrders[index],
         [field]: value,
-      });
+      };
+    }
+
+    setTyreOrders(updatedOrders);
+  };
+
+  const addNewOrder = () => {
+    setTyreOrders([...tyreOrders, initialTyreDetails]);
+  };
+
+  const removeOrder = (index) => {
+    if (tyreOrders.length > 1) {
+      const updatedOrders = tyreOrders.filter((_, i) => i !== index);
+      setTyreOrders(updatedOrders);
     }
   };
 
-  const handleContinue = () => {
-    console.log("Tyre details:", tyreDetails);
+  const isFormValid = () => {
+    return tyreOrders.every((order) => {
+      const numTyres = parseInt(order.numberOfTyres);
+      const isValidNumber = !isNaN(numTyres) && numTyres > 0;
+
+      return (
+        isValidNumber &&
+        order.tyreBrand !== "" &&
+        order.tyreModel !== "" &&
+        order.tyreSize !== ""
+      );
+    });
   };
 
   if (loading) {
@@ -121,6 +170,15 @@ const ClientOrderTyre = () => {
     );
   }
 
+  const handleContinue = () => {
+    navigation.navigate("Appointment", {
+      selectedVehicles,
+      isBulkOrder,
+      tyreOrders,
+      selectedAddress,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -131,92 +189,146 @@ const ClientOrderTyre = () => {
         <View style={styles.card}>
           <Text style={styles.pageTitle}>Tyre Details</Text>
 
-          <View style={styles.inputContainer}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="apps-outline" size={24} color="#FF6B00" />
-            </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Number of Tyres"
-              value={tyreDetails.numberOfTyres}
-              onChangeText={(text) => handleInputChange("numberOfTyres", text)}
-              keyboardType="numeric"
-            />
-          </View>
+          {tyreOrders.map((order, index) => (
+            <View key={index} style={styles.orderContainer}>
+              {index > 0 && (
+                <View style={styles.orderHeader}>
+                  <Text style={styles.orderTitle}>Order {index + 1}</Text>
+                  <TouchableOpacity onPress={() => removeOrder(index)}>
+                    <Ionicons name="close-circle" size={24} color="#FF6B00" />
+                  </TouchableOpacity>
+                </View>
+              )}
 
-          <View style={styles.inputContainer}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="disc-outline" size={24} color="#FF6B00" />
-            </View>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={tyreDetails.tyreBrand}
-                onValueChange={(value) => handleInputChange("tyreBrand", value)}
-                style={styles.picker}
-                dropdownIconColor="#555"
-              >
-                <Picker.Item 
-                  label="Select Tyre Brand" 
-                  value="" 
-                  style={{fontWeight: 'bold', fontSize: wp("4.2%")}} 
+              <View style={styles.inputContainer}>
+                <View style={styles.iconContainer}>
+                  <Ionicons name="apps-outline" size={24} color="#FF6B00" />
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter Number of Tyres"
+                  value={order.numberOfTyres}
+                  onChangeText={(text) =>
+                    handleInputChange(index, "numberOfTyres", text)
+                  }
+                  keyboardType="numeric"
                 />
-                {brands.map((brand) => (
-                  <Picker.Item key={brand} label={brand} value={brand} />
-                ))}
-              </Picker>
-            </View>
-          </View>
+              </View>
 
-          <View style={styles.inputContainer}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="cube-outline" size={24} color="#FF6B00" />
-            </View>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={tyreDetails.tyreModel}
-                onValueChange={(value) => handleInputChange("tyreModel", value)}
-                style={styles.picker}
-                enabled={!!tyreDetails.tyreBrand}
-                dropdownIconColor="#555"
-              >
-                <Picker.Item 
-                  label="Select Tyre Model" 
-                  value="" 
-                  style={{fontWeight: 'bold', fontSize: wp("4.2%")}} 
-                />
-                {models.map((model) => (
-                  <Picker.Item key={model} label={model} value={model} />
-                ))}
-              </Picker>
-            </View>
-          </View>
+              <View style={styles.inputContainer}>
+                <View style={styles.iconContainer}>
+                  <Ionicons name="disc-outline" size={24} color="#FF6B00" />
+                </View>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={order.tyreBrand}
+                    onValueChange={(value) =>
+                      handleInputChange(index, "tyreBrand", value)
+                    }
+                    style={styles.picker}
+                    dropdownIconColor="#555"
+                  >
+                    <Picker.Item
+                      label="Select Tyre Brand"
+                      value=""
+                      style={{ fontWeight: "bold", fontSize: wp("4.2%") }}
+                    />
+                    {brands.map((brand) => (
+                      <Picker.Item key={brand} label={brand} value={brand} />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
 
-          <View style={styles.inputContainer}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="resize-outline" size={24} color="#FF6B00" />
+              <View style={styles.inputContainer}>
+                <View style={styles.iconContainer}>
+                  <Ionicons name="cube-outline" size={24} color="#FF6B00" />
+                </View>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={order.tyreModel}
+                    onValueChange={(value) =>
+                      handleInputChange(index, "tyreModel", value)
+                    }
+                    style={styles.picker}
+                    enabled={!!order.tyreBrand}
+                    dropdownIconColor="#555"
+                  >
+                    <Picker.Item
+                      label="Select Tyre Model"
+                      value=""
+                      style={{ fontWeight: "bold", fontSize: wp("4.2%") }}
+                    />
+                    {tyreData
+                      .filter((tyre) => tyre.brand === order.tyreBrand)
+                      .map((tyre) => (
+                        <Picker.Item
+                          key={tyre.model}
+                          label={tyre.model}
+                          value={tyre.model}
+                        />
+                      ))}
+                  </Picker>
+                </View>
+              </View>
+
+              <View style={styles.inputContainer}>
+                <View style={styles.iconContainer}>
+                  <Ionicons name="resize-outline" size={24} color="#FF6B00" />
+                </View>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={order.tyreSize}
+                    onValueChange={(value) =>
+                      handleInputChange(index, "tyreSize", value)
+                    }
+                    style={styles.picker}
+                    dropdownIconColor="#555"
+                  >
+                    <Picker.Item
+                      label="Select Tyre Size"
+                      value=""
+                      style={{ fontWeight: "bold", fontSize: wp("4.2%") }}
+                    />
+                    {tyreData
+                      .filter(
+                        (tyre) =>
+                          tyre.brand === order.tyreBrand &&
+                          tyre.model === order.tyreModel
+                      )
+                      .reduce((acc, tyre) => {
+                        tyre.stock.forEach((item) => {
+                          if (!acc.includes(item.size)) {
+                            acc.push(item.size);
+                          }
+                        });
+                        return acc;
+                      }, [])
+                      .map((size) => (
+                        <Picker.Item key={size} label={size} value={size} />
+                      ))}
+                  </Picker>
+                </View>
+              </View>
+
+              {index < tyreOrders.length - 1 && (
+                <View style={styles.orderDivider} />
+              )}
             </View>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={tyreDetails.tyreSize}
-                onValueChange={(value) => handleInputChange("tyreSize", value)}
-                style={styles.picker}
-                dropdownIconColor="#555"
-              >
-                <Picker.Item 
-                  label="Select Tyre Size" 
-                  value="" 
-                  style={{fontWeight: 'bold', fontSize: wp("4.2%")}} 
-                />
-                {sizes.map((size) => (
-                  <Picker.Item key={size} label={size} value={size} />
-                ))}
-              </Picker>
-            </View>
-          </View>
+          ))}
+
+          <TouchableOpacity style={styles.addOrderButton} onPress={addNewOrder}>
+            <Ionicons name="add-circle-outline" size={24} color="white" />
+            <Text style={styles.addOrderButtonText}>Add New Order</Text>
+          </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.continueButton}
+            style={[
+              styles.continueButton,
+              !isFormValid() && styles.disabledButton,
+            ]}
             onPress={handleContinue}
+            disabled={!isFormValid()}
           >
             <Text style={styles.continueButtonText}>Continue</Text>
           </TouchableOpacity>
@@ -228,14 +340,14 @@ const ClientOrderTyre = () => {
 
 const styles = StyleSheet.create({
   scrollView: {
-    marginBottom: hp("2%"),
+    marginBottom: hp("10%"),
     zIndex: 1,
   },
   container: {
     backgroundColor: "#F4F9F8",
     paddingHorizontal: wp("4%"),
-    paddingTop: hp("5%"),
-    marginTop: hp("14%"),
+    paddingTop: hp("3%"),
+    marginTop: hp("12%"),
     marginBottom: hp("0.2%"),
     zIndex: 1,
   },
@@ -292,6 +404,29 @@ const styles = StyleSheet.create({
     marginBottom: hp("4%"),
     fontFamily: "poppins",
   },
+  orderContainer: {
+    marginBottom: hp("2%"),
+  },
+  orderHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: hp("2%"),
+    paddingBottom: hp("1%"),
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  orderTitle: {
+    fontSize: wp("4.5%"),
+    fontWeight: "bold",
+    color: "#4169E1",
+    fontFamily: "poppins",
+  },
+  orderDivider: {
+    height: 1,
+    backgroundColor: "#eee",
+    marginVertical: hp("2%"),
+  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -316,12 +451,33 @@ const styles = StyleSheet.create({
     color: "#555",
     fontFamily: "poppins",
   },
+  addOrderButton: {
+    backgroundColor: "#FF6B00",
+    paddingVertical: hp("1.5%"),
+    borderRadius: wp("3%"),
+    alignItems: "center",
+    marginTop: hp("2%"),
+    marginBottom: hp("3%"),
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  addOrderButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: wp("4%"),
+    fontFamily: "poppins",
+    marginLeft: wp("2%"),
+  },
   continueButton: {
     backgroundColor: "#4169E1",
     paddingVertical: hp("2%"),
     borderRadius: wp("3%"),
     alignItems: "center",
-    marginTop: hp("4%"),
+    marginTop: hp("2%"),
+  },
+  disabledButton: {
+    backgroundColor: "#A9A9A9",
+    opacity: 0.7,
   },
   continueButtonText: {
     color: "white",
