@@ -212,7 +212,7 @@ const BookingAddress = ({ selectedVehicles, isBulkOrder }) => {
 
               <TouchableOpacity
                 style={[styles.modalBtn, { backgroundColor: "#4CAF50" }]}
-                onPress={handleAddOrUpdateAddress}
+                // onPress={handleAddOrUpdateAddress}
               >
                 <Text style={styles.modalBtnText}>
                   {isEdit ? "Update Address" : "Save Address"}

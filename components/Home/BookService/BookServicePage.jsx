@@ -34,7 +34,9 @@ const BookServicePage = () => {
   useEffect(() => {
     const fetchVehicles = async () => {
       const token = await AsyncStorage.getItem("token");
+      // console.log("token: ",token);
       try {
+        console.log("token: ",token);
         const response = await axios.get(
           `${API_URL}/client/vehicle/getallvehicles`,
           {
