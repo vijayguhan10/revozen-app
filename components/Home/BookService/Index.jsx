@@ -13,7 +13,6 @@ const Index = () => {
       contentContainerStyle={styles.container}
     >
       <BookServicePage />
-
     </ScrollView>
   );
 };
