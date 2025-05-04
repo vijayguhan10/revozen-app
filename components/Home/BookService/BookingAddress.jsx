@@ -1,4 +1,3 @@
-// BookingAddress.js
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -61,27 +60,6 @@ const BookingAddress = ({ selectedVehicles, isBulkOrder }) => {
     }
   };
 
-  const handleAddOrUpdateAddress = async () => {
-    navigation.navigate("clientordertyre");
-    // try {
-    //   const payload = { ...newAddress };
-    //   if (isEdit && editAddressId) {
-    //     await axios.put(`${API_URL}/address/update/${editAddressId}`, payload, {
-    //       headers: { Authorization: `Bearer ${token}` },
-    //     });
-    //   } else {
-    //     await axios.post(`${API_URL}/address/create`, payload, {
-    //       headers: { Authorization: `Bearer ${token}` },
-    //     });
-    //   }
-    //   closeModal();
-    //   resetForm();
-    //   fetchAddresses();
-    // } catch (err) {
-    //   console.error("Error adding/updating address", err);
-    // }
-  };
-
   const handleEdit = (address) => {
     setNewAddress({ ...address });
     setEditAddressId(address._id);
@@ -89,29 +67,24 @@ const BookingAddress = ({ selectedVehicles, isBulkOrder }) => {
     openModal();
   };
 
-  const resetForm = () => {
-    setNewAddress({
-      street: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "",
-    });
-    setIsEdit(false);
-    setEditAddressId(null);
-  };
 
   const handleConfirm = async () => {
-    // try {
-    //   const selected = addresses.find((addr) => addr._id === selectedLocation);
-    //   await axios.post(`${API_URL}/user/confirm`, {
-    //     address: selected,
-    //     products: productDetails,
-    //   });
-    // } catch (err) {
-    //   console.error("Error confirming", err);
-    // }
-    navigation.navigate("clientordertyre");
+    const selectedAddress = addresses.find((addr) => addr._id === selectedLocation);
+    
+    const filteredAddress = selectedAddress ? {
+      _id: selectedAddress._id, 
+      street: selectedAddress.street,
+      city: selectedAddress.city,
+      state: selectedAddress.state,
+      postalCode: selectedAddress.postalCode,
+      country: selectedAddress.country
+    } : null;
+    
+    navigation.navigate("clientordertyre", { 
+      selectedVehicles, 
+      isBulkOrder,
+      selectedAddress: filteredAddress 
+    });
   };
 
   const openModal = () => {
