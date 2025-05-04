@@ -193,7 +193,13 @@ const ServiceBookingConfirmation = () => {
         [
           {
             text: "OK",
-            onPress: () => navigation.navigate("Home"),
+            onPress: () => {
+              if (optedPayment === "Pay Now") {
+                navigation.navigate("PaymentScreen");
+              } else {
+                navigation.navigate("Home");
+              }
+            },
           },
         ]
       );
