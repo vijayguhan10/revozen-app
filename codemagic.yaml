@@ -6,7 +6,7 @@ workflows:
     environment:
       vars:
         PACKAGE_NAME: "com.vijayguhan.revozen"
-      node: 18.0.0 # Updated to meet React Native 0.76.9 requirements
+      node: 22.12.0 # Updated to meet React Native 0.76.9 requirements
     triggering:
       events:
           - push
