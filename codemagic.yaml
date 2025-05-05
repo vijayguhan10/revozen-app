@@ -29,9 +29,13 @@ workflows:
       - name: Eject app from Expo
         script: |
           npx expo prebuild
-      - name: Set up app/build.gradle
+      - name: Check and move build.gradle if needed
         script: |
-          mv ./support-files/build.gradle android/app
+          if [ -f ./support-files/build.gradle ]; then
+            mv ./support-files/build.gradle android/app
+          else
+            echo "No build.gradle found in ./support-files, skipping move"
+          fi
       - name: Set Android SDK location
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
