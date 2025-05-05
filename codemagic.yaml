@@ -28,7 +28,7 @@ workflows:
           yarn list expo || (echo "Expo is not installed!" && exit 1)
       - name: Eject app from Expo
         script: |
-          npx expo eject
+          npx expo prebuild
       - name: Set up app/build.gradle
         script: |
           mv ./support-files/build.gradle android/app
