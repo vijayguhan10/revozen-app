@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, ScrollView, Dimensions } from "react-native";
+import { View, StyleSheet, Text, ScrollView, Dimensions, Alert } from "react-native";
 import {
   PaperProvider,
   Button,
@@ -17,7 +17,7 @@ import { useRoute } from "@react-navigation/native";
 export default function BookingScreen() {
   const route = useRoute();
   // Update to include selectedAddress
-  const { selectedVehicles, isBulkOrder, tyreOrders, selectedAddress } =
+  const { selectedVehicles, isBulkOrder, orderDetails, selectedAddress } =
     route.params;
 
   console.log(
@@ -25,7 +25,7 @@ export default function BookingScreen() {
   );
   console.log("Selected Vehicles:", selectedVehicles);
   console.log("Is Bulk Order:", isBulkOrder);
-  console.log("Tyre Details:", tyreOrders);
+  console.log("Order Details:", orderDetails);
   console.log("Selected Address:", selectedAddress); // Add this log
 
   const navigation = useNavigation();
@@ -162,6 +162,14 @@ export default function BookingScreen() {
           <Button
             mode="contained"
             onPress={() => {
+              if (!date) {
+                Alert.alert(
+                  "Date Required",
+                  "Please select a date for your appointment."
+                );
+                return;
+              }
+              
               console.log(
                 `Selected Date: ${date}, Time: ${time.hour}:${time.minute} ${time.period}`
               );
@@ -192,7 +200,7 @@ export default function BookingScreen() {
               navigation.navigate("ServiceBooking", {
                 selectedVehicles,
                 isBulkOrder,
-                tyreOrders,
+                orderDetails,
                 appointmentDateTime, // Pass the structured object
                 selectedAddress,
               });

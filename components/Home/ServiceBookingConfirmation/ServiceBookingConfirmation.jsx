@@ -30,27 +30,15 @@ const ServiceBookingConfirmation = () => {
   const {
     selectedVehicles,
     isBulkOrder,
-    tyreOrders,
+    orderDetails, 
     appointmentDateTime,
     selectedAddress,
   } = route.params || {};
 
-  const addressInfo = selectedAddress
-    ? {
-        fullAddress: `${selectedAddress.street}, ${selectedAddress.city}`,
-        locationNote: selectedAddress.state
-          ? `${selectedAddress.state}, ${selectedAddress.postalCode}`
-          : "Home Location",
-      }
-    : {
-        fullAddress: "Address not provided",
-        locationNote: "Location not specified",
-      };
-
   const calculateTotalPrice = () => {
-    if (!tyreOrders || tyreOrders.length === 0) return 0;
+    if (!orderDetails || orderDetails.length === 0) return 0;
 
-    return tyreOrders.reduce((total, order) => {
+    return orderDetails.reduce((total, order) => {
       const numTyres = parseInt(order.numberOfTyres) || 0;
       const price = parseInt(order.tyrePrice) || 0;
       return total + numTyres * price;
@@ -63,13 +51,10 @@ const ServiceBookingConfirmation = () => {
 
   const ServiceBookingConfirmationData = {
     service: "Tyre Replacement",
-    vehicle: isBulkOrder
-      ? "Bulk Order"
-      : selectedVehicles
-      ? selectedVehicles.join(", ")
-      : "Vehicle not specified",
-    location: addressInfo.fullAddress,
-    locationNote: addressInfo.locationNote,
+    location: selectedAddress
+      ? `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.postalCode}, ${selectedAddress.country}`
+      : "Address not specified",
+    locationNote: "",
     date: appointmentDateTime?.date
       ? `${appointmentDateTime.date.day}/${appointmentDateTime.date.month}/${appointmentDateTime.date.year}`
       : "Date not specified",
@@ -107,7 +92,7 @@ const ServiceBookingConfirmation = () => {
       return;
     }
 
-    if (!tyreOrders || tyreOrders.length === 0) {
+    if (!orderDetails || orderDetails.length === 0) {
       Alert.alert("Order Details Required", "Please add tyre order details.");
       return;
     }
@@ -136,7 +121,7 @@ const ServiceBookingConfirmation = () => {
           paymentStatus = "Unpaid";
       }
 
-      const orderItems = tyreOrders.map((order) => ({
+      const orderItems = orderDetails.map((order) => ({
         tyre: order.tyreId,
         size: order.tyreSize,
         quantity: parseInt(order.numberOfTyres) || 1,
@@ -223,36 +208,66 @@ const ServiceBookingConfirmation = () => {
     console.log(`Selected payment option: ${option}`);
   };
 
-  const renderTyreOrderItem = ({ item }) => (
-    <View style={styles.tyreOrderItem}>
-      <View style={styles.tyreOrderRow}>
-        <Text style={styles.tyreOrderLabel}>Quantity:</Text>
-        <Text style={styles.tyreOrderValue}>{item.numberOfTyres}</Text>
+  const renderTyreOrderItem = ({ item, index }) => {
+    let vehicleName = "No Vehicle";
+    let registrationNumber = "";
+    
+    if (!isBulkOrder && !item.noVehicle && item.vehicleId && selectedVehicles) {
+      const vehicle = selectedVehicles.find(v => v.id === item.vehicleId);
+      if (vehicle) {
+        vehicleName = vehicle.vehicleName || "Unknown Vehicle";
+        registrationNumber = vehicle.registrationNumber || "";
+      }
+    }
+    
+    return (
+      <View style={styles.tyreOrderItem}>
+        <View style={styles.orderNumberContainer}>
+          <Text style={styles.orderNumberText}>Order {index + 1}</Text>
+        </View>
+        
+        <View style={styles.tyreOrderRow}>
+          <Text style={styles.tyreOrderLabel}>Vehicle:</Text>
+          <Text style={styles.tyreOrderValue}>{vehicleName}</Text>
+        </View>
+        
+        {registrationNumber ? (
+          <View style={styles.tyreOrderRow}>
+            <Text style={styles.tyreOrderLabel}>Registration:</Text>
+            <Text style={styles.tyreOrderValue}>{registrationNumber}</Text>
+          </View>
+        ) : null}
+        
+        <View style={styles.tyreOrderRow}>
+          <Text style={styles.tyreOrderLabel}>Quantity:</Text>
+          <Text style={styles.tyreOrderValue}>{item.numberOfTyres}</Text>
+        </View>
+        
+        <View style={styles.tyreOrderRow}>
+          <Text style={styles.tyreOrderLabel}>Brand:</Text>
+          <Text style={styles.tyreOrderValue}>{item.tyreBrand}</Text>
+        </View>
+        <View style={styles.tyreOrderRow}>
+          <Text style={styles.tyreOrderLabel}>Model:</Text>
+          <Text style={styles.tyreOrderValue}>{item.tyreModel}</Text>
+        </View>
+        <View style={styles.tyreOrderRow}>
+          <Text style={styles.tyreOrderLabel}>Size:</Text>
+          <Text style={styles.tyreOrderValue}>{item.tyreSize}</Text>
+        </View>
+        <View style={styles.tyreOrderRow}>
+          <Text style={styles.tyreOrderLabel}>Price per Tyre:</Text>
+          <Text style={styles.tyreOrderValue}>Rs. {item.tyrePrice}</Text>
+        </View>
+        <View style={styles.tyreOrderRow}>
+          <Text style={styles.tyreOrderLabel}>Total:</Text>
+          <Text style={styles.tyreOrderValue}>
+            Rs. {parseInt(item.numberOfTyres) * parseInt(item.tyrePrice)}
+          </Text>
+        </View>
       </View>
-      <View style={styles.tyreOrderRow}>
-        <Text style={styles.tyreOrderLabel}>Brand:</Text>
-        <Text style={styles.tyreOrderValue}>{item.tyreBrand}</Text>
-      </View>
-      <View style={styles.tyreOrderRow}>
-        <Text style={styles.tyreOrderLabel}>Model:</Text>
-        <Text style={styles.tyreOrderValue}>{item.tyreModel}</Text>
-      </View>
-      <View style={styles.tyreOrderRow}>
-        <Text style={styles.tyreOrderLabel}>Size:</Text>
-        <Text style={styles.tyreOrderValue}>{item.tyreSize}</Text>
-      </View>
-      <View style={styles.tyreOrderRow}>
-        <Text style={styles.tyreOrderLabel}>Price per Tyre:</Text>
-        <Text style={styles.tyreOrderValue}>Rs. {item.tyrePrice}</Text>
-      </View>
-      <View style={styles.tyreOrderRow}>
-        <Text style={styles.tyreOrderLabel}>Total:</Text>
-        <Text style={styles.tyreOrderValue}>
-          Rs. {parseInt(item.numberOfTyres) * parseInt(item.tyrePrice)}
-        </Text>
-      </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -268,18 +283,8 @@ const ServiceBookingConfirmation = () => {
               </Text>
             </View>
 
-            {/* For any row where the content might be too long */}
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.label]}>Vehicle</Text>
-              <View style={{ flex: 1, alignItems: "flex-end" }}>
-                <Text style={styles.value}>
-                  {ServiceBookingConfirmationData.vehicle}
-                </Text>
-              </View>
-            </View>
 
-            {/* Address Section - Improved Layout */}
-            <View style={styles.tableRow}>
+            <View style={styles.locationTableRow}>
               <Text style={[styles.tableCell, styles.label]}>Location</Text>
               <View style={styles.addressContainer}>
                 <Text style={styles.value}>
@@ -313,12 +318,12 @@ const ServiceBookingConfirmation = () => {
           </View>
 
           {/* Tyre Details Section */}
-          {tyreOrders && tyreOrders.length > 0 && (
+          {orderDetails && orderDetails.length > 0 && (
             <View style={styles.tyreDetailsSection}>
               <Text style={styles.sectionTitle}>Tyre Details</Text>
               <FlatList
-                data={tyreOrders}
-                renderItem={renderTyreOrderItem}
+                data={orderDetails}
+                renderItem={({item, index}) => renderTyreOrderItem({item, index})}
                 keyExtractor={(item, index) => `tyre-${index}`}
                 scrollEnabled={false}
                 ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -493,6 +498,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: hp("1.5%"),
+  },
+  locationTableRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: hp("0%"),
+  },
+  orderNumberContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: hp("1.5%"),
+    paddingBottom: hp("1%"),
+    borderBottomWidth: 1,
+    borderBottomColor: "#e9ecef",
+  },
+  orderNumberText: {
+    fontSize: wp("5%"),
+    fontWeight: "bold",
+    color: "#007bff",
+    fontFamily: "poppins",
+    textAlign: "center",
   },
   tableCell: {
     fontSize: wp("4%"),
