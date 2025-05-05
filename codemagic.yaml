@@ -9,13 +9,13 @@ workflows:
       node: 22.12.0 # Updated to meet React Native 0.76.9 requirements
     triggering:
       events:
-        - push
-        - tag
-        - pull_request
+          - push
+          - tag
+          - pull_request
       branch_patterns:
-        - pattern: develop
-          include: true
-          source: true
+          - pattern: develop
+            include: true
+            source: true
     scripts:
       - name: Install dependencies
         script: |
@@ -39,9 +39,12 @@ workflows:
       - name: Set Android SDK location
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Set executable permissions for gradlew
+        script: |
+          chmod +x android/gradlew
       - name: Build Android APK
         script: |
           cd android
           ./gradlew assembleRelease
     artifacts:
-      - android/app/build/outputs/**/*.apk
+        - android/app/build/outputs/**/*.apk
