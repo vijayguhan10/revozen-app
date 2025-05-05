@@ -22,6 +22,9 @@ workflows:
           yarn install
           yarn add expo
           yarn global add expo-cli
+      - name: Verify expo is installed
+        script: |
+          yarn list expo || (echo "Expo is not installed!" && exit 1)
       - name: Eject app from Expo
         script: |
           expo eject
