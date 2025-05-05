@@ -5,8 +5,8 @@ workflows:
     instance_type: mac_mini_m2
     environment:
       vars:
-        PACKAGE_NAME: "com.vijayguhan.revozen" # <-- Put your package name here e.g. com.domain.myapp
-      node: 16.14.2
+        PACKAGE_NAME: "com.vijayguhan.revozen"
+      node: 18.0.0 # Updated to meet React Native 0.76.9 requirements
     triggering:
       events:
           - push
@@ -17,17 +17,18 @@ workflows:
             include: true
             source: true
     scripts:
-      - name: Install dependencies and Expo CLI
+      - name: Install dependencies
         script: |
+          # Use npx expo instead of global expo-cli
+          npm install -g yarn
           yarn install
-          yarn add expo
-          yarn global add expo-cli
+          npx expo install --fix # This will install compatible versions
       - name: Verify expo is installed
         script: |
           yarn list expo || (echo "Expo is not installed!" && exit 1)
       - name: Eject app from Expo
         script: |
-          expo eject
+          npx expo eject
       - name: Set up app/build.gradle
         script: |
           mv ./support-files/build.gradle android/app
