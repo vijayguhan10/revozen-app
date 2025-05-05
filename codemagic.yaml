@@ -4,7 +4,6 @@ workflows:
     max_build_duration: 120
     instance_type: mac_mini_m2
     environment:
-
       vars:
         PACKAGE_NAME: "com.vijayguhan.revozen" # <-- Put your package name here e.g. com.domain.myapp
       node: 16.14.2
@@ -18,17 +17,20 @@ workflows:
             include: true
             source: true
     scripts:
-      - name: Install dependencies and Expo CLI, and eject app
+      - name: Install dependencies and Expo CLI
         script: |
           yarn install
+          yarn add expo
           yarn global add expo-cli
+      - name: Eject app from Expo
+        script: |
           expo eject
       - name: Set up app/build.gradle
         script: |
           mv ./support-files/build.gradle android/app
       - name: Set Android SDK location
         script: |
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"          
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
       - name: Build Android APK
         script: |
           cd android
