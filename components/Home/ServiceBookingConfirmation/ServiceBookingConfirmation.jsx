@@ -125,6 +125,7 @@ const ServiceBookingConfirmation = () => {
         tyre: order.tyreId,
         size: order.tyreSize,
         quantity: parseInt(order.numberOfTyres) || 1,
+        vehicleId: order.vehicleId || null
       }));
 
       const hasInvalidIds = orderItems.some(
@@ -140,7 +141,10 @@ const ServiceBookingConfirmation = () => {
 
       const tyreOrderResponse = await axios.post(
         `${API_URL}/client/order-client/ordertyre`,
-        { orderItems },
+        { 
+          orderItems,
+          status: "Pending" 
+        },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -172,22 +176,22 @@ const ServiceBookingConfirmation = () => {
 
       setIsLoading(false);
 
-      Alert.alert(
-        "Success",
-        "Your order has been placed and appointment has been booked successfully!",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              if (optedPayment === "Pay Now") {
-                navigation.navigate("PaymentScreen");
-              } else {
+      if (optedPayment === "Pay Now") {
+        navigation.navigate("PaymentScreen");
+      } else {
+        Alert.alert(
+          "Success",
+          "Your order has been placed and appointment has been booked successfully!",
+          [
+            {
+              text: "OK",
+              onPress: () => {
                 navigation.navigate("Home");
-              }
+              },
             },
-          },
-        ]
-      );
+          ]
+        );
+      }
     } catch (error) {
       setIsLoading(false);
       console.error(
