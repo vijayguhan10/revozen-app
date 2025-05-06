@@ -5,24 +5,22 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
-// const upcomingIcon = require("../../../assets/ServiceHistory/upcoming.png");
-// const historyIcon = require("../../../assets/ServiceHistory/finished.png");
 const ServiceCard = ({ data, variant }) => {
   let backgroundColor = "#e6f0ff"; // default to upcoming (blue)
-  let icon = require("../../../assets/ServiceHistory/upcoming.png");
+  let icon;
 
   switch (variant) {
     case "paymentpending":
       backgroundColor = "#fff3e0"; // light orange
-      icon = require("../../../assets/ServiceHistory/upcoming.png");
+      icon = require("../../../assets/tyre-exchange.png"); // Using existing icon for Payment Pending
       break;
     case "completed":
-      backgroundColor = "#e0f7e9"; // light green
-      icon = require("../../../assets/ServiceHistory/upcoming.png");
+      backgroundColor = "#e0f7e7"; // light green
+      icon = require("../../../assets/ServiceHistory/finished.png");
       break;
     case "issues":
       backgroundColor = "#ffebee"; // light red
-      icon = require("../../../assets/ServiceHistory/upcoming.png");
+      icon = require("../../../assets/icon.png");
       break;
     case "upcoming":
     default:

@@ -27,7 +27,10 @@ const VehicleListCard = ({ model, registrationNumber, image, index, vehicleType 
               {model}
             </Text>
             <Text
-              style={[styles.registrationNumber, isOrangeBackground && { color: "#FFEB3B" }]}
+              style={[styles.registrationNumber, 
+                isOrangeBackground 
+                  ? { color: "#FFEB3B" } 
+                  : { color: "#007bff" }]}
             >
               {registrationNumber}
             </Text>
