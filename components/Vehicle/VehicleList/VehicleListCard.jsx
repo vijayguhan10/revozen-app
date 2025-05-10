@@ -7,7 +7,7 @@ import {
 
 const orangeColor = "#ff6600";
 
-const VehicleListCard = ({ model, image, index }) => {
+const VehicleListCard = ({ model, registrationNumber, image, index, vehicleType }) => {
   const isOrangeBackground = index % 2 !== 0;
 
   return (
@@ -25,6 +25,14 @@ const VehicleListCard = ({ model, image, index }) => {
               style={[styles.model, isOrangeBackground && { color: "#fff" }]}
             >
               {model}
+            </Text>
+            <Text
+              style={[styles.registrationNumber, 
+                isOrangeBackground 
+                  ? { color: "#FFEB3B" } 
+                  : { color: "#007bff" }]}
+            >
+              {registrationNumber}
             </Text>
           </View>
           <Image source={image} style={styles.image} />
@@ -53,6 +61,14 @@ const styles = StyleSheet.create({
     paddingTop: hp("1%"),
     paddingLeft: wp("1%"),
     fontFamily: "poppins",
+  },
+  registrationNumber: {
+    fontSize: wp("3.5%"),
+    fontWeight: "500",
+    color: "#333333",
+    paddingLeft: wp("1%"),
+    fontFamily: "poppins",
+    marginTop: hp("0.5%"),
   },
   image: {
     width: wp("40%"),

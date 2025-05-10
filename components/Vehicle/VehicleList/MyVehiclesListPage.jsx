@@ -73,6 +73,8 @@ const MyVehiclesListPage = () => {
                 <VehicleListCard
                   key={vehicle._id}
                   model={vehicle.vehicleModel}
+                  registrationNumber={vehicle.registrationNumber}
+                  vehicleType={vehicle.vehicleType}
                   image={require("../../../assets/Vehicle/car.png")} // Static image
                   index={index}
                 />

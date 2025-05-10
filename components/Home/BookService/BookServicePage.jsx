@@ -139,7 +139,11 @@ const BookServicePage = () => {
 
       <View ref={addressRef} style={{ marginTop: hp("1.5%") }}>
         <BookingAddress
-          selectedVehicles={isBulkOrder ? [] : selectedVehicles.map(vehicle => vehicle.registrationNumber)}
+          selectedVehicles={isBulkOrder ? [] : selectedVehicles.map(vehicle => ({
+            id: vehicle._id,
+            registrationNumber: vehicle.registrationNumber,
+            vehicleName: vehicle.vehicleModel 
+          }))}
           isBulkOrder={isBulkOrder}
         />
       </View>
