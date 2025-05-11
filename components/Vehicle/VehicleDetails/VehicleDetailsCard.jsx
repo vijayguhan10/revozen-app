@@ -1,40 +1,25 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 const VehicleDetailsCard = ({ vehicle }) => {
   return (
     <View style={styles.card}>
-      <Text style={styles.modelTitle}>{vehicle.model}</Text>
-      {vehicle.image && (
-        <Image source={vehicle.image} style={styles.vehicleImage} />
-      )}
+      <Text style={styles.modelTitle}>{vehicle.vehicleModel}</Text>
+      <Image source={require("../../../assets/Vehicle/car.png")} style={styles.vehicleImage} />
       <View style={styles.detailsContainer}>
         <View style={styles.labelsColumn}>
           <Text style={styles.label}>Vehicle Model</Text>
-          <Text style={styles.label}>Valid Manufacturer</Text>
-          <Text style={styles.label}>Reg. No</Text>
-          <Text style={styles.label}>Type Size</Text>
-          <Text style={styles.label}>Body Style</Text>
-          <Text style={styles.label}>Cargo Volume</Text>
-          <Text style={styles.label}>Engine Configuration</Text>
-          <Text style={styles.label}>No. Of services</Text>
-          <Text style={styles.label}>Last Service</Text>
+          <Text style={styles.label}>Vehicle Type</Text>
+          <Text style={styles.label}>Reg. Number</Text>
+          <Text style={styles.label}>Services Done</Text>
         </View>
 
         <View style={styles.valuesColumn}>
-          <Text style={styles.value}>{vehicle.model}</Text>
-          <Text style={styles.value}>{vehicle.manufacturer}</Text>
-          <Text style={styles.value}>{vehicle.regNo}</Text>
-          <Text style={styles.value}>{vehicle.typeSize}</Text>
-          <Text style={styles.value}>{vehicle.bodyStyle}</Text>
-          <Text style={styles.value}>{vehicle.cargoVolume}</Text>
-          <Text style={styles.value}>{vehicle.engineConfig}</Text>
-          <Text style={styles.value}>{vehicle.servicesCount}</Text>
-          <Text style={styles.value}>{vehicle.lastService}</Text>
+          <Text style={styles.value}>{vehicle.vehicleModel}</Text>
+          <Text style={styles.value}>{vehicle.vehicleType}</Text>
+          <Text style={styles.value}>{vehicle.registrationNumber}</Text>
+          <Text style={styles.value}>{vehicle.servicesDone}</Text>
         </View>
       </View>
     </View>
@@ -48,6 +33,10 @@ const styles = StyleSheet.create({
     padding: wp("4%"),
     borderWidth: 1,
     borderColor: "#007bff",
+    width: wp("90%"),  // Set a specific width
+    alignSelf: "center",
+    marginTop: hp("25%"),
+    zIndex: 1
   },
   modelTitle: {
     fontSize: wp("5%"),
@@ -55,6 +44,7 @@ const styles = StyleSheet.create({
     color: "#333",
     textAlign: "center",
     fontFamily: "poppins",
+    marginBottom: hp("2%")
   },
   vehicleImage: {
     width: wp("50%"),
@@ -66,27 +56,28 @@ const styles = StyleSheet.create({
   detailsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    // height: wp("100%"),
   },
   labelsColumn: {
-    width: "50%",
+    flex: 1,
+    paddingRight: wp("2%")
   },
   valuesColumn: {
-    width: "50%",
-    alignItems: "flex-end",
+    flex: 1,
+    alignItems: "flex-end"
   },
   label: {
     fontSize: wp("3.5%"),
     color: "#666",
-    marginBottom: hp("1.5%"),
+    marginBottom: hp("2%"),
     fontFamily: "poppins",
   },
   value: {
     fontSize: wp("3.5%"),
     fontWeight: "600",
     color: "#333",
-    marginBottom: hp("1.5%"),
+    marginBottom: hp("2%"),
     fontFamily: "poppins",
+    textAlign: "right"
   },
 });
 

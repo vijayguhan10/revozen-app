@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -7,11 +7,11 @@ import {
 
 const orangeColor = "#ff6600";
 
-const VehicleListCard = ({ model, registrationNumber, image, index, vehicleType }) => {
+const VehicleListCard = ({ model, registrationNumber, image, index, vehicleType, onPress }) => {
   const isOrangeBackground = index % 2 !== 0;
 
   return (
-    <View>
+    <TouchableOpacity onPress={onPress}>
         <View
           style={[
             styles.card,
@@ -37,7 +37,7 @@ const VehicleListCard = ({ model, registrationNumber, image, index, vehicleType 
           </View>
           <Image source={image} style={styles.image} />
         </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 const styles = StyleSheet.create({
