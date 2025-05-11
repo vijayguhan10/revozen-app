@@ -5,8 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Modal,
-  SafeAreaView,
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -27,12 +25,6 @@ const ServiceHistoryPage = () => {
   const [issues, setIssues] = useState([]);
   const [paymentPending, setPending] = useState([]);
 
-  // Modal state
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalTitle, setModalTitle] = useState("");
-  const [modalData, setModalData] = useState([]);
-  const [modalVariant, setModalVariant] = useState("");
-
   useEffect(() => {
     fetchAppointments();
   }, []);
@@ -49,7 +41,7 @@ const ServiceHistoryPage = () => {
       });
       
       if (res.data.success) {
-        console.log(res.data);
+        console.log(res.data.completed);
         setUpcoming(res.data.upcoming || []);
         setPast(res.data.completed || []);
         setIssues(res.data.issues || []);
@@ -60,47 +52,9 @@ const ServiceHistoryPage = () => {
     }
   };
 
-  // Helper function to prepare data for ServiceCard
-  const prepareCardData = (item) => {
-    // Extract vehicle names from orderItems
-    let vehicleNames = [];
-    if (item.orderinfo && item.orderinfo.orderItems) {
-      item.orderinfo.orderItems.forEach((orderItem) => {
-        if (orderItem.vehicleId) {
-          // Extract registration number from the populated vehicleId object
-          const registrationNumber = orderItem.vehicleId.registrationNumber;
-          if (registrationNumber) {
-            vehicleNames.push(registrationNumber);
-          }
-        }
-      });
-    }
-
-    // Create a formatted vehicle name string
-    const vehicleName =
-      vehicleNames.length > 0 ? vehicleNames.join(", ") : "No Vehicle Selected";
-
-    return {
-      type: "Tyre Service", // You can customize this based on your needs
-      date: item.date,
-      time: item.time,
-      vehicle: vehicleName,
-      _id: item._id,
-    };
-  };
-
-  // Open modal with all services for a section
-  const openModal = (title, data, variant) => {
-    setModalTitle(title);
-    setModalData(data);
-    setModalVariant(variant);
-    setModalVisible(true);
-  };
-
-  const renderSection = (title, data, variant, isTouchable = false) => {
+  const renderSection = (title, data, variant) => {
     if (!data || data.length === 0) return null;
 
-    // Limit to maximum 3 cards per section
     const limitedData = data.slice(0, 3);
     const hasMoreItems = data.length > 3;
 
@@ -110,7 +64,11 @@ const ServiceHistoryPage = () => {
           <Text style={styles.sectionTitle}>{title}</Text>
           {hasMoreItems && (
             <TouchableOpacity
-              onPress={() => openModal(title, data, variant)}
+              onPress={() => navigation.navigate("ServiceList", { 
+                title, 
+                services: data,
+                variant 
+              })}
               style={styles.viewAllButton}
             >
               <Text style={styles.viewAllText}>View All</Text>
@@ -120,60 +78,10 @@ const ServiceHistoryPage = () => {
 
         {limitedData.map((item) => (
           <View key={item._id} style={styles.cardContainer}>
-            {isTouchable ? (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("ServiceHistoryDetails", {
-                    service: item,
-                  })
-                }
-                activeOpacity={0.7}
-              >
-                <ServiceCard data={prepareCardData(item)} variant={variant} />
-              </TouchableOpacity>
-            ) : (
-              <ServiceCard data={prepareCardData(item)} variant={variant} />
-            )}
+            <ServiceCard item={item} variant={variant} />
           </View>
         ))}
       </View>
-    );
-  };
-
-  // Render the modal content
-  const renderModalContent = () => {
-    return (
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{modalTitle}</Text>
-              <TouchableOpacity
-                onPress={() => setModalVisible(false)}
-                style={styles.closeButton}
-              >
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.modalScrollView}>
-              {modalData.map((item) => (
-                <View key={item._id} style={styles.modalCardContainer}>
-                  <ServiceCard
-                    data={prepareCardData(item)}
-                    variant={modalVariant}
-                  />
-                </View>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
     );
   };
 
@@ -185,13 +93,10 @@ const ServiceHistoryPage = () => {
         showsVerticalScrollIndicator={true}
       >
         {renderSection("Payment Pending", paymentPending, "paymentpending")}
-        {renderSection("Upcoming Services", upcomingServices, "upcoming", true)}
+        {renderSection("Upcoming Services", upcomingServices, "upcoming")}
         {renderSection("Completed Services", pastServices, "completed")}
         {renderSection("Issues Found", issues, "issues")}
       </ScrollView>
-
-      {/* Render the modal */}
-      {renderModalContent()}
     </View>
   );
 };
