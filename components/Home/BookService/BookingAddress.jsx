@@ -67,23 +67,26 @@ const BookingAddress = ({ selectedVehicles, isBulkOrder }) => {
     openModal();
   };
 
-
   const handleConfirm = async () => {
-    const selectedAddress = addresses.find((addr) => addr._id === selectedLocation);
-    
-    const filteredAddress = selectedAddress ? {
-      _id: selectedAddress._id, 
-      street: selectedAddress.street,
-      city: selectedAddress.city,
-      state: selectedAddress.state,
-      postalCode: selectedAddress.postalCode,
-      country: selectedAddress.country
-    } : null;
-    
-    navigation.navigate("clientordertyre", { 
-      selectedVehicles, 
+    const selectedAddress = addresses.find(
+      (addr) => addr._id === selectedLocation
+    );
+
+    const filteredAddress = selectedAddress
+      ? {
+          _id: selectedAddress._id,
+          street: selectedAddress.street,
+          city: selectedAddress.city,
+          state: selectedAddress.state,
+          postalCode: selectedAddress.postalCode,
+          country: selectedAddress.country,
+        }
+      : null;
+
+    navigation.navigate("clientordertyre", {
+      selectedVehicles,
       isBulkOrder,
-      selectedAddress: filteredAddress 
+      selectedAddress: filteredAddress,
     });
   };
 
@@ -95,6 +98,53 @@ const BookingAddress = ({ selectedVehicles, isBulkOrder }) => {
       useNativeDriver: true,
       easing: Easing.out(Easing.ease),
     }).start();
+  };
+
+  const handleAddOrUpdateAddress = async () => {
+    try {
+      if (
+        !newAddress.street ||
+        !newAddress.city ||
+        !newAddress.state ||
+        !newAddress.postalCode ||
+        !newAddress.country
+      ) {
+        alert("Please fill all the fields.");
+        return;
+      }
+
+      if (isEdit && editAddressId) {
+        // EDIT request (PUT or PATCH depending on your backend)
+        await axios.put(
+          `${API_URL}/address/update/${editAddressId}`,
+          newAddress,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+      } else {
+        // ADD request
+        await axios.post(`${API_URL}/address/create`, newAddress, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+
+      // Reset form & refresh list
+      setNewAddress({
+        street: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        country: "",
+      });
+      setIsEdit(false);
+      setEditAddressId(null);
+      closeModal();
+      fetchAddresses();
+    } catch (error) {
+      console.error("Error saving address:", error);
+      alert("Something went wrong while saving the address.");
+    }
   };
 
   const closeModal = () => {
@@ -212,7 +262,7 @@ const BookingAddress = ({ selectedVehicles, isBulkOrder }) => {
 
               <TouchableOpacity
                 style={[styles.modalBtn, { backgroundColor: "#4CAF50" }]}
-                // onPress={handleAddOrUpdateAddress}
+                onPress={handleAddOrUpdateAddress}
               >
                 <Text style={styles.modalBtnText}>
                   {isEdit ? "Update Address" : "Save Address"}

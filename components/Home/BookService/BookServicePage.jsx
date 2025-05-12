@@ -12,7 +12,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import BookingAddress from "./BookingAddress";
-import VehicleCard from "../../Vehicle/VehicleList/VehicleListCard";
+import VehicleCard from "./VehicleCard";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -36,7 +36,7 @@ const BookServicePage = () => {
       const token = await AsyncStorage.getItem("token");
       // console.log("token: ",token);
       try {
-        console.log("token: ",token);
+        console.log("token: ", token);
         const response = await axios.get(
           `${API_URL}/client/vehicle/getallvehicles`,
           {
@@ -65,6 +65,7 @@ const BookServicePage = () => {
   };
 
   const toggleVehicleSelection = (vehicleId) => {
+    console.log(selectedVehicles);
     setSelectedVehicles((prev) => {
       if (prev.find((v) => v._id === vehicleId)) {
         return prev.filter((v) => v._id !== vehicleId);
@@ -120,6 +121,7 @@ const BookServicePage = () => {
                       vehicle.image ||
                       require("../../../assets/Vehicle/car.png")
                     }
+                    dontNavigate={true}
                   />
                 </TouchableOpacity>
               </View>
@@ -139,11 +141,15 @@ const BookServicePage = () => {
 
       <View ref={addressRef} style={{ marginTop: hp("1.5%") }}>
         <BookingAddress
-          selectedVehicles={isBulkOrder ? [] : selectedVehicles.map(vehicle => ({
-            id: vehicle._id,
-            registrationNumber: vehicle.registrationNumber,
-            vehicleName: vehicle.vehicleModel 
-          }))}
+          selectedVehicles={
+            isBulkOrder
+              ? []
+              : selectedVehicles.map((vehicle) => ({
+                  id: vehicle._id,
+                  registrationNumber: vehicle.registrationNumber,
+                  vehicleName: vehicle.vehicleModel,
+                }))
+          }
           isBulkOrder={isBulkOrder}
         />
       </View>

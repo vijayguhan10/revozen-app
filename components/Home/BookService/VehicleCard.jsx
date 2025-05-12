@@ -4,24 +4,14 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { useNavigation } from "@react-navigation/native";
+
 const orangeColor = "#ff6600";
 
-const VehicleListCard = ({ model, registrationNumber, image, index, vehicleType, onPress }) => {
+const VehicleCard = ({ model, registrationNumber, image, index, vehicleType, onPress }) => {
   const isOrangeBackground = index % 2 !== 0;
 
-  const handlePress = () => {
-    navigation.navigate("myvehicleindetailpage", {
-      model,
-      registrationNumber,
-      image,
-      index,
-      vehicleType,
-    });
-  };
-
   return (
-    <TouchableOpacity onPress={onPress}>
+
         <View
           style={[
             styles.card,
@@ -47,7 +37,6 @@ const VehicleListCard = ({ model, registrationNumber, image, index, vehicleType,
           </View>
           <Image source={image} style={styles.image} />
         </View>
-    </TouchableOpacity>
   );
 };
 const styles = StyleSheet.create({
@@ -88,4 +77,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VehicleListCard;
+export default VehicleCard;

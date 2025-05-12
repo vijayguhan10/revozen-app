@@ -1,44 +1,64 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { useNavigation } from "@react-navigation/native";
 
-const ServiceCard = ({ data, variant }) => {
-  let backgroundColor = "#e6f0ff"; // default to upcoming (blue)
+const ServiceCard = ({ item, variant }) => {
+  const navigation = useNavigation();
+  let backgroundColor = "#e6f0ff";
   let icon;
 
   switch (variant) {
     case "paymentpending":
-      backgroundColor = "#fff3e0"; // light orange
-      icon = require("../../../assets/tyre-exchange.png"); // Using existing icon for Payment Pending
+      backgroundColor = "#fff3e0";
+      icon = require("../../../assets/tyre-exchange.png");
       break;
     case "completed":
-      backgroundColor = "#e0f7e7"; // light green
+      backgroundColor = "#e0f7e7";
       icon = require("../../../assets/ServiceHistory/finished.png");
       break;
     case "issues":
-      backgroundColor = "#ffebee"; // light red
+      backgroundColor = "#ffebee";
       icon = require("../../../assets/icon.png");
       break;
     case "upcoming":
     default:
-      backgroundColor = "#e6f0ff"; // light blue
+      backgroundColor = "#e6f0ff";
       icon = require("../../../assets/ServiceHistory/upcoming.png");
       break;
   }
 
+  // Process vehicle names directly in the component
+  const getVehicleNames = () => {
+    let vehicleNames = [];
+    if (item.orderinfo?.orderItems) {
+      item.orderinfo.orderItems.forEach((orderItem) => {
+        if (orderItem.vehicleId?.registrationNumber) {
+          vehicleNames.push(orderItem.vehicleId.registrationNumber);
+        }
+      });
+    }
+    return vehicleNames.length > 0 ? vehicleNames.join(", ") : "No Vehicle Selected";
+  };
+
   return (
-    <View style={[styles.card, { backgroundColor }]}>
-      <Image source={icon} style={styles.image} />
-      <View style={styles.content}>
-        <Text style={styles.serviceType}>{data.type || "General Service"}</Text>
-        <Text style={styles.serviceDetail}>{data.date}</Text>
-        <Text style={styles.vehicleName}>{data.vehicle || "Vehicle Name"}</Text>
+    <TouchableOpacity 
+      onPress={() => navigation.navigate("ServiceHistoryDetails", { service: item })}
+      activeOpacity={0.7}
+    >
+      <View style={[styles.card, { backgroundColor }]}>
+        <Image source={icon} style={styles.image} />
+        <View style={styles.content}>
+          <Text style={styles.serviceType}>Tyre Service</Text>
+          <Text style={styles.serviceDetail}>{item.date}</Text>
+          <Text style={styles.vehicleName}>{getVehicleNames()}</Text>
+        </View>
+        <Text style={styles.time}>{item.time}</Text>
       </View>
-      <Text style={styles.time}>{data.time}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 

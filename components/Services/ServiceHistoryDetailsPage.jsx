@@ -269,26 +269,6 @@ const ServiceHistoryDetailsPage = () => {
           </View>
         )}
 
-        {/* Customer Information Section */}
-        {serviceDetails.customerInfo && (
-          <View style={styles.sectionContainer}>
-            <View style={styles.sectionHeader}>
-              <Ionicons name="person-outline" size={wp("5%")} color="#007bff" />
-              <Text style={styles.sectionTitle}>Customer Information</Text>
-            </View>
-            <View style={styles.detailsContainer}>
-              <View style={styles.labelsColumn}>
-                <Text style={styles.label}>Name:</Text>
-                <Text style={styles.label}>Email:</Text>
-              </View>
-              <View style={[styles.valuesColumn, { alignItems: 'flex-end' }]}>
-                <Text style={styles.value}>{serviceDetails.customerInfo.name}</Text>
-                <Text style={[styles.value, { textAlign: 'right' }]} numberOfLines={1}>{serviceDetails.customerInfo.email}</Text>
-              </View>
-            </View>
-          </View>
-        )}
-
         {/* Action Buttons */}
         <View style={styles.buttonsContainer}>
           <TouchableOpacity style={styles.primaryButton}>
@@ -311,6 +291,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F4F9F8",
     marginTop: hp("13%"),
+    marginBlock: hp("10%"),
     zIndex: 10,
   },
   container: {

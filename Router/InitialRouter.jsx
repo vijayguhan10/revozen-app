@@ -18,7 +18,7 @@ import AddVehiclePage from "../components/Vehicle/AddVehicle/AddVehiclePage";
 import PaymentScreen from "../components/Transactions/UPI";
 import Index from "../components/Home/BookService/Index";
 import ClientOrderTyre from "../components/Home/BookService/ClientOrderTyre";
-import MyVehicleDetailsPage from "../components/Vehicle/VehicleDetails/MyVehicleDetailsPage";
+import VehicleDetailsCard from "../components/Vehicle/VehicleDetails/VehicleDetailsCard";
 const Stack = createStackNavigator();
 
 const InitialRouter = () => {
@@ -96,8 +96,8 @@ const InitialRouter = () => {
           options={{ header: () => <Header /> }}
         />
         <Stack.Screen
-          name="myvehicleindetailpage"
-          component={MyvehicleIndtailPage}
+          name="VehicleDetails"
+          component={VehicleDetailsWithFooter}
           options={{ header: () => <Header /> }}
         />
       </Stack.Navigator>
@@ -188,12 +188,33 @@ const ServiceBookingWithFooter = () => (
     <Footer />
   </View>
 );
-const MyvehicleIndtailPage = () => (
-  <View style={styles.container}>
-    <MyVehicleDetailsPage />
-    <Footer />
-  </View>
-);
+
+// Add these imports at the top
+import { useRoute } from '@react-navigation/native';
+import { ScrollView } from 'react-native';
+
+const VehicleDetailsWithFooter = () => {
+  const route = useRoute();
+  const vehicle = route.params?.vehicle;
+
+  if (!vehicle) {
+    return (
+      <View style={styles.container}>
+        <Text>No vehicle data available</Text>
+        <Footer />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <VehicleDetailsCard vehicle={vehicle} />
+      </ScrollView>
+      <Footer />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
