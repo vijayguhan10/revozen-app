@@ -40,6 +40,9 @@ const LoginScreen = () => {
       if (response.status == 200) {
         Toast.success("Login successful!");
         await AsyncStorage.setItem("token", response.data.token);
+        await AsyncStorage.setItem("userName", response.data.userName);
+        await AsyncStorage.setItem("userEmail", email);
+
         const token = await AsyncStorage.getItem("token");
         console.log("Stored token:", token);
         navigation.navigate("Home");

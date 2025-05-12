@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,15 +14,31 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
-
-const profileData = {
-  name: "A B Raja Rahman",
-  phone: "1234567890",
-  email: "abrajarahman@gmail.com",
-  avatar: "https://cdn-icons-png.flaticon.com/512/706/706830.png",
-};
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfilePage = () => {
+  const [userData, setUserData] = useState({ name: "", email: "" });
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      // Fetch user data from AsyncStorage or an API
+      const name = await AsyncStorage.getItem("userName");
+      const email = await AsyncStorage.getItem("userEmail");
+      setUserData({ name, email });
+    };
+    fetchUserData();
+  }, []);
+
+  const handleLogout = async () => {
+    // Clear user data and navigate to login
+    await AsyncStorage.removeItem("userName");
+    await AsyncStorage.removeItem("userEmail");
+    await AsyncStorage.removeItem("token");
+    navigation.replace("Login");
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -39,23 +55,19 @@ const ProfilePage = () => {
               </TouchableOpacity>
             </View>
 
-            <Image source={{ uri: profileData.avatar }} style={styles.avatar} />
-            <Text style={styles.name}>{profileData.name}</Text>
+            <Image source={{ uri: "https://cdn-icons-png.flaticon.com/512/706/706830.png" }} style={styles.avatar} />
+            <Text style={styles.name}>{userData.name}</Text>
 
             <View style={styles.infoRow}>
-              <Ionicons name="call-outline" size={wp("5%")} color="#3366ff" />
-              <Text style={styles.infoText}>{profileData.phone}</Text>
-            </View>
-
-            <View style={styles.infoRow}>
-              <Ionicons name="mail-outline" size={wp("5%")} color="#3366ff" />
-              <Text style={styles.infoText}>{profileData.email}</Text>
+              <Ionicons name="mail-outline" size={wp("5%")}
+                color="#3366ff" />
+              <Text style={styles.infoText}>{userData.email}</Text>
             </View>
           </View>
 
           <View style={styles.sectionCard}>
-            <MenuItem icon="car" label="My Vehicles" />
-            <MenuItem icon="time-outline" label="Service History" />
+            <MenuItem icon="car" label="My Vehicles" onPress={() => navigation.navigate('MyVehicles')} />
+            <MenuItem icon="time-outline" label="Service History" onPress={() => navigation.navigate('ServiceHistory')} />
             <MenuItem icon="cash-outline" label="Payment Methods" />
             <MenuItem icon="gift-outline" label="Rewards" />
           </View>
@@ -71,6 +83,7 @@ const ProfilePage = () => {
               styles.loginButton,
               pressed && { transform: [{ scale: 0.98 }], opacity: 0.95 },
             ]}
+            onPress={handleLogout}
           >
             <LinearGradient
               colors={["#FFF4E6", "#FAC898"]}
@@ -88,9 +101,10 @@ const ProfilePage = () => {
   );
 };
 
-const MenuItem = ({ icon, label }) => (
-  <TouchableOpacity style={styles.menuItem}>
-    <Ionicons name={icon} size={wp("5.5%")} color="#3366ff" />
+const MenuItem = ({ icon, label, onPress }) => (
+  <TouchableOpacity style={styles.menuItem} onPress={onPress}>
+    <Ionicons name={icon} size={wp("5.5%")}
+      color="#3366ff" />
     <Text style={styles.menuText}>{label}</Text>
   </TouchableOpacity>
 );
@@ -98,7 +112,6 @@ const MenuItem = ({ icon, label }) => (
 const styles = StyleSheet.create({
   container: {
     zIndex: 1,
-    // flex: 1,
     backgroundColor: "#F4F9F8",
     marginTop: hp("15%"),
   },
