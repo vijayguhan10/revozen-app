@@ -40,34 +40,34 @@ const ServiceHistoryPage = () => {
   const fetchAppointments = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      
+
       const res = await axios.get(`${API_URL}/client/appointment/summary`, {
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
       });
-      
+
       if (res.data.success) {
-        console.log(res.data);
         setUpcoming(res.data.upcoming || []);
         setPast(res.data.completed || []);
         setIssues(res.data.issues || []);
         setPending(res.data.paymentpending || []);
       }
     } catch (err) {
-      console.error("Error fetching service history:", err.response ? err.response.data : err.message);
+      console.error(
+        "Error fetching service history:",
+        err.response ? err.response.data : err.message
+      );
     }
   };
 
   // Helper function to prepare data for ServiceCard
   const prepareCardData = (item) => {
-    // Extract vehicle names from orderItems
     let vehicleNames = [];
     if (item.orderinfo && item.orderinfo.orderItems) {
       item.orderinfo.orderItems.forEach((orderItem) => {
         if (orderItem.vehicleId) {
-          // Extract registration number from the populated vehicleId object
           const registrationNumber = orderItem.vehicleId.registrationNumber;
           if (registrationNumber) {
             vehicleNames.push(registrationNumber);
@@ -76,12 +76,11 @@ const ServiceHistoryPage = () => {
       });
     }
 
-    // Create a formatted vehicle name string
     const vehicleName =
       vehicleNames.length > 0 ? vehicleNames.join(", ") : "No Vehicle Selected";
 
     return {
-      type: "Tyre Service", // You can customize this based on your needs
+      type: "Tyre Service", // Customize as needed
       date: item.date,
       time: item.time,
       vehicle: vehicleName,
@@ -120,62 +119,55 @@ const ServiceHistoryPage = () => {
 
         {limitedData.map((item) => (
           <View key={item._id} style={styles.cardContainer}>
-            {isTouchable ? (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("ServiceHistoryDetails", {
-                    service: item,
-                  })
-                }
-                activeOpacity={0.7}
-              >
-                <ServiceCard data={prepareCardData(item)} variant={variant} />
-              </TouchableOpacity>
-            ) : (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("ServiceHistoryDetails", {
+                  service: item,
+                })
+              }
+              activeOpacity={0.7}
+            >
               <ServiceCard data={prepareCardData(item)} variant={variant} />
-            )}
+            </TouchableOpacity>
           </View>
         ))}
       </View>
     );
   };
 
-  // Render the modal content
-  const renderModalContent = () => {
-    return (
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{modalTitle}</Text>
-              <TouchableOpacity
-                onPress={() => setModalVisible(false)}
-                style={styles.closeButton}
-              >
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.modalScrollView}>
-              {modalData.map((item) => (
-                <View key={item._id} style={styles.modalCardContainer}>
-                  <ServiceCard
-                    data={prepareCardData(item)}
-                    variant={modalVariant}
-                  />
-                </View>
-              ))}
-            </ScrollView>
+  const renderModalContent = () => (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => setModalVisible(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>{modalTitle}</Text>
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={styles.closeButton}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
           </View>
+
+          <ScrollView style={styles.modalScrollView}>
+            {modalData.map((item) => (
+              <View key={item._id} style={styles.modalCardContainer}>
+                <ServiceCard
+                  data={prepareCardData(item)}
+                  variant={modalVariant}
+                />
+              </View>
+            ))}
+          </ScrollView>
         </View>
-      </Modal>
-    );
-  };
+      </View>
+    </Modal>
+  );
 
   return (
     <View style={styles.container}>
@@ -190,13 +182,12 @@ const ServiceHistoryPage = () => {
         {renderSection("Issues Found", issues, "issues")}
       </ScrollView>
 
-      {/* Render the modal */}
       {renderModalContent()}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({    
   container: {
     flex: 1,
     paddingTop: hp("%"),

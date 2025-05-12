@@ -75,7 +75,7 @@ const MyVehiclesListPage = () => {
                   model={vehicle.vehicleModel}
                   registrationNumber={vehicle.registrationNumber}
                   vehicleType={vehicle.vehicleType}
-                  image={require("../../../assets/Vehicle/car.png")} // Static image
+                  image={require("../../../assets/Vehicle/car.png")} 
                   index={index}
                 />
               ))}

@@ -4,6 +4,7 @@ import InitialRouter from "./Router/InitialRouter";
 import { useFonts } from "@use-expo/font";
 import BookServicePage from "./components/Home/BookService/BookServicePage";
 import PaymentScreen from "./components/Transactions/UPI";
+import MyVehicleDetailsPage from "./components/Vehicle/VehicleDetails/MyVehicleDetailsPage";
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
     poppins: require("./fonts/Poppins-Medium.ttf"),

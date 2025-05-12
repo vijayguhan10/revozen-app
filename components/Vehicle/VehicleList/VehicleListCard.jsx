@@ -1,43 +1,58 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView,TouchableOpacity } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-
+import { useNavigation } from "@react-navigation/native";
 const orangeColor = "#ff6600";
 
-const VehicleListCard = ({ model, registrationNumber, image, index, vehicleType }) => {
+const VehicleListCard = ({
+  model,
+  registrationNumber,
+  image,
+  index,
+  vehicleType,
+}) => {
+  const navigation = useNavigation();
   const isOrangeBackground = index % 2 !== 0;
 
+  const handlePress = () => {
+    navigation.navigate("myvehicleindetailpage", {
+      model,
+      registrationNumber,
+      image,
+      index,
+      vehicleType,
+    });
+  };
+
   return (
-    <View>
-        <View
-          style={[
-            styles.card,
-            isOrangeBackground
-              ? { backgroundColor: orangeColor, borderColor: orangeColor }
-              : { borderColor: orangeColor, backgroundColor: "#fff" },
-          ]}
-        >
-          <View style={styles.cardContent}>
-            <Text
-              style={[styles.model, isOrangeBackground && { color: "#fff" }]}
-            >
-              {model}
-            </Text>
-            <Text
-              style={[styles.registrationNumber, 
-                isOrangeBackground 
-                  ? { color: "#FFEB3B" } 
-                  : { color: "#007bff" }]}
-            >
-              {registrationNumber}
-            </Text>
-          </View>
-          <Image source={image} style={styles.image} />
+    <TouchableOpacity onPress={handlePress}>
+      <View
+        style={[
+          styles.card,
+          isOrangeBackground
+            ? { backgroundColor: orangeColor, borderColor: orangeColor }
+            : { borderColor: orangeColor, backgroundColor: "#fff" },
+        ]}
+      >
+        <View style={styles.cardContent}>
+          <Text style={[styles.model, isOrangeBackground && { color: "#fff" }]}>
+            {model}
+          </Text>
+          <Text
+            style={[
+              styles.registrationNumber,
+              isOrangeBackground ? { color: "#FFEB3B" } : { color: "#007bff" },
+            ]}
+          >
+            {registrationNumber}
+          </Text>
         </View>
-    </View>
+        <Image source={image} style={styles.image} />
+      </View>
+    </TouchableOpacity>
   );
 };
 const styles = StyleSheet.create({

@@ -4,35 +4,40 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import VehicleCard from "./VehicleDetailsCard";
-
-const vehicleDetails = {
-  id: 1,
-  model: "Baleno",
-  manufacturer: "Suzuki",
-  regNo: "AZ 00 BY 0000",
-  typeSize: "185/65",
-  bodyStyle: "Hatchback",
-  cargoVolume: "318 L",
-  engineConfig: "Straight Engine",
-  servicesCount: "Nil",
-  lastService: "Not Available",
-  image: require("../../../assets/Vehicle/car.png"),
-};
+import VehicleDetailCard from "./VehicleDetailsCard";
+import { useRoute } from "@react-navigation/native";
 
 const MyVehicleDetailsPage = () => {
+  const route = useRoute();
+  const { model, registrationNumber, index, vehicleType } = route.params;
+
+  // 👇 Keep static image, rest dynamic
+  const vehicleDetails = {
+    id: index,
+    model: model,
+    manufacturer: "Unknown",
+    regNo: registrationNumber,
+    typeSize: "Unknown",
+    bodyStyle: vehicleType,
+    cargoVolume: "Unknown",
+    engineConfig: "Unknown",
+    servicesCount: "N/A",
+    lastService: "N/A",
+    image: require("../../../assets/Vehicle/car.png"), // static image
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.middleSection}>
         <View style={styles.vehicleSectionContainer}>
-          <Text style={styles.sectionTitle}>My Vehicles</Text>
+          <Text style={styles.sectionTitle}>My Vehicle</Text>
 
           <ScrollView
             style={styles.scrollContainer}
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.vehicleSection}>
-              <VehicleCard vehicle={vehicleDetails} />
+              <VehicleDetailCard vehicle={vehicleDetails} />
             </View>
           </ScrollView>
         </View>
@@ -45,6 +50,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: wp("100%"),
+    zIndex:1
   },
   header: {
     height: hp("10%"),

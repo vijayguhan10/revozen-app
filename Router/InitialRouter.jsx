@@ -16,8 +16,9 @@ import ServiceHistoryPage from "../components/Services/ServiceHistory/ServiceHis
 import ServiceHistoryDetailPage from "../components/Services/ServiceHistoryDetailsPage";
 import AddVehiclePage from "../components/Vehicle/AddVehicle/AddVehiclePage";
 import PaymentScreen from "../components/Transactions/UPI";
-import Index from "../components/Home/BookService/Index"
+import Index from "../components/Home/BookService/Index";
 import ClientOrderTyre from "../components/Home/BookService/ClientOrderTyre";
+import MyVehicleDetailsPage from "../components/Vehicle/VehicleDetails/MyVehicleDetailsPage";
 const Stack = createStackNavigator();
 
 const InitialRouter = () => {
@@ -79,7 +80,7 @@ const InitialRouter = () => {
           component={SupportWithFooter}
           options={{ header: () => <Header /> }}
         />
-          <Stack.Screen
+        <Stack.Screen
           name="clientordertyre"
           component={clientordertyre}
           options={{ header: () => <Header /> }}
@@ -92,6 +93,11 @@ const InitialRouter = () => {
         <Stack.Screen
           name="ServiceBooking"
           component={ServiceBookingWithFooter}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="myvehicleindetailpage"
+          component={MyvehicleIndtailPage}
           options={{ header: () => <Header /> }}
         />
       </Stack.Navigator>
@@ -179,6 +185,12 @@ const InitialHomeWithFooter = () => (
 const ServiceBookingWithFooter = () => (
   <View style={styles.container}>
     <ServiceBooking />
+    <Footer />
+  </View>
+);
+const MyvehicleIndtailPage = () => (
+  <View style={styles.container}>
+    <MyVehicleDetailsPage />
     <Footer />
   </View>
 );

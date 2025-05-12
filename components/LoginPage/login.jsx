@@ -35,6 +35,7 @@ const LoginScreen = () => {
       const response = await axios.post(`${API_URL}/users/login`, {
         email,
         password,
+        role:"client",
       });
       if (response.status == 200) {
         Toast.success("Login successful!");
