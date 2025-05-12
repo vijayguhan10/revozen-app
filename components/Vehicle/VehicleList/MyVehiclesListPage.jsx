@@ -77,6 +77,7 @@ const MyVehiclesListPage = () => {
                   vehicleType={vehicle.vehicleType}
                   image={require("../../../assets/Vehicle/car.png")}
                   index={index}
+                  dontNavigat={false}
                   onPress={() => navigation.navigate("VehicleDetails", { vehicle })}
                 />
               ))}
