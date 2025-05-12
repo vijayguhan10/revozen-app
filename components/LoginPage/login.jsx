@@ -29,6 +29,10 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isSignup, setIsSignup] = useState(false);
+  const handleNavigation = () => {
+    console.log("Navigating to Home");
+    navigation.navigate("Home");
+  };
 
   const handleLogin = async () => {
     try {
@@ -38,19 +42,22 @@ const LoginScreen = () => {
         role: "client",
       });
       if (response.status == 200) {
-        Toast.success("Login successful!");
+        console.log("success");
         await AsyncStorage.setItem("token", response.data.token);
         await AsyncStorage.setItem("userName", response.data.userName);
         await AsyncStorage.setItem("userEmail", email);
-
-        const token = await AsyncStorage.getItem("token");
-        console.log("Stored token:", token);
-        navigation.navigate("Home");
+       
+          console.log("Navigating to Home...", navigation);
+          navigation.navigate("Home");
+          // Toast.success("Login successful!");
       } else {
         Toast.error("Invalid credentials.");
       }
     } catch (error) {
       Toast.error("An error occurred while logging in.");
+    } finally {
+      // navigation.navigate("Home");
+      // console.log("Login process completed.");
     }
   };
 
