@@ -9,7 +9,7 @@ import ServiceBooking from "../components/Home/ServiceBookingConfirmation/Servic
 import Header from "../components/Navbar/Header";
 import Footer from "../components/Navbar/Footer";
 import InitialHome from "../components/Home/InitialHome/InitialHome";
-import SupportScreen from "../Sos/SosPage";
+import SupportScreen from "../components/Sos/SosPage";
 import BookingScreen from "../components/Home/Appointment/SlotBooking";
 import ProfilePage from "../components/Profile/ProfilePage";
 import ServiceHistoryPage from "../components/Services/ServiceHistory/ServiceHistoryPage";
@@ -19,6 +19,8 @@ import PaymentScreen from "../components/Transactions/UPI";
 import Index from "../components/Home/BookService/Index";
 import ClientOrderTyre from "../components/Home/BookService/ClientOrderTyre";
 import VehicleDetailsCard from "../components/Vehicle/VehicleDetails/VehicleDetailsCard";
+import CarwashHomePage from "../components/CarWashModule/HomePage";
+import CarwashBookingIndex from "../components/CarWashModule/Booking/BookingIndex";
 const Stack = createStackNavigator();
 
 const InitialRouter = () => {
@@ -98,6 +100,16 @@ const InitialRouter = () => {
         <Stack.Screen
           name="VehicleDetails"
           component={VehicleDetailsWithFooter}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="carwashomepage"
+          component={CarwashModuleHomePage}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="shopdetails"
+          component={ShopIndetails}
           options={{ header: () => <Header /> }}
         />
       </Stack.Navigator>
@@ -189,9 +201,20 @@ const ServiceBookingWithFooter = () => (
   </View>
 );
 
-// Add these imports at the top
-import { useRoute } from '@react-navigation/native';
-import { ScrollView } from 'react-native';
+const CarwashModuleHomePage = () => (
+  <View style={styles.container}>
+    <CarwashHomePage />
+    <Footer />
+  </View>
+);
+const ShopIndetails = () => (
+  <View style={styles.container}>
+    <CarwashBookingIndex />
+    <Footer />
+  </View>
+);
+import { useRoute } from "@react-navigation/native";
+import { ScrollView } from "react-native";
 
 const VehicleDetailsWithFooter = () => {
   const route = useRoute();

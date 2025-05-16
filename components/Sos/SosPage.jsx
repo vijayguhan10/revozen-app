@@ -33,7 +33,7 @@ const SupportScreen = () => {
     Vibration.vibrate(vibrationPattern);
 
     const { sound } = await Audio.Sound.createAsync(
-      require("../assets/google-pixel-emergency-sos-sound.mp3"),
+      require("../../assets/google-pixel-emergency-sos-sound.mp3"),
       { shouldPlay: true }
     );
 

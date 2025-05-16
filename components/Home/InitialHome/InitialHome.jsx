@@ -76,6 +76,7 @@ const InitialHome = () => {
               style={styles.serviceCard}
             >
               <TouchableOpacity
+              onPress={() => navigation.navigate("carwashomepage")}
                 style={{ alignItems: "center", justifyContent: "center" }}
               >
                 <MaterialCommunityIcons
