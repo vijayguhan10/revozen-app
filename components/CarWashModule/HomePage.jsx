@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,9 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  ActivityIndicator,
+  Alert,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Searchbar } from "react-native-paper";
@@ -15,49 +18,10 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { useNavigation } from "@react-navigation/native";
-
-const stations = [
-  {
-    id: 1,
-    name: "John's station",
-    rating: 4.5,
-    reviews: 120,
-    distance: 1.2,
-    phone: "1234567890",
-    image:
-      "https://images.unsplash.com/photo-1511918984145-48de785d4c4e?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 2,
-    name: "William's station",
-    rating: 4.0,
-    reviews: 98,
-    distance: 2.2,
-    phone: "1234347890",
-    image:
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 3,
-    name: "Jack's station",
-    rating: 5.0,
-    reviews: 150,
-    distance: 2.6,
-    phone: "1234347890",
-    image:
-      "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 4,
-    name: "Watson's station",
-    rating: 4.8,
-    reviews: 110,
-    distance: 3.4,
-    phone: "1234347890",
-    image:
-      "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=400&q=80",
-  },
-];
+import axios from "axios";
+import * as Location from "expo-location";
+import api from "../../env.json";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const renderStars = (rating) => {
   const stars = [];
@@ -83,12 +47,77 @@ const renderStars = (rating) => {
 
 const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const onChangeSearch = (query) => setSearchQuery(query);
-
+  const [shops, setShops] = useState([]);
+  const [clientCoordinates, setClientCoordinates] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
-  const filteredStations = stations.filter((station) =>
-    station.name.toLowerCase().includes(searchQuery.toLowerCase())
+  useEffect(() => {
+    const fetchLocationAndShops = async () => {
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert(
+            "Permission Denied",
+            "Location permission is required to find nearby car wash stations."
+          );
+          setLoading(false);
+          return;
+        }
+        let location = await Location.getCurrentPositionAsync({});
+        const latitude = location.coords.latitude;
+        const longitude = location.coords.longitude;
+        setClientCoordinates({ latitude, longitude });
+        console.log("Client Coordinates : ", latitude, longitude);
+        console.log("Api Url : ", api.API_URL);
+
+        const token = await AsyncStorage.getItem("token"); // Added await
+
+        if (!token) {
+          throw new Error("Authentication token not found");
+        }
+
+        const response = await axios.post(
+          `${api.API_URL}/client/carwash/getlocation`,
+          { latitude, longitude },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.data || !response.data.shops) {
+          throw new Error("Invalid response format from server");
+        }
+
+        console.log("Shops : ", JSON.stringify(response.data.shops, null, 2));
+        setShops(response.data.shops || []);
+      } catch (error) {
+        console.error("Error fetching location or shops:", error);
+        let errorMessage =
+          "Failed to fetch location or car wash stations. Please try again.";
+
+        if (error.response?.status === 403) {
+          errorMessage = "Access denied. Please login again.";
+        } else if (error.message === "Authentication token not found") {
+          errorMessage = "Please login to access this feature.";
+        }
+
+        Alert.alert("Error", errorMessage);
+        setShops([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLocationAndShops();
+  }, []);
+
+  const onChangeSearch = (query) => setSearchQuery(query);
+
+  const filteredShops = shops.filter((shop) =>
+    shop.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -97,7 +126,6 @@ const HomePage = () => {
         <Ionicons name="car-sport" size={wp("6%")} color="#4f8cff" /> Nearest
         car wash stations
       </Text>
-      {/* Attractive Gradient Searchbar */}
       <LinearGradient
         colors={["#4f8cff", "#ffb75e"]}
         start={{ x: 0, y: 0 }}
@@ -114,52 +142,86 @@ const HomePage = () => {
           placeholderTextColor="#888"
         />
       </LinearGradient>
-      <FlatList
-        data={filteredStations}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ paddingBottom: hp("10%") }}
-        showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Image source={{ uri: item.image }} style={styles.image} />
-            <View style={styles.info}>
-              <Text style={styles.stationName}>{item.name}</Text>
-              <View style={styles.ratingRow}>
-                {renderStars(item.rating)}
-                <Text style={styles.ratingText}>
-                  ({item.rating}) · {item.reviews} reviews
-                </Text>
-              </View>
-              <View style={styles.infoRow}>
-                <Ionicons name="call" size={wp("4.2%")} color="#4f8cff" />
-                <Text style={styles.phone}>{item.phone}</Text>
-              </View>
-              <View style={styles.infoRow}>
-                <Ionicons name="location" size={wp("4.2%")} color="#4f8cff" />
-                <Text style={styles.distance}>{item.distance} km away</Text>
-              </View>
-              {/* Book Now button below info, full width, gradient */}
-              <View style={styles.bookBtnWrapper}>
-                <LinearGradient
-                  colors={["#a1c0ff", "#cbbfff"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={styles.bookBtnGradient}
-                >
-                  <TouchableOpacity
-                    style={styles.bookBtn}
-                    onPress={() => navigation.navigate("shopdetails")}
-                    activeOpacity={0.85}
+      {loading ? (
+        <ActivityIndicator
+          size="large"
+          color="#4f8cff"
+          style={{ marginTop: hp("5%") }}
+        />
+      ) : (
+        <FlatList
+          data={filteredShops}
+          keyExtractor={(item) => item._id}
+          contentContainerStyle={{ paddingBottom: hp("10%") }}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <Text
+              style={{
+                textAlign: "center",
+                marginTop: hp("5%"),
+                color: "#888",
+              }}
+            >
+              No car wash stations found nearby.
+            </Text>
+          }
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Image
+                source={
+                  item.image
+                    ? { uri: item.image }
+                    : require("../../assets/Vehicle/car.png")
+                }
+                style={styles.image}
+              />
+              <View style={styles.info}>
+                <Text style={styles.stationName}>{item.name}</Text>
+                <View style={styles.ratingRow}>
+                  {renderStars(Number(item.averageReview || 0))}
+                  <Text style={styles.ratingText}>
+                    ({item.averageReview || "0.0"}) ·{" "}
+                    {item.userReviews ? item.userReviews.length : 0} reviews
+                  </Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Ionicons name="call" size={wp("4.2%")} color="#4f8cff" />
+                  <Text style={styles.phone}>{item.phoneNumber}</Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Ionicons name="location" size={wp("4.2%")} color="#4f8cff" />
+                  <Text style={styles.distance}>{item.distance} km away</Text>
+                </View>
+                <View style={styles.infoRow}>
+                  <Ionicons name="pin" size={wp("4.2%")} color="#4f8cff" />
+                  <Text style={styles.distance}>{item.businessAddress}</Text>
+                </View>
+                <View style={styles.bookBtnWrapper}>
+                  <LinearGradient
+                    colors={["#a1c0ff", "#cbbfff"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.bookBtnGradient}
                   >
-                    <Ionicons name="calendar" size={wp("4.5%")} color="#fff" />
-                    <Text style={styles.bookBtnText}>Book now</Text>
-                  </TouchableOpacity>
-                </LinearGradient>
+                    <TouchableOpacity
+                      style={styles.bookBtn}
+                      onPress={() => navigation.navigate("shopdetails", { shop: item })}
+                      activeOpacity={0.85}
+                    >
+                      <Ionicons
+                        name="calendar"
+                        size={wp("4.5%")}
+                        color="#fff"
+                      />
+                      <Text style={styles.bookBtnText}>Book now</Text>
+                    </TouchableOpacity>
+                  </LinearGradient>
+                </View>
               </View>
             </View>
-          </View>
-        )}
-      />
+          )}
+        />
+      )}
     </View>
   );
 };
@@ -217,6 +279,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#e3f0ff",
     backgroundColor: "#fff",
+    position: "relative",
+    bottom: hp("6%"),
   },
   info: {
     flex: 1,

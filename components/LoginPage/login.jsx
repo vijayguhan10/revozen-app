@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  ScrollView, // <-- Add ScrollView
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -29,10 +30,7 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isSignup, setIsSignup] = useState(false);
-  const handleNavigation = () => {
-    console.log("Navigating to Home");
-    navigation.navigate("Home");
-  };
+  const [levellogin, setLevellogin] = useState(""); // NEW
 
   const handleLogin = async () => {
     try {
@@ -41,46 +39,54 @@ const LoginScreen = () => {
         password,
         role: "client",
       });
+      console.log("API response:", response);
+
       if (response.status == 200) {
-        console.log("success");
-        await AsyncStorage.setItem("token", response.data.token);
-        await AsyncStorage.setItem("userName", response.data.userName);
+        const token = response.data.token;
+        const userName = response.data.userName || "";
+        const levellogin= response.data.levellogin || ""; 
+        await AsyncStorage.setItem("token", token);
+        await AsyncStorage.setItem("userName", userName);
         await AsyncStorage.setItem("userEmail", email);
-       
-          console.log("Navigating to Home...", navigation);
-          navigation.navigate("Home");
-          // Toast.success("Login successful!");
+        await AsyncStorage.setItem("levellogin", levellogin); 
+        // console.log(await AsyncStorage.getItem("levellogin"));
+        console.log("UserName:", userName);
+        console.log("Token:", token);
+        console.log("Email:", email);
+        console.log("Level Login:", levellogin);
+
+        navigation.navigate("Home");
       } else {
         Toast.error("Invalid credentials.");
       }
     } catch (error) {
+      console.log("Login error:", error);
       Toast.error("An error occurred while logging in.");
-    } finally {
-      // navigation.navigate("Home");
-      // console.log("Login process completed.");
     }
   };
 
   const handleSignup = async () => {
+    if (!levellogin) {
+      Toast.error("Please select your login level.");
+      return;
+    }
     try {
-      console.log(name, email, password);
       const response = await axios.post(`${API_URL}/users/register`, {
         name,
         email,
         password,
         role: "client",
+        levellogin, // NEW
       });
       if (response.status == 201 || response.status == 200) {
-        console.log(JSON.stringify(response, null, 2));
         Toast.success("Signup successful!");
         await AsyncStorage.setItem("token", response.data.token);
+        await AsyncStorage.setItem("levellogin", levellogin); // <-- Add this line
         setIsSignup(false);
       } else {
         Toast.error("Signup failed. Please try again.");
       }
     } catch (error) {
-      console.log(JSON.stringify(error.message, null, 2));
-
       Toast.error("An error occurred while signing up.");
     }
   };
@@ -89,80 +95,122 @@ const LoginScreen = () => {
     <View style={styles.container}>
       <Image source={TopTierImage} style={styles.topLeftImage} />
       <Image source={BottomTierImage} style={styles.bottomLeftImage} />
-      <Image source={loginRevozenLogo} style={styles.revozenLogo} />
-      <View style={styles.overlay}>
-        <View style={styles.form}>
-          {isSignup && (
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Image source={loginRevozenLogo} style={styles.revozenLogo} />
+        <View style={styles.overlay}>
+          <View style={[styles.form, isSignup && styles.signupForm]}>
+            {/* Level Selector - Only for Signup */}
+            {isSignup && (
+              <View style={styles.levelRow}>
+                <TouchableOpacity
+                  style={[
+                    styles.levelBtn,
+                    levellogin === "enterprise" && styles.levelBtnActive,
+                  ]}
+                  onPress={() => setLevellogin("enterprise")}
+                >
+                  <Text
+                    style={[
+                      styles.levelBtnText,
+                      levellogin === "enterprise" && styles.levelBtnTextActive,
+                    ]}
+                  >
+                    Enterprise
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.levelBtn,
+                    levellogin === "individual" && styles.levelBtnActive,
+                  ]}
+                  onPress={() => setLevellogin("individual")}
+                >
+                  <Text
+                    style={[
+                      styles.levelBtnText,
+                      levellogin === "individual" && styles.levelBtnTextActive,
+                    ]}
+                  >
+                    Individual
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {isSignup && (
+              <View style={styles.flexColumn}>
+                <Text style={styles.label}>Name</Text>
+                <View style={styles.inputForm}>
+                  <TextInput
+                    style={styles.input}
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="Enter your Name"
+                    placeholderTextColor="#666"
+                  />
+                </View>
+              </View>
+            )}
             <View style={styles.flexColumn}>
-              <Text style={styles.label}>Name</Text>
+              <Text style={styles.label}>Email</Text>
               <View style={styles.inputForm}>
                 <TextInput
                   style={styles.input}
-                  value={name}
-                  onChangeText={setName}
-                  placeholder="Enter your Name"
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="Enter your Email"
                   placeholderTextColor="#666"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
                 />
               </View>
             </View>
-          )}
-          <View style={styles.flexColumn}>
-            <Text style={styles.label}>Email</Text>
-            <View style={styles.inputForm}>
-              <TextInput
-                style={styles.input}
-                value={email}
-                onChangeText={setEmail}
-                placeholder="Enter your Email"
-                placeholderTextColor="#666"
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
+            <View style={styles.flexColumn}>
+              <Text style={styles.label}>Password</Text>
+              <View style={styles.inputForm}>
+                <TextInput
+                  style={styles.input}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="Enter your Password"
+                  placeholderTextColor="#666"
+                  secureTextEntry
+                />
+              </View>
             </View>
-          </View>
-          <View style={styles.flexColumn}>
-            <Text style={styles.label}>Password</Text>
-            <View style={styles.inputForm}>
-              <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Enter your Password"
-                placeholderTextColor="#666"
-                secureTextEntry
-              />
-            </View>
-          </View>
-          <TouchableOpacity
-            style={styles.buttonSubmit}
-            onPress={isSignup ? handleSignup : handleLogin}
-          >
-            <Text style={styles.buttonSubmitText}>
-              {isSignup ? "Sign Up" : "Sign In"}
-            </Text>
-          </TouchableOpacity>
-          <Text style={styles.pText}>
-            {isSignup ? "Already have an account? " : "Don't have an account? "}
-            <Text
-              style={styles.spanText}
-              onPress={() => setIsSignup(!isSignup)}
+            <TouchableOpacity
+              style={styles.buttonSubmit}
+              onPress={isSignup ? handleSignup : handleLogin}
             >
-              {isSignup ? "Login" : "Sign Up"}
+              <Text style={styles.buttonSubmitText}>
+                {isSignup ? "Sign Up" : "Sign In"}
+              </Text>
+            </TouchableOpacity>
+            <Text style={styles.pText}>
+              {isSignup ? "Already have an account? " : "Don't have an account? "}
+              <Text
+                style={styles.spanText}
+                onPress={() => setIsSignup(!isSignup)}
+              >
+                {isSignup ? "Login" : "Sign Up"}
+              </Text>
             </Text>
-          </Text>
-          <Text style={styles.pText}>Or With</Text>
-          <View style={styles.flexRow}>
-            <TouchableOpacity style={[styles.socialButton, styles.google]}>
-              <Image source={googleLogo} style={styles.googleLogoStyle} />
-              <Text style={styles.socialButtonText}>Google</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.socialButton, styles.apple]}>
-              <Image source={appleLogo} style={styles.appleLogoStyle} />
-              <Text style={styles.appleButtonText}>Apple</Text>
-            </TouchableOpacity>
+            <Text style={[styles.pText, { marginTop: 8, marginBottom: 4 }]}>Or With</Text>
+            <View style={styles.socialRow}>
+              <TouchableOpacity style={[styles.socialButton, styles.google]}>
+                <Image source={googleLogo} style={styles.googleLogoStyle} />
+                <Text style={styles.socialButtonText}>Google</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.socialButton, styles.apple]}>
+                <Image source={appleLogo} style={styles.appleLogoStyle} />
+                <Text style={styles.appleButtonText}>Apple</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -177,46 +225,52 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: hp("7%"),
     left: 0,
-    width: wp("30%"),
-    height: hp("20%"),
+    width: wp("25%"), // reduced size
+    height: hp("23%"), // reduced size
     resizeMode: "contain",
+    zIndex: 0,
   },
   bottomLeftImage: {
     position: "absolute",
     bottom: hp("0%"),
     left: 0,
-    width: wp("30%"),
-    height: hp("20%"),
+    width: wp("22%"), // reduced size
+    height: hp("13%"), // reduced size
     resizeMode: "contain",
+    zIndex: 0,
   },
   revozenLogo: {
-    width: wp("40%"),
-    height: hp("12%"),
-    marginTop: hp("14%"),
-    marginLeft: wp("30%"),
+    width: wp("32%"), // reduced size
+    height: hp("9%"),
+    marginTop: hp("7%"),
+    marginLeft: wp("1%"),
+    marginBottom: hp("2%"),
+    alignSelf: "center",
   },
   overlay: {
-    marginTop: hp("3%"),
+    marginTop: hp("1%"),
     justifyContent: "center",
     alignItems: "center",
     borderRadius: wp("4%"),
     borderWidth: 2,
     borderColor: "#cccccc",
     marginHorizontal: wp("4%"),
-    padding: wp("4%"),
+    padding: wp("3%"),
+    backgroundColor: "#fff",
+    zIndex: 1,
   },
   form: {
     width: wp("85%"),
     borderRadius: wp("5%"),
+    marginTop: hp("2%"),
+    paddingBottom: hp("2%"),
+    backgroundColor: "#fff",
+  },
+  signupForm: {
+    marginTop: hp("1%"),
   },
   flexColumn: {
-    marginBottom: hp("1%"),
-  },
-  label: {
-    color: "#151717",
-    fontWeight: "600",
-    fontSize: wp("4%"),
-    fontFamily: "poppins",
+    marginBottom: hp("0.5%"),
   },
   inputForm: {
     flexDirection: "row",
@@ -224,54 +278,48 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: "#ecedec",
     borderRadius: wp("3%"),
-    height: hp("6%"),
-    marginBottom: hp("2%"),
+    height: hp("5.2%"),
+    marginBottom: hp("1%"),
     paddingLeft: wp("3%"),
-  },
-  input: {
-    flex: 1,
-    marginLeft: wp("2%"),
-    fontSize: wp("4%"),
-    color: "#000",
-    fontFamily: "poppins",
-  },
-  flexRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginVertical: hp("2%"),
+    backgroundColor: "#fff",
   },
   buttonSubmit: {
     backgroundColor: "#151717",
-    paddingVertical: hp("2%"),
+    paddingVertical: hp("1.2%"),
     borderRadius: wp("3%"),
-    marginTop: hp("1%"),
+    marginTop: hp("0.5%"),
   },
   buttonSubmitText: {
     color: "#fff",
     fontSize: wp("4%"),
-    textAlign: "center",
     fontWeight: "600",
+    textAlign: "center",
     fontFamily: "poppins",
   },
   pText: {
     textAlign: "center",
     fontSize: wp("3.5%"),
     color: "#000",
-    marginTop: hp("2%"),
+    marginTop: hp("1.2%"),
     fontFamily: "poppins",
   },
   spanText: {
-    color: "#2d79f3",
-    fontWeight: "500",
-    fontFamily: "poppins",
+    color: "#6C63FF",
+    fontWeight: "bold",
+  },
+  socialRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: hp("1%"),
+    gap: wp("2%"),
   },
   socialButton: {
     flex: 1,
-    paddingVertical: hp("1.5%"),
+    paddingVertical: hp("1%"),
     borderRadius: wp("3%"),
     alignItems: "center",
-    marginHorizontal: wp("1.5%"),
+    marginHorizontal: wp("1%"),
     flexDirection: "row",
     justifyContent: "center",
   },
@@ -305,6 +353,32 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginLeft: wp("2%"),
     fontFamily: "poppins",
+  },
+  levelRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  levelBtn: {
+    flex: 1,
+    borderWidth: 1.5,
+    borderColor: "#6C63FF",
+    borderRadius: wp("3%"),
+    marginHorizontal: wp("2%"),
+    paddingVertical: hp("1.2%"),
+    backgroundColor: "#fff",
+    alignItems: "center",
+  },
+  levelBtnActive: {
+    backgroundColor: "#6C63FF",
+  },
+  levelBtnText: {
+    color: "#6C63FF",
+    fontWeight: "600",
+    fontSize: wp("4%"),
+    fontFamily: "poppins",
+  },
+  levelBtnTextActive: {
+    color: "#fff",
   },
 });
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Pressable,
   StyleSheet,
   Platform,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
@@ -16,159 +17,200 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import axios from "axios";
+import api from "../../../env.json";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Booking = ({
   visible,
   onClose,
-  date,
-  setDate,
-  showDatePicker,
-  setShowDatePicker,
-  onDismissDate,
-  onConfirmDate,
-  selectedTime,
-  setSelectedTime,
-  showTimePicker,
-  setShowTimePicker,
-  onDismissTime,
-  onConfirmTime,
-  washType,
-  setWashType,
-  address,
-  setAddress,
-  onConfirmBooking,
-}) => (
-  <Modal
-    visible={visible}
-    transparent
-    animationType="slide"
-    onRequestClose={onClose}
-  >
-    <View style={styles.modalOverlay}>
-      <LinearGradient
-        colors={["#a1c0ff", "#ffd6b0"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.modalGradientBorder}
-      >
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Book a Wash</Text>
-          <Text style={styles.modalLabel}>Select Date</Text>
-          <TouchableOpacity
-            style={styles.datePickerBtn}
-            onPress={() => setShowDatePicker(true)}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="calendar-outline" size={wp("5%")} color="#6C63FF" />
-            <Text style={styles.datePickerText}>
-              {date ? date.toDateString() : "Pick a date"}
-            </Text>
-          </TouchableOpacity>
-          <DatePickerModal
-            locale="en"
-            mode="single"
-            visible={showDatePicker}
-            onDismiss={onDismissDate}
-            date={date}
-            onConfirm={onConfirmDate}
-          />
+  shop,
+}) => {
+  const [date, setDate] = useState(undefined);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [washType, setWashType] = useState("doorstep");
+  const [selectedTime, setSelectedTime] = useState(undefined);
+  const [address, setAddress] = useState("");
 
-          <Text style={styles.modalLabel}>Select Time</Text>
-          <TouchableOpacity
-            style={styles.datePickerBtn}
-            onPress={() => setShowTimePicker(true)}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="time-outline" size={wp("5%")} color="#6C63FF" />
-            <Text style={styles.datePickerText}>
-              {selectedTime
-                ? `${selectedTime.hours.toString().padStart(2, "0")}:${selectedTime.minutes
-                    .toString()
-                    .padStart(2, "0")}`
-                : "Pick a time"}
-            </Text>
-          </TouchableOpacity>
-          <TimePickerModal
-            visible={showTimePicker}
-            onDismiss={onDismissTime}
-            onConfirm={onConfirmTime}
-            hours={selectedTime ? selectedTime.hours : 12}
-            minutes={selectedTime ? selectedTime.minutes : 0}
-            label="Select time"
-          />
+  const onDismissDate = () => setShowDatePicker(false);
+  const onConfirmDate = (params) => {
+    setShowDatePicker(false);
+    setDate(params.date);
+  };
 
-          <Text style={styles.modalLabel}>Wash Type</Text>
-          <View style={styles.radioRow}>
-            <Pressable
-              style={styles.radioBtn}
-              onPress={() => setWashType("doorstep")}
-            >
-              <LinearGradient
-                colors={
-                  washType === "doorstep"
-                    ? ["#a1c0ff", "#ffd6b0"]
-                    : ["#fff", "#fff"]
-                }
-                style={styles.radioCircle}
+  const onDismissTime = () => setShowTimePicker(false);
+  const onConfirmTime = ({ hours, minutes }) => {
+    setShowTimePicker(false);
+    setSelectedTime({ hours, minutes });
+  };
+const onConfirmBooking = async () => {
+  if (!date || !selectedTime || (washType === "doorstep" && !address)) {
+    Alert.alert("Missing Info", "Please select date, time, and address (if doorstep).");
+    return;
+  }
+  try {
+    const appointmentTime = `${selectedTime.hours.toString().padStart(2, "0")}:${selectedTime.minutes.toString().padStart(2, "0")}`;
+    const appointmentDate = date.toISOString();
+
+    const payload = {
+      appointmentDate,
+      appointmentTime,
+      washType,
+      address: washType === "doorstep" ? address : undefined,
+    };
+    
+    const shopId = shop?._id;
+    const url = `${api.API_URL}/client/carwash/postorders/${shopId}`;
+    const token = await AsyncStorage.getItem("token");
+   const response= await axios.post(url, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("response",response.data);
+    Alert.alert("Success", "Booking confirmed!");
+    onClose();
+  } catch (error) {
+    console.error("Error booking:", error);
+    Alert.alert("Error", "Failed to confirm booking. Please try again.");
+  }
+};
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalGradientBorder}>
+          <LinearGradient
+            colors={["#a1c0ff", "#ffd6b0"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.gradientBackground}
+          >
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>Book a Wash</Text>
+              <Text style={styles.modalLabel}>Select Date</Text>
+              <TouchableOpacity
+                style={styles.datePickerBtn}
+                onPress={() => setShowDatePicker(true)}
+                activeOpacity={0.8}
               >
-                {washType === "doorstep" && <View style={styles.radioDot} />}
-              </LinearGradient>
-              <Text style={styles.radioText}>Doorstep</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.radioBtn, { marginLeft: wp("8%") }]}
-              onPress={() => setWashType("shop")}
-            >
-              <LinearGradient
-                colors={
-                  washType === "shop"
-                    ? ["#a1c0ff", "#ffd6b0"]
-                    : ["#fff", "#fff"]
-                }
-                style={styles.radioCircle}
+                <Ionicons name="calendar-outline" size={wp("5%")} color="#6C63FF" />
+                <Text style={styles.datePickerText}>
+                  {date ? date.toDateString() : "Pick a date"}
+                </Text>
+              </TouchableOpacity>
+              <DatePickerModal
+                locale="en"
+                mode="single"
+                visible={showDatePicker}
+                onDismiss={onDismissDate}
+                date={date}
+                onConfirm={onConfirmDate}
+              />
+
+              <Text style={styles.modalLabel}>Select Time</Text>
+              <TouchableOpacity
+                style={styles.datePickerBtn}
+                onPress={() => setShowTimePicker(true)}
+                activeOpacity={0.8}
               >
-                {washType === "shop" && <View style={styles.radioDot} />}
-              </LinearGradient>
-              <Text style={styles.radioText}>Shop</Text>
-            </Pressable>
-          </View>
+                <Ionicons name="time-outline" size={wp("5%")} color="#6C63FF" />
+                <Text style={styles.datePickerText}>
+                  {selectedTime
+                    ? `${selectedTime.hours.toString().padStart(2, "0")}:${selectedTime.minutes
+                        .toString()
+                        .padStart(2, "0")}`
+                    : "Pick a time"}
+                </Text>
+              </TouchableOpacity>
+              <TimePickerModal
+                visible={showTimePicker}
+                onDismiss={onDismissTime}
+                onConfirm={onConfirmTime}
+                hours={selectedTime ? selectedTime.hours : 12}
+                minutes={selectedTime ? selectedTime.minutes : 0}
+                label="Select time"
+              />
 
-          {washType === "doorstep" && (
-            <TextInput
-              placeholder="Your Address"
-              value={address}
-              onChangeText={setAddress}
-              style={styles.nativeInput}
-              placeholderTextColor="#888"
-            />
-          )}
+              <Text style={styles.modalLabel}>Wash Type</Text>
+              <View style={styles.radioRow}>
+                <Pressable
+                  style={styles.radioBtn}
+                  onPress={() => setWashType("doorstep")}
+                >
+                  <LinearGradient
+                    colors={
+                      washType === "doorstep"
+                        ? ["#a1c0ff", "#ffd6b0"]
+                        : ["#fff", "#fff"]
+                    }
+                    style={styles.radioCircle}
+                  >
+                    {washType === "doorstep" && <View style={styles.radioDot} />}
+                  </LinearGradient>
+                  <Text style={styles.radioText}>Doorstep</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.radioBtn, { marginLeft: wp("8%") }]}
+                  onPress={() => setWashType("shop")}
+                >
+                  <LinearGradient
+                    colors={
+                      washType === "shop"
+                        ? ["#a1c0ff", "#ffd6b0"]
+                        : ["#fff", "#fff"]
+                    }
+                    style={styles.radioCircle}
+                  >
+                    {washType === "shop" && <View style={styles.radioDot} />}
+                  </LinearGradient>
+                  <Text style={styles.radioText}>Shop</Text>
+                </Pressable>
+              </View>
 
-          <TouchableOpacity
-            style={styles.confirmBtn}
-            onPress={onConfirmBooking}
-            activeOpacity={0.85}
-          >
-            <LinearGradient
-              colors={["#6C63FF", "#ffd6b0"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.confirmBtnGradient}
-            >
-              <Text style={styles.confirmBtnText}>Confirm Booking</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.closeBtn}
-            onPress={onClose}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.closeBtnText}>Cancel</Text>
-          </TouchableOpacity>
+              {washType === "doorstep" && (
+                <TextInput
+                  placeholder="Your Address"
+                  value={address}
+                  onChangeText={setAddress}
+                  style={styles.nativeInput}
+                  placeholderTextColor="#888"
+                />
+              )}
+
+              <TouchableOpacity
+                style={styles.confirmBtn}
+                onPress={onConfirmBooking}
+                activeOpacity={0.85}
+              >
+                <LinearGradient
+                  colors={["#6C63FF", "#ffd6b0"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.confirmBtnGradient}
+                >
+                  <Text style={styles.confirmBtnText}>Confirm Booking</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.closeBtn}
+                onPress={onClose}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.closeBtnText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </LinearGradient>
         </View>
-      </LinearGradient>
-    </View>
-  </Modal>
-);
+      </View>
+    </Modal>
+  );
+};
 
 const styles = StyleSheet.create({
   modalOverlay: {
@@ -185,6 +227,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 12,
     elevation: 10,
+    backgroundColor: "transparent",
+  },
+  gradientBackground: {
+    borderRadius: wp("5%"),
+    width: "100%",
   },
   modalContainer: {
     backgroundColor: "#fff",

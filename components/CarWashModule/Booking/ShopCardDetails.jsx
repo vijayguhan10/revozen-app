@@ -12,29 +12,42 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-
+import { LinearGradient } from "expo-linear-gradient";
 const TABS = ["About", "Services", "Gallery", "History"];
 
-const ShopCardDetails = ({ activeTab, setActiveTab, onBookNow }) => (
+const ShopCardDetails = ({ activeTab, setActiveTab, onBookNow, shop }) => (
   <View style={styles.card}>
     <View style={styles.cardHeader}>
       <View>
         <Text style={styles.category}>Car Washing</Text>
-        <Text style={styles.title}>William's station</Text>
-        <Text style={styles.address}>1012 Ocean avenue, New york, USA</Text>
+        <Text style={styles.title}>{shop?.name || "N/A"}</Text>
+        <Text style={styles.address}>{shop?.businessAddress || "N/A"}</Text>
       </View>
       <View style={{ alignItems: "flex-end" }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Ionicons name="star" color="#FFC107" size={20} />
-          <Text style={styles.rating}>4.8</Text>
-          <Text style={styles.reviewCount}>(365 reviews)</Text>
+          <Text style={styles.rating}>{shop?.averageReview || "0.0"}</Text>
+          <Text style={styles.reviewCount}>
+            ({shop?.userReviews ? shop.userReviews.length : 0} reviews)
+          </Text>
         </View>
-        <Ionicons
-          name="paper-plane-outline"
-          size={24}
-          color="#6C63FF"
-          style={{ marginTop: 4 }}
-        />
+        <View style={styles.bookBtnWrapper}>
+          <LinearGradient
+            colors={["#a1c0ff", "#cbbfff"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.bookBtnGradient}
+          >
+            <TouchableOpacity
+              style={styles.bookBtn}
+              onPress={onBookNow}
+              activeOpacity={0.85}
+            >
+              <Ionicons name="calendar" size={wp("3%")} color="#fff" />
+              <Text style={styles.bookBtnText}>Book now</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+        </View>
       </View>
     </View>
 
@@ -62,27 +75,98 @@ const ShopCardDetails = ({ activeTab, setActiveTab, onBookNow }) => (
         <View>
           <Text style={styles.sectionTitle}>About Us</Text>
           <Text style={styles.sectionText}>
-            We pride ourselves on top-quality services. If you're not satisfied,
-            we'll make it right! Easily schedule a wash at your preferred time
-            and location. Just a few taps, and you're ready to go!
+            {shop?.about ||
+              "We pride ourselves on top-quality services. If you're not satisfied,"}
           </Text>
+          <View style={styles.gridRow}>
+            <View style={styles.gridItem}>
+              <Ionicons
+                name="location-outline"
+                size={20}
+                color="#6C63FF"
+                style={styles.detailIcon}
+              />
+              <Text style={styles.detailLabel}>Region:</Text>
+              <Text style={styles.detailValue}>{shop?.region || "N/A"}</Text>
+            </View>
+            <View style={styles.gridItem}>
+              <Ionicons
+                name="pricetag-outline"
+                size={20}
+                color="#6C63FF"
+                style={styles.detailIcon}
+              />
+              <Text style={styles.detailLabel}>Pincode:</Text>
+              <Text style={styles.detailValue}>{shop?.pincode || "N/A"}</Text>
+            </View>
+          </View>
+          <View style={styles.gridRow}>
+            <View style={styles.gridItem}>
+              <Ionicons
+                name="time-outline"
+                size={20}
+                color="#6C63FF"
+                style={styles.detailIcon}
+              />
+              <Text style={styles.detailLabel}>Opening:</Text>
+              <Text style={styles.detailValue}>
+                {shop?.openingTime
+                  ? new Date(shop.openingTime).toLocaleTimeString()
+                  : "N/A"}
+              </Text>
+            </View>
+            <View style={styles.gridItem}>
+              <Ionicons
+                name="moon-outline"
+                size={20}
+                color="#6C63FF"
+                style={styles.detailIcon}
+              />
+              <Text style={styles.detailLabel}>Closing:</Text>
+              <Text style={styles.detailValue}>
+                {shop?.closingTime
+                  ? new Date(shop.closingTime).toLocaleTimeString()
+                  : "N/A"}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.detailRow}>
+            <Ionicons
+              name="calendar-outline"
+              size={20}
+              color="#6C63FF"
+              style={styles.detailIcon}
+            />
+            <Text style={styles.detailLabel}>Days Open:</Text>
+            <Text style={styles.detailValue}>
+              {shop?.daysOfOperation?.join(", ") || "N/A"}
+            </Text>
+          </View>
         </View>
       )}
       {activeTab === "Services" && (
         <View>
           <Text style={styles.sectionTitle}>Services</Text>
           <Text style={styles.sectionText}>
+            {/* You can render dynamic services here if available in shop object */}
             • Exterior Wash{"\n"}• Interior Cleaning{"\n"}• Detailing
           </Text>
         </View>
       )}
       {activeTab === "Gallery" && (
         <ScrollView horizontal>
-          {[1, 2, 3].map((i) => (
+          {/* If shop has images, render them, else fallback */}
+          {(shop?.galleryImages && shop.galleryImages.length > 0
+            ? shop.galleryImages
+            : [1, 2, 3]
+          ).map((img, i) => (
             <Image
               key={i}
               source={{
-                uri: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d",
+                uri:
+                  typeof img === "string"
+                    ? img
+                    : "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d",
               }}
               style={styles.galleryImage}
             />
@@ -92,19 +176,19 @@ const ShopCardDetails = ({ activeTab, setActiveTab, onBookNow }) => (
       {activeTab === "History" && (
         <View>
           <Text style={styles.sectionTitle}>History</Text>
-          <Text style={styles.sectionText}>No previous bookings found.</Text>
+          <Text style={styles.sectionText}>
+            {shop?.userReviews && shop.userReviews.length > 0
+              ? shop.userReviews
+                  .map(
+                    (review) =>
+                      `${review.userName}: ${review.review}★ - ${review.description}`
+                  )
+                  .join("\n")
+              : "No previous bookings found."}
+          </Text>
         </View>
       )}
     </View>
-
-    {/* Book Now Button */}
-    <TouchableOpacity
-      style={styles.bookBtn}
-      onPress={onBookNow}
-      activeOpacity={0.85}
-    >
-      <Text style={styles.bookBtnText}>Book Now</Text>
-    </TouchableOpacity>
   </View>
 );
 
@@ -160,8 +244,8 @@ const styles = StyleSheet.create({
   },
   tabsRow: {
     flexDirection: "row",
-    marginTop: hp("2%"),
-    marginBottom: hp("1%"),
+    // marginTop: hp("2%"),
+    // marginBottom: hp("1%"),
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
@@ -175,7 +259,8 @@ const styles = StyleSheet.create({
     color: "#888",
     // fontWeight: "500",
 
-fontFamily: "poppins",  },
+    fontFamily: "poppins",
+  },
   activeTabText: {
     color: "#6C63FF",
     // fontWeight: "bold",
@@ -200,6 +285,26 @@ fontFamily: "poppins",  },
     fontSize: wp("3%"),
     lineHeight: 20,
   },
+  gridRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    // marginVertical: 2,
+  },
+  gridItem: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f4f6ff",
+    borderRadius: wp("2%"),
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    marginHorizontal: 2,
+    marginVertical: 4,
+    shadowColor: "#6C63FF",
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
   galleryImage: {
     width: wp("22%"),
     height: wp("22%"),
@@ -207,18 +312,57 @@ fontFamily: "poppins",  },
     marginRight: wp("3%"),
     marginTop: 8,
   },
+  bookBtnWrapper: {
+    marginTop: hp("1.5%"),
+    width: "70%",
+    height: hp("4%"),
+  },
+  bookBtnGradient: {
+    borderRadius: wp("2.5%"),
+    overflow: "hidden",
+  },
   bookBtn: {
-    marginTop: hp("2.5%"),
-    backgroundColor: "#6C63FF",
-    borderRadius: wp("3%"),
-    paddingVertical: 10,
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: hp("1.2%"),
+    width: "100%",
   },
   bookBtnText: {
-    color: "#fff",
-    // fontWeight: "bold",
+    color: "#000000",
+    fontSize: wp("3%"),
+    marginLeft: wp("1.5%"),
+    letterSpacing: 0.2,
     fontFamily: "poppins",
-    fontSize: wp("4.2%"),
+  },
+  detailRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f4f6ff",
+    borderRadius: wp("2%"),
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    marginVertical: 4,
+    shadowColor: "#6C63FF",
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  detailIcon: {
+    marginRight: 8,
+  },
+  detailLabel: {
+    fontWeight: "bold",
+    color: "#6C63FF",
+    fontSize: wp("3%"),
+    marginRight: 4,
+    fontFamily: "poppins",
+  },
+  detailValue: {
+    color: "#222",
+    fontSize: wp("3%"),
+    width: "70%",
+    fontFamily: "poppins",
   },
 });
 

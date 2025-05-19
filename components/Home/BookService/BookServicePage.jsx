@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  TextInput, // <-- Add this import
 } from "react-native";
 import { Searchbar } from "react-native-paper";
 import {
@@ -27,6 +28,8 @@ const BookServicePage = () => {
   const [filteredVehicles, setFilteredVehicles] = useState([]);
   const [selectedVehicles, setSelectedVehicles] = useState([]);
   const [isBulkOrder, setIsBulkOrder] = useState(false);
+  const [levellogin, setLevellogin] = useState(null);
+  const [bulkTirePrice, setBulkTirePrice] = useState(""); // For bulk tire price input
 
   const scrollViewRef = useRef();
   const addressRef = useRef();
@@ -34,9 +37,7 @@ const BookServicePage = () => {
   useEffect(() => {
     const fetchVehicles = async () => {
       const token = await AsyncStorage.getItem("token");
-      // console.log("token: ",token);
       try {
-        console.log("token: ", token);
         const response = await axios.get(
           `${API_URL}/client/vehicle/getallvehicles`,
           {
@@ -53,6 +54,13 @@ const BookServicePage = () => {
       }
     };
     fetchVehicles();
+
+    // Fetch levellogin from AsyncStorage
+    const fetchLevelLogin = async () => {
+      const level = await AsyncStorage.getItem("levellogin");
+      setLevellogin(level);
+    };
+    fetchLevelLogin();
   }, []);
 
   const onChangeSearch = (query) => {
@@ -65,7 +73,6 @@ const BookServicePage = () => {
   };
 
   const toggleVehicleSelection = (vehicleId) => {
-    console.log(selectedVehicles);
     setSelectedVehicles((prev) => {
       if (prev.find((v) => v._id === vehicleId)) {
         return prev.filter((v) => v._id !== vehicleId);
@@ -79,7 +86,7 @@ const BookServicePage = () => {
   const handleBulkOrderToggle = () => {
     setSelectedVehicles([]);
     setIsBulkOrder((prev) => !prev);
-    console.log("Bulk order  : ", isBulkOrder);
+    setBulkTirePrice(""); // Reset price input when toggling
   };
 
   return (
@@ -90,13 +97,16 @@ const BookServicePage = () => {
         value={searchQuery}
         style={styles.searchbar}
         inputStyle={styles.inputText}
+        editable={levellogin === "individual"}
       />
 
       <View style={styles.card}>
         <Text style={styles.pageTitle}>Book A Service</Text>
-        <Text style={styles.sectionTitle}>Select Vehicle</Text>
-
-        {filteredVehicles.length > 0 && (
+        {levellogin === "individual" && (
+          <Text style={styles.sectionTitle}>Select Vehicle</Text>
+        )}
+        {/* Only show vehicle selection if levellogin is "individual" */}
+        {levellogin === "individual" && filteredVehicles.length > 0 && (
           <ScrollView
             showsVerticalScrollIndicator={true}
             nestedScrollEnabled={true}
@@ -105,7 +115,7 @@ const BookServicePage = () => {
             {filteredVehicles.map((vehicle) => (
               <View key={vehicle._id} style={{ marginBottom: hp("2%") }}>
                 <TouchableOpacity
-                  disabled={isBulkOrder}
+                  disabled={false}
                   onPress={() => toggleVehicleSelection(vehicle._id)}
                   style={[
                     styles.vehicleCard,
@@ -129,28 +139,44 @@ const BookServicePage = () => {
           </ScrollView>
         )}
 
-        <TouchableOpacity
-          onPress={handleBulkOrderToggle}
-          style={styles.bulkButton}
-        >
-          <Text style={styles.bulkButtonText}>
-            {isBulkOrder ? "Cancel Bulk Tire Order" : "Bulk Tire Order"}
-          </Text>
-        </TouchableOpacity>
+        {/* Show Bulk Tire Order only if levellogin is NOT "individual" */}
+        {levellogin !== "individual" && (
+          <>
+            <View style={{ marginTop: hp("2%"), marginBottom: hp("2%") }}>
+              <Text style={styles.sectionTitle}>Enter Bulk Number of Bulk Tyres</Text>
+              <View style={styles.underlineInput}>
+                
+                <TextInput
+                  style={{
+                    marginLeft: wp("0%"),
+                    fontSize: wp("4%"),
+                    color: "#000",
+                    fontFamily: "poppins",
+                  }}
+                  placeholder="Enter price"
+                  keyboardType="numeric"
+                  value={bulkTirePrice}
+                  onChangeText={setBulkTirePrice}
+                />
+              </View>
+            </View>
+          </>
+        )}
       </View>
 
       <View ref={addressRef} style={{ marginTop: hp("1.5%") }}>
         <BookingAddress
           selectedVehicles={
-            isBulkOrder
-              ? []
-              : selectedVehicles.map((vehicle) => ({
+            levellogin === "individual"
+              ? selectedVehicles.map((vehicle) => ({
                   id: vehicle._id,
                   registrationNumber: vehicle.registrationNumber,
                   vehicleName: vehicle.vehicleModel,
                 }))
+              : []
           }
-          isBulkOrder={isBulkOrder}
+          isBulkOrder={levellogin !== "individual"}
+          bulkTirePrice={levellogin !== "individual" ? bulkTirePrice : undefined}
         />
       </View>
     </View>

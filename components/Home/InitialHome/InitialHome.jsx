@@ -1,5 +1,5 @@
 // InitialHome.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -17,8 +17,18 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const InitialHome = () => {
   const navigation = useNavigation();
+  const [levellogin, setLevellogin] = useState(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem("levellogin").then((val) => {
+      setLevellogin(val);
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
@@ -39,8 +49,8 @@ const InitialHome = () => {
         contentContainerStyle={{ paddingBottom: hp("10%") }}
       >
         <Text style={styles.sectionTitle}>Choose service type</Text>
-
         <View style={styles.serviceTypeContainer}>
+          {/* Always show Purchase Tyres */}
           <View style={styles.extendbutton}>
             <LinearGradient
               colors={["#c2daff", "#5297ff"]}
@@ -62,32 +72,34 @@ const InitialHome = () => {
                     { alignItems: "center", justifyContent: "center" },
                   ]}
                 >
-                  Tyre Replacement
+                  Purchase Tyres
                 </Text>
               </TouchableOpacity>
             </LinearGradient>
           </View>
-
-          <View style={styles.extendbutton}>
-            <LinearGradient
-              colors={["#e0ecff", "#ffe3d1"]}
-              start={{ x: 1, y: 1 }}
-              end={{ x: 0, y: 1 }}
-              style={styles.serviceCard}
-            >
-              <TouchableOpacity
-              onPress={() => navigation.navigate("carwashomepage")}
-                style={{ alignItems: "center", justifyContent: "center" }}
+          {/* Show Car Washing only if levellogin is "individual" */}
+          {levellogin === "individual" && (
+            <View style={styles.extendbutton}>
+              <LinearGradient
+                colors={["#e0ecff", "#ffe3d1"]}
+                start={{ x: 1, y: 1 }}
+                end={{ x: 0, y: 1 }}
+                style={styles.serviceCard}
               >
-                <MaterialCommunityIcons
-                  name="car-wash"
-                  size={30}
-                  color="#000"
-                />
-                <Text style={styles.serviceCardTextWhite}>Car Washing</Text>
-              </TouchableOpacity>
-            </LinearGradient>
-          </View>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("carwashomepage")}
+                  style={{ alignItems: "center", justifyContent: "center" }}
+                >
+                  <MaterialCommunityIcons
+                    name="car-wash"
+                    size={30}
+                    color="#000"
+                  />
+                  <Text style={styles.serviceCardTextWhite}>Car Washing</Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            </View>
+          )}
         </View>
 
         <TouchableOpacity
