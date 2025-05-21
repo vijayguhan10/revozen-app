@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  TextInput, // <-- Add this import
+  TextInput,
 } from "react-native";
 import { Searchbar } from "react-native-paper";
 import {
@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import api from "../../../env.json";
+import Loader from "../../../Loader"; // Use Loader directly
 
 const BookServicePage = () => {
   const API_URL = api.API_URL;
@@ -29,39 +30,45 @@ const BookServicePage = () => {
   const [selectedVehicles, setSelectedVehicles] = useState([]);
   const [isBulkOrder, setIsBulkOrder] = useState(false);
   const [levellogin, setLevellogin] = useState(null);
-  const [bulkTirePrice, setBulkTirePrice] = useState(""); // For bulk tire price input
+  const [bulkTirePrice, setBulkTirePrice] = useState("");
+  const [localLoading, setLocalLoading] = useState(true); // Local loading state
 
   const scrollViewRef = useRef();
   const addressRef = useRef();
 
   useEffect(() => {
-    const fetchVehicles = async () => {
-      const token = await AsyncStorage.getItem("token");
+    const fetchData = async () => {
+      setLocalLoading(true);
       try {
-        const response = await axios.get(
-          `${API_URL}/client/vehicle/getallvehicles`,
-          {
+        const token = await AsyncStorage.getItem("token");
+        const [vehiclesRes, level] = await Promise.all([
+          axios.get(`${API_URL}/client/vehicle/getallvehicles`, {
             headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setVehicles(response.data);
-        setFilteredVehicles(response.data);
+          }),
+          AsyncStorage.getItem("levellogin"),
+        ]);
+        setVehicles(vehiclesRes.data);
+        setFilteredVehicles(vehiclesRes.data);
+        setLevellogin(level);
       } catch (error) {
         console.log(
-          "Error fetching vehicles:",
+          "Error fetching vehicles or levellogin:",
           error.response?.data || error.message
         );
+      } finally {
+        setLocalLoading(false);
       }
     };
-    fetchVehicles();
-
-    // Fetch levellogin from AsyncStorage
-    const fetchLevelLogin = async () => {
-      const level = await AsyncStorage.getItem("levellogin");
-      setLevellogin(level);
-    };
-    fetchLevelLogin();
+    fetchData();
   }, []);
+
+  if (localLoading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "#fff", justifyContent: "center", alignItems: "center" }}>
+        <Loader />
+      </View>
+    );
+  }
 
   const onChangeSearch = (query) => {
     setSearchQuery(query);
@@ -86,7 +93,7 @@ const BookServicePage = () => {
   const handleBulkOrderToggle = () => {
     setSelectedVehicles([]);
     setIsBulkOrder((prev) => !prev);
-    setBulkTirePrice(""); // Reset price input when toggling
+    setBulkTirePrice("");
   };
 
   return (
@@ -105,7 +112,6 @@ const BookServicePage = () => {
         {levellogin === "individual" && (
           <Text style={styles.sectionTitle}>Select Vehicle</Text>
         )}
-        {/* Only show vehicle selection if levellogin is "individual" */}
         {levellogin === "individual" && filteredVehicles.length > 0 && (
           <ScrollView
             showsVerticalScrollIndicator={true}
@@ -139,13 +145,11 @@ const BookServicePage = () => {
           </ScrollView>
         )}
 
-        {/* Show Bulk Tire Order only if levellogin is NOT "individual" */}
         {levellogin !== "individual" && (
           <>
             <View style={{ marginTop: hp("2%"), marginBottom: hp("2%") }}>
               <Text style={styles.sectionTitle}>Enter Bulk Number of Bulk Tyres</Text>
               <View style={styles.underlineInput}>
-                
                 <TextInput
                   style={{
                     marginLeft: wp("0%"),

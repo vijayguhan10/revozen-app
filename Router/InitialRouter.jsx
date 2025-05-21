@@ -84,7 +84,7 @@ const InitialRouter = () => {
         />
         <Stack.Screen
           name="clientordertyre"
-          component={clientordertyre}
+          component={CClientordertyre}
           options={{ header: () => <Header /> }}
         />
         <Stack.Screen
@@ -131,7 +131,7 @@ const PaymentScreenWithFooter = () => (
     <Footer />
   </View>
 );
-const clientordertyre = () => (
+const CClientordertyre = () => (
   <View style={styles.container}>
     <ClientOrderTyre />
     <Footer />

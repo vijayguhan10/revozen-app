@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../../env.json";
 import axios from "axios";
+import Loader from "../../../Loader";
 
 const ServiceHistoryPage = () => {
   const API_URL = api.API_URL;
@@ -24,12 +25,14 @@ const ServiceHistoryPage = () => {
   const [pastServices, setPast] = useState([]);
   const [issues, setIssues] = useState([]);
   const [paymentPending, setPending] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     fetchAppointments();
   }, []);
 
   const fetchAppointments = async () => {
+    setLoading(true); // Start loading
     try {
       const token = await AsyncStorage.getItem("token");
 
@@ -52,6 +55,8 @@ const ServiceHistoryPage = () => {
         "Error fetching service history:",
         err.response ? err.response.data : err.message
       );
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -89,6 +94,14 @@ const ServiceHistoryPage = () => {
       </View>
     );
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "#fff", justifyContent: "center", alignItems: "center" }}>
+        <Loader />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

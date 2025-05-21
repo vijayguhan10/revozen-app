@@ -16,13 +16,15 @@ import VehicleListCard from "./VehicleListCard";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { API_URL } from "../../../env.json"
-
+import Loader from "../../../Loader";
 const MyVehiclesListPage = () => {
   const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
   const navigation = useNavigation();
 
   useEffect(() => {
     const fetchVehicles = async () => {
+      setLoading(true); // Start loading
       const token = await AsyncStorage.getItem("token");
       try {
         const response = await axios.get(
@@ -39,6 +41,8 @@ const MyVehiclesListPage = () => {
           "Error fetching vehicles:",
           error.response?.data || error.message
         );
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
@@ -48,6 +52,14 @@ const MyVehiclesListPage = () => {
   const handleAddVehicle = () => {
     navigation.navigate("AddVehicle");
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "#fff", justifyContent: "center", alignItems: "center" }}>
+        <Loader />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

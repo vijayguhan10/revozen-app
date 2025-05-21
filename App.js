@@ -2,8 +2,6 @@ import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import InitialRouter from "./Router/InitialRouter";
 import { useFonts } from "@use-expo/font";
-import BookServicePage from "./components/Home/BookService/BookServicePage";
-import PaymentScreen from "./components/Transactions/UPI";
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
     poppins: require("./fonts/Poppins-Medium.ttf"),
@@ -18,9 +16,9 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <InitialRouter />
-    </View>
+      <View style={styles.container}>
+        <InitialRouter />
+      </View>
   );
 }
 

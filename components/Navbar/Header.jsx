@@ -1,12 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
 const Header = () => {
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const username = await AsyncStorage.getItem("userName");
+        if (username !== null) {
+          setName(username);
+          console.log("name : ", username); // Log the username value directly
+        } else {
+          console.log("No username found in AsyncStorage");
+        }
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <View style={styles.headerContainer}>
       {/* Circles in the background */}
@@ -17,7 +37,7 @@ const Header = () => {
       </View>
       <View style={styles.headerRow}>
         <View style={styles.textContainer}>
-          <Text style={styles.welcomeText}>Welcome Raj</Text>
+          <Text style={styles.welcomeText}>Welcome {name}</Text>
           <Text style={styles.locationText}>Coimbatore, Tamil Nadu</Text>
         </View>
         <View style={styles.notificationProfileWrapper}>
@@ -90,7 +110,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
-    left:wp("84%"),
+    left: wp("84%"),
     zIndex: 0,
   },
   circle: {

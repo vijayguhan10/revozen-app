@@ -42,9 +42,12 @@ const LoginScreen = () => {
       console.log("API response:", response);
 
       if (response.status == 200) {
+        console.log(JSON.stringify(response.data))
         const token = response.data.token;
         const userName = response.data.userName || "";
+      
         const levellogin= response.data.levellogin || ""; 
+        
         await AsyncStorage.setItem("token", token);
         await AsyncStorage.setItem("userName", userName);
         await AsyncStorage.setItem("userEmail", email);
