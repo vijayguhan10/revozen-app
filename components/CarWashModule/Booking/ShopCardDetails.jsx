@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -13,184 +13,211 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { LinearGradient } from "expo-linear-gradient";
+import ReviewPopup from "./ReviewPopup"; // Make sure this path is correct
+
 const TABS = ["About", "Services", "Gallery", "History"];
 
-const ShopCardDetails = ({ activeTab, setActiveTab, onBookNow, shop }) => (
-  <View style={styles.card}>
-    <View style={styles.cardHeader}>
-      <View>
-        <Text style={styles.category}>Car Washing</Text>
-        <Text style={styles.title}>{shop?.name || "N/A"}</Text>
-        <Text style={styles.address}>{shop?.businessAddress || "N/A"}</Text>
-      </View>
-      <View style={{ alignItems: "flex-end" }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="star" color="#FFC107" size={20} />
-          <Text style={styles.rating}>{shop?.averageReview || "0.0"}</Text>
-          <Text style={styles.reviewCount}>
-            ({shop?.userReviews ? shop.userReviews.length : 0} reviews)
-          </Text>
-        </View>
-        <View style={styles.bookBtnWrapper}>
-          <LinearGradient
-            colors={["#a1c0ff", "#cbbfff"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.bookBtnGradient}
-          >
-            <TouchableOpacity
-              style={styles.bookBtn}
-              onPress={onBookNow}
-              activeOpacity={0.85}
-            >
-              <Ionicons name="calendar" size={wp("3%")} color="#fff" />
-              <Text style={styles.bookBtnText}>Book now</Text>
-            </TouchableOpacity>
-          </LinearGradient>
-        </View>
-      </View>
-    </View>
+const ShopCardDetails = ({ activeTab, setActiveTab, onBookNow, shop }) => {
+  const [showReviewPopup, setShowReviewPopup] = useState(false);
 
-    {/* Tabs */}
-    <View style={styles.tabsRow}>
-      {TABS.map((tab) => (
-        <TouchableOpacity
-          key={tab}
-          onPress={() => setActiveTab(tab)}
-          style={styles.tabBtn}
-        >
-          <Text
-            style={[styles.tabText, activeTab === tab && styles.activeTabText]}
-          >
-            {tab}
-          </Text>
-          {activeTab === tab && <View style={styles.activeTabBar} />}
-        </TouchableOpacity>
-      ))}
-    </View>
-
-    {/* Tab Content */}
-    <View style={{ minHeight: 60 }}>
-      {activeTab === "About" && (
+  return (
+    <View style={styles.card}>
+      <View style={styles.cardHeader}>
         <View>
-          <Text style={styles.sectionTitle}>About Us</Text>
-          <Text style={styles.sectionText}>
-            {shop?.about ||
-              "We pride ourselves on top-quality services. If you're not satisfied,"}
-          </Text>
-          <View style={styles.gridRow}>
-            <View style={styles.gridItem}>
-              <Ionicons
-                name="location-outline"
-                size={20}
-                color="#6C63FF"
-                style={styles.detailIcon}
-              />
-              <Text style={styles.detailLabel}>Region:</Text>
-              <Text style={styles.detailValue}>{shop?.region || "N/A"}</Text>
-            </View>
-            <View style={styles.gridItem}>
-              <Ionicons
-                name="pricetag-outline"
-                size={20}
-                color="#6C63FF"
-                style={styles.detailIcon}
-              />
-              <Text style={styles.detailLabel}>Pincode:</Text>
-              <Text style={styles.detailValue}>{shop?.pincode || "N/A"}</Text>
-            </View>
-          </View>
-          <View style={styles.gridRow}>
-            <View style={styles.gridItem}>
-              <Ionicons
-                name="time-outline"
-                size={20}
-                color="#6C63FF"
-                style={styles.detailIcon}
-              />
-              <Text style={styles.detailLabel}>Opening:</Text>
-              <Text style={styles.detailValue}>
-                {shop?.openingTime
-                  ? new Date(shop.openingTime).toLocaleTimeString()
-                  : "N/A"}
-              </Text>
-            </View>
-            <View style={styles.gridItem}>
-              <Ionicons
-                name="moon-outline"
-                size={20}
-                color="#6C63FF"
-                style={styles.detailIcon}
-              />
-              <Text style={styles.detailLabel}>Closing:</Text>
-              <Text style={styles.detailValue}>
-                {shop?.closingTime
-                  ? new Date(shop.closingTime).toLocaleTimeString()
-                  : "N/A"}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.detailRow}>
-            <Ionicons
-              name="calendar-outline"
-              size={20}
-              color="#6C63FF"
-              style={styles.detailIcon}
-            />
-            <Text style={styles.detailLabel}>Days Open:</Text>
-            <Text style={styles.detailValue}>
-              {shop?.daysOfOperation?.join(", ") || "N/A"}
+          <Text style={styles.category}>Car Washing</Text>
+          <Text style={styles.title}>{shop?.name || "N/A"}</Text>
+          <Text style={styles.address}>{shop?.businessAddress || "N/A"}</Text>
+        </View>
+        <View style={{ alignItems: "flex-end" }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Ionicons name="star" color="#FFC107" size={20} />
+            <Text style={styles.rating}>{shop?.averageReview || "0.0"}</Text>
+            <Text style={styles.reviewCount}>
+              ({shop?.userReviews ? shop.userReviews.length : 0} reviews)
             </Text>
           </View>
+          <View style={styles.bookBtnWrapper}>
+            <LinearGradient
+              colors={["#a1c0ff", "#cbbfff"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.bookBtnGradient}
+            >
+              <TouchableOpacity
+                style={styles.bookBtn}
+                onPress={onBookNow}
+                activeOpacity={0.85}
+              >
+                <Ionicons name="calendar" size={wp("3%")} color="#fff" />
+                <Text style={styles.bookBtnText}>Book now</Text>
+              </TouchableOpacity>
+            </LinearGradient>
+          </View>
         </View>
-      )}
-      {activeTab === "Services" && (
-        <View>
-          <Text style={styles.sectionTitle}>Services</Text>
-          <Text style={styles.sectionText}>
-            {/* You can render dynamic services here if available in shop object */}
-            • Exterior Wash{"\n"}• Interior Cleaning{"\n"}• Detailing
-          </Text>
-        </View>
-      )}
-      {activeTab === "Gallery" && (
-        <ScrollView horizontal>
-          {/* If shop has images, render them, else fallback */}
-          {(shop?.galleryImages && shop.galleryImages.length > 0
-            ? shop.galleryImages
-            : [1, 2, 3]
-          ).map((img, i) => (
-            <Image
-              key={i}
-              source={{
-                uri:
-                  typeof img === "string"
-                    ? img
-                    : "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d",
+      </View>
+
+      {/* Tabs */}
+      <View style={styles.tabsRow}>
+        {TABS.map((tab) => (
+          <TouchableOpacity
+            key={tab}
+            onPress={() => setActiveTab(tab)}
+            style={styles.tabBtn}
+          >
+            <Text
+              style={[styles.tabText, activeTab === tab && styles.activeTabText]}
+            >
+              {tab}
+            </Text>
+            {activeTab === tab && <View style={styles.activeTabBar} />}
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Tab Content */}
+      <View style={{ minHeight: 60 }}>
+        {activeTab === "About" && (
+          <View>
+            <Text style={styles.sectionTitle}>About Us</Text>
+            <Text style={styles.sectionText}>
+              {shop?.about ||
+                "We pride ourselves on top-quality services. If you're not satisfied,"}
+            </Text>
+            <View style={styles.gridRow}>
+              <View style={styles.gridItem}>
+                <Ionicons
+                  name="location-outline"
+                  size={20}
+                  color="#6C63FF"
+                  style={styles.detailIcon}
+                />
+                <Text style={styles.detailLabel}>Region:</Text>
+                <Text style={styles.detailValue}>{shop?.region || "N/A"}</Text>
+              </View>
+              <View style={styles.gridItem}>
+                <Ionicons
+                  name="pricetag-outline"
+                  size={20}
+                  color="#6C63FF"
+                  style={styles.detailIcon}
+                />
+                <Text style={styles.detailLabel}>Pincode:</Text>
+                <Text style={styles.detailValue}>{shop?.pincode || "N/A"}</Text>
+              </View>
+            </View>
+            <View style={styles.gridRow}>
+              <View style={styles.gridItem}>
+                <Ionicons
+                  name="time-outline"
+                  size={20}
+                  color="#6C63FF"
+                  style={styles.detailIcon}
+                />
+                <Text style={styles.detailLabel}>Opening:</Text>
+                <Text style={styles.detailValue}>
+                  {shop?.openingTime
+                    ? new Date(shop.openingTime).toLocaleTimeString()
+                    : "N/A"}
+                </Text>
+              </View>
+              <View style={styles.gridItem}>
+                <Ionicons
+                  name="moon-outline"
+                  size={20}
+                  color="#6C63FF"
+                  style={styles.detailIcon}
+                />
+                <Text style={styles.detailLabel}>Closing:</Text>
+                <Text style={styles.detailValue}>
+                  {shop?.closingTime
+                    ? new Date(shop.closingTime).toLocaleTimeString()
+                    : "N/A"}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.detailRow}>
+              <Ionicons
+                name="calendar-outline"
+                size={20}
+                color="#6C63FF"
+                style={styles.detailIcon}
+              />
+              <Text style={styles.detailLabel}>Days Open:</Text>
+              <Text style={styles.detailValue}>
+                {shop?.daysOfOperation?.join(", ") || "N/A"}
+              </Text>
+            </View>
+          </View>
+        )}
+        {activeTab === "Services" && (
+          <View>
+            <Text style={styles.sectionTitle}>Services</Text>
+            <Text style={styles.sectionText}>
+              {/* You can render dynamic services here if available in shop object */}
+              • Exterior Wash{"\n"}• Interior Cleaning{"\n"}• Detailing
+            </Text>
+          </View>
+        )}
+        {activeTab === "Gallery" && (
+          <ScrollView horizontal>
+            {/* If shop has images, render them, else fallback */}
+            {(shop?.galleryImages && shop.galleryImages.length > 0
+              ? shop.galleryImages
+              : [1, 2, 3]
+            ).map((img, i) => (
+              <Image
+                key={i}
+                source={{
+                  uri:
+                    typeof img === "string"
+                      ? img
+                      : "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d",
+                }}
+                style={styles.galleryImage}
+              />
+            ))}
+          </ScrollView>
+        )}
+        {activeTab === "History" && (
+          <View>
+            <Text style={styles.sectionTitle}>History</Text>
+            <Text style={styles.sectionText}>
+              {shop?.userReviews && shop.userReviews.length > 0
+                ? shop.userReviews
+                    .map(
+                      (review) =>
+                        `${review.userName}: ${review.review}★ - ${review.description}`
+                    )
+                    .join("\n")
+                : "No previous bookings found."}
+            </Text>
+            <TouchableOpacity
+              style={{
+                marginTop: 16,
+                alignSelf: "flex-start",
+                backgroundColor: "#6C63FF",
+                paddingVertical: 8,
+                paddingHorizontal: 18,
+                borderRadius: 8,
               }}
-              style={styles.galleryImage}
+              onPress={() => setShowReviewPopup(true)}
+            >
+              <Text style={{ color: "#fff", fontWeight: "bold", fontFamily: "poppins" }}>
+                Add Review
+              </Text>
+            </TouchableOpacity>
+            <ReviewPopup
+              visible={showReviewPopup}
+              onClose={() => setShowReviewPopup(false)}
+              shopId={shop?._id}
+              onReviewSubmitted={() => setShowReviewPopup(false)}
             />
-          ))}
-        </ScrollView>
-      )}
-      {activeTab === "History" && (
-        <View>
-          <Text style={styles.sectionTitle}>History</Text>
-          <Text style={styles.sectionText}>
-            {shop?.userReviews && shop.userReviews.length > 0
-              ? shop.userReviews
-                  .map(
-                    (review) =>
-                      `${review.userName}: ${review.review}★ - ${review.description}`
-                  )
-                  .join("\n")
-              : "No previous bookings found."}
-          </Text>
-        </View>
-      )}
+          </View>
+        )}
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   card: {

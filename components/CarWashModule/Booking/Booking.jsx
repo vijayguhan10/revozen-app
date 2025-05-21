@@ -55,24 +55,47 @@ const onConfirmBooking = async () => {
 
     const payload = {
       appointmentDate,
-      appointmentTime,
+      appointmentTime, 
       washType,
       address: washType === "doorstep" ? address : undefined,
     };
     
     const shopId = shop?._id;
-    const url = `${api.API_URL}/client/carwash/postorders/${shopId}`;
+    const url = `${api.API_URL}/carwash/postorders/${shopId}`;
     const token = await AsyncStorage.getItem("token");
-   const response= await axios.post(url, payload, {
+    
+    // First API call to post the order
+    const orderResponse = await axios.post(url, payload, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("response",response.data);
-    Alert.alert("Success", "Booking confirmed!");
-    onClose();
+    console.log("Order Response:", JSON.stringify(orderResponse.data,null,2));
+    // Get the order ID from the response
+    const orderId = orderResponse.data.orderid;
+
+    // Second API call to update client car wash data
+    const clientDataUrl = `${api.API_URL}/client/clientcarwashdata`;
+    const clientDataPayload = {
+      orderid: orderId,
+      shopid: shopId
+    };
+
+    await axios.post(clientDataUrl, clientDataPayload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Order Response:", orderResponse.data);
+    Alert.alert(
+      "Success",
+      "Your booking has been confirmed successfully!",
+      [{ text: "OK", onPress: onClose }]
+    );
+
   } catch (error) {
-    console.error("Error booking:", error);
+    console.error("Error booking:", error.message);
     Alert.alert("Error", "Failed to confirm booking. Please try again.");
   }
 };

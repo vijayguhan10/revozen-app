@@ -78,7 +78,7 @@ const HomePage = () => {
         }
 
         const response = await axios.post(
-          `${api.API_URL}/client/carwash/getlocation`,
+          `${api.API_URL}/client/clientcarwashdata/getlocation`,
           { latitude, longitude },
           {
             headers: {
